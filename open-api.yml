@@ -156,6 +156,8 @@ paths:
     post:
       tags:
       - Rooms
+      security:
+        - JWTAuth: []
       summary: Insert rooms
       responses:
         '200':
@@ -175,15 +177,19 @@ paths:
     put:
       tags:
       - Rooms
+      security:
+        - JWTAuth: []
       summary:  Put / Update rooms by id_rooms
       responses:
         '200':
           $ref: '#/components/responses/putRoomsByIdSuccess'
         '400':
-          $ref: '#/components/responses/getDataByIdFailed'
+          $ref: '#/components/responses/putRoomsByIdFailed'
     delete:
       tags:
       - Rooms
+      security:
+        - JWTAuth: []
       summary: Delete rooms by id_rooms
       responses:
         '200':
@@ -204,6 +210,8 @@ paths:
     get:
       tags:
       - Rooms
+      security:
+        - JWTAuth: []
       summary: Get room by user create
       responses:
         '200':
@@ -1310,8 +1318,6 @@ components:
                 ]
               }
             ]
-
-
     getRoomsByIdSuccess:
       description: Success Response Data
       content:
@@ -1400,6 +1406,17 @@ components:
               
             ]
             message: Success Operation
+    putRoomsByIdFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
     deleteRoomsByIdSuccess:
       description: Success Response Data
       content:
