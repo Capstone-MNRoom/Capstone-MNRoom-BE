@@ -1,0 +1,1973 @@
+openapi: '3.0.3'
+info:
+  title: 'Final Project Alta: MNroom'
+  version: '1.0'
+  description: 'API Documentation for MNroom'
+  contact: 
+    name: MNroom Official
+    url: https://mnroom.capstone.my.id
+    email: mnroom@capstone.my.id
+externalDocs: 
+  description: "GitHub Repository of Final Project: MNroom"
+  url: https://github.com/project-capstone
+servers:
+  - url: https://{environment}.api.alterra.id/v1
+    description: ALTA API server
+    variables:
+      environment:
+        default: dev
+        enum:
+          - dev
+          - staging
+          - production
+  - url: https://mnroom.capstone.my.id
+    description: Base URL that will be used for endpoints
+    
+tags:
+  - name: Authentication
+    description: Endpoint for verifying who a user is
+  - name: Sign Up
+    description: Endpoint for user registration
+  - name: Users
+    description: Endpoint for perform operations on user
+  - name: Categories
+    description: Endpoint for perform operations on categories
+  - name: Rooms
+    description: Endpoint for perform operations on room
+  - name: Group Products
+    description: Endpoint for perform operations on group product
+  - name: Orders
+    description: Endpoint for perform operations on order
+paths:
+####################################
+#  AUTHENTICATION
+####################################
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Get token for access to account
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyLogin'
+      responses:
+        '200':
+          $ref: '#/components/responses/loginSuccess'
+        '400':
+          $ref: '#/components/responses/loginFailed'
+####################################
+#  SIGN UP
+####################################
+  /signup:
+    post:
+      tags:
+        - Sign Up
+      summary: Create a new account
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyUser'
+      responses:
+        '200':
+          $ref: '#/components/responses/successSignupNonData'
+        '400':
+          $ref: '#/components/responses/createUserFailed'
+####################################
+#  USERS
+####################################
+  # /users:
+  #   get:
+  #     tags:
+  #       - Users
+  #     summary: Get all customer's data for admin only
+  #     security:
+  #     - JWTAuth: []
+  #     responses:
+  #       '200':
+  #         $ref: '#/components/responses/getAllUsersSuccess'
+  #       '400':
+  #         $ref: '#/components/responses/getAllDataFailed'
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get user data by user loggedin
+      security:
+        - JWTAuth: []
+      # parameters:
+      #   - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/getUserSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+    put:
+      tags:
+        - Users
+      summary: Update user data by user loggedin
+      security:
+        - JWTAuth: []
+      # parameters:
+      #   - $ref: '#/components/parameters/idParam'
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyUserUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/updateUserFailed'
+    delete:
+      tags:
+        - Users
+      summary: Delete user data by user loggedin
+      security:
+        - JWTAuth: []
+      # parameters:
+      #   - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/deleteDataByIdFailed'
+####################################
+#  CATEGORIES
+####################################
+  /categories:
+      get:
+        tags:
+        - Categories
+        summary: Get all categories
+        responses:
+          '200':
+            $ref: '#/components/responses/getAllCategoriesSuccess'
+          '400':
+            $ref: '#/components/responses/getAllDataFailed'
+
+####################################
+#  ROOMS
+####################################
+  /rooms:
+    get:
+      tags:
+      - Rooms
+      summary: Get all rooms
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllRoomsSuccess'
+        '400':
+          $ref: '#/components/responses/getAllDataFailed'
+    post:
+      tags:
+      - Rooms
+      security:
+        - JWTAuth: []
+      summary: Insert rooms
+      responses:
+        '200':
+          $ref: '#/components/responses/insertRoomsSuccess'
+        '400':
+          $ref: '#/components/responses/getAllDataFailed'
+  /rooms/{id}:
+    get:
+      tags:
+      - Rooms
+      summary: Get rooms by id_rooms
+      responses:
+        '200':
+          $ref: '#/components/responses/getRoomsByIdSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+    put:
+      tags:
+      - Rooms
+      security:
+        - JWTAuth: []
+      summary:  Put / Update rooms by id_rooms
+      responses:
+        '200':
+          $ref: '#/components/responses/putRoomsByIdSuccess'
+        '400':
+          $ref: '#/components/responses/putRoomsByIdFailed'
+    delete:
+      tags:
+      - Rooms
+      security:
+        - JWTAuth: []
+      summary: Delete rooms by id_rooms
+      responses:
+        '200':
+          $ref: '#/components/responses/deleteRoomsByIdSuccess'
+        '400':
+          $ref: '#/components/responses/deleteRoomsByIdFailed'
+  /rooms/{categories}:
+    get:
+      tags:
+      - Rooms
+      summary: Get room by categories
+      responses:
+        '200':
+          $ref: '#/components/responses/getRoomsByCategoriesSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+  /rooms/user:
+    get:
+      tags:
+      - Rooms
+      security:
+        - JWTAuth: []
+      summary: Get room by user create
+      responses:
+        '200':
+          $ref: '#/components/responses/getRoomsByUserSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by id
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/getProductSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+  /jwt/products:
+    post:
+      tags:
+        - Products
+      summary: Create a new product for admin only
+      security:
+        - JWTAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyProduct'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/createProductFailed'
+        '500':
+          $ref: '#/components/responses/productServerFailed'
+  /jwt/products/{id}:
+    put:
+      tags:
+        - Products
+      summary: Update product by id for admin only
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyProductUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/updateProductFailed'
+        '500':
+          $ref: '#/components/responses/productServerFailed'
+    delete:
+      tags:
+      - Products
+      summary: Delete product by id for admin only
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/deleteDataByIdFailed'
+####################################
+#  GROUP PRODUCTS
+####################################
+  /products/group:
+    get:
+      tags:
+        - Group Products
+      summary: Get all Group Products
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllGroupProductsSuccess'
+        '400':
+          $ref: '#/components/responses/getAllDataFailed'
+  /products/group/{id_group}:
+    get:
+      tags:
+        - Group Products
+      summary: Get Group Products by id group product
+      parameters:
+        - $ref: '#/components/parameters/idGroup'
+      responses:
+        '200':
+          $ref: '#/components/responses/getGroupProductSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+  /products/group/products/{id_products}:
+    get:
+      tags:
+        - Group Products
+      summary: Get All Group Products by id products
+      parameters:
+        - $ref: '#/components/parameters/idProducts'
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllGroupProductsSuccess'
+        '400':
+          $ref: '#/components/responses/getDataByIdFailed'
+  /products/group/status/{status}:
+    get:
+      tags:
+        - Group Products
+      summary: Get All Group Products by available
+      parameters:
+        - $ref: '#/components/parameters/statusParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllGroupProductsSuccess'
+        '400':
+          $ref: '#/components/responses/getAllGroupProductsAvailableFailed'
+  /jwt/products/group/{id_products}:
+    post:
+      tags:
+      - Group Products
+      summary: Create a new group product for customers only
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idProducts'
+      responses:
+        '200':
+          $ref: '#/components/responses/createGroupProductSuccess'
+        '400':
+          $ref: '#/components/responses/createGroupProductFailed'
+  /jwt/products/group/delete/:id_group:
+    delete:
+      tags:
+        - Group Products
+      summary: Delete group product by id group for admin only
+      security:
+        -  JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idGroup'
+      responses:  
+        '200':
+            $ref: '#/components/responses/successOperationNonData'
+        '400':
+            $ref: '#/components/responses/deleteGroupProductFailed'
+####################################
+#  ORDERS
+####################################
+  /jwt/orders/{id_group}:
+    post:
+      tags:
+      - Orders
+      summary: Create a new order for customers only
+      parameters:
+        - $ref: '#/components/parameters/idGroup'
+      security:
+        - JWTAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyOrder'
+      responses:
+        '200':
+          $ref: '#/components/responses/createOrderSuccess'
+        '400':
+          $ref: '#/components/responses/createOrderFailed'
+  /jwt/orders/id/{id_order}:
+    get:
+      tags:
+        - Orders
+      summary: Get order by id order
+      parameters:
+        - $ref: '#/components/parameters/idOrder'
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getOrderSuccess'
+        '400':
+          $ref: '#/components/responses/OrderResponseFailed'
+  /jwt/orders/group/{id_group}:
+    get:
+      tags:
+        - Orders
+      summary: Get all orders by id group for admin only
+      parameters:
+        - $ref: '#/components/parameters/idGroup'
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllOrdersByIdGroupSuccess'
+        '400':
+          $ref: '#/components/responses/OrderResponseFailed'
+  /jwt/orders/users/{id_user}:
+    get:
+      tags:
+      - Orders
+      summary: Get all orders by user's id
+      parameters:
+        - $ref: '#/components/parameters/idUser'
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllOrdersByIdUserSuccess'
+        '400':
+          $ref: '#/components/responses/OrderResponseFailed'
+  /jwt/orders/update/{id_order}:
+    put:
+      tags:
+        - Orders
+      summary: Update order by id order for admin only
+      security:
+        - JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idOrder'
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyOrderUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateOrderSuccess'
+        '400':
+          $ref: '#/components/responses/UpdateOrderFailed'
+  /jwt/orders/delete/:id_order:
+    delete:
+      tags:
+        - Orders
+      summary: Delete order by id order for admin only
+      security:
+        -  JWTAuth: []
+      parameters:
+        - $ref: '#/components/parameters/idOrder'
+      responses:  
+        '200':
+            $ref: '#/components/responses/successOperationNonData'
+        '400':
+            $ref: '#/components/responses/deleteDataByIdFailed'
+####################################
+#  COMPONENTS
+####################################
+components:
+  schemas:
+    requestDataLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    requestDataUser:
+      type: object
+      required:
+        - image
+        - name
+        - email
+        - password
+        - phone
+        - address
+      properties:
+        image:
+          type: string
+          minLength: 1
+          format: binary
+          description: "allowed file extension: jpg, png, jpeg && size <= 1024000 byte"
+        name:
+          type: string
+          minLength: 1
+          pattern: '^0-9A-Za-z_.$'
+        email:
+          type: string
+          format: email
+          minLength: 5
+          description: inputted email must be unique
+        password:
+          type: string
+          minLength: 6
+        phone:
+          type: string
+          format: phone
+          minLength: 8
+          maxLength: 16
+          description: inputted phone number must be unique
+        address:
+          type: string
+          minLength: 20
+    requestDataProduct:
+      type: object
+      required:
+        - name_product
+        - detail_product
+        - price
+        - limit
+        - photo
+      properties:
+        name_product:
+          type: string
+          minLength: 1
+        detail_product:
+          type: string
+          minLength: 1
+        price:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 2
+        photo:
+          type: string
+          format: binary
+          description: "allowed file extension: jpg, png, jpeg && size <= 1050000 byte"
+    requestDataProductUpdate:
+      type: object
+      required:
+        - name_product
+        - detail_product
+        - price
+        - limit
+      properties:
+        name_product:
+          type: string
+          minLength: 1
+        detail_product:
+          type: string
+          minLength: 1
+        price:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 2
+        photo:
+          type: string
+          format: binary
+          description: "allowed file extension: jpg, png, jpeg && size <= 1050000 byte"
+    requestDataOrder:
+      type: object
+      required:
+      - phone
+      properties:
+        phone:
+          type: string
+          pattern: '^08[1-9][0-9]{8,13}$'
+          description: The first 2 character must be "08". The third character must be one of "1-9". The next character must be numeric "0-9".
+          minLength: 11
+          maxLength: 13
+    requestDataOrderUpdate:
+      type: object
+      required:
+      - detail
+      properties:
+        detail:
+          type: string
+    responseLoginWithData:
+      type: object
+      properties:
+        Data:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            token:
+              type: string
+        message:
+          type: string
+    responseUserWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+            address:
+              type: string
+        message:
+          type: string
+    responseUserWithDataArray:
+      type: object
+      properties:
+        code:
+          type: integer 
+        Data:
+          type: array
+          items:
+            type: object
+            properties:
+              ID:
+                type: integer
+              Name:
+                type: string
+              Email:
+                type: string
+              Phone:
+                type: string
+        message:
+          type: string    
+    responseProductWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: object
+          properties:
+            ID:
+              type: integer
+            Name_Product:
+              type: string
+            Detail_Product:
+              type: string
+            Price:
+              type: integer
+            Limit:
+              type: integer
+            Photo:
+              type: string
+              format: binary
+            Url: 
+              type: string
+        message:
+          type: string      
+    responseRoomWithDataArray:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: array
+          items:
+            type: object
+            properties:
+              ID:
+                type: integer
+              Name_Product:
+                type: string
+              Detail_Product:
+                type: string
+              Price:
+                type: integer
+              Limit:
+                type: integer
+              Photo:
+                type: string
+                format: binary
+              Url: 
+                type: string
+        message:
+          type: string
+    responseCategoriesWithDataArray:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        message:
+          type: string
+    responseGroupProductWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: object
+          properties:
+            ID:
+              type: integer
+            ProductsID:
+              type: integer
+            NameGroupProduct:
+              type: string
+            Limit:
+              type: integer
+            CapacityGroupProduct:
+              type: integer
+            Price:
+              type: integer
+            AdminFee:
+              type: integer
+            TotalPrice:
+              type: integer 
+            DurationGroup:
+              type: string
+            Name_Product: 
+              type: string
+            Status: 
+              type: string
+            Url:
+              type: string
+            GetOrder: 
+              type: array
+              items:
+                type: object
+                properties:
+                  OrderID:
+                    type: integer
+                  UsersID:
+                    type: integer
+                  GroupProductID:
+                    type: integer
+                  Name:
+                    type: string
+        message:
+          type: string
+    responseGroupProductWithDataArray:
+        type: object
+        properties:
+          code:
+            type: integer
+          Data:
+            type: array
+            items:
+              type: object
+              properties:
+                ID:
+                  type: integer
+                ProductsID:
+                  type: integer
+                NameGroupProduct:
+                  type: string
+                Limit:
+                  type: integer
+                CapacityGroupProduct:
+                  type: integer
+                Price:
+                  type: integer
+                AdminFee:
+                  type: integer
+                TotalPrice:
+                  type: integer 
+                DurationGroup:
+                  type: string
+                Name_Product: 
+                  type: string
+                Status: 
+                  type: string
+                Url:
+                  type: string
+                GetOrder: 
+                  type: array
+                  nullable: true
+                  items:
+                    type: object
+                    properties:
+                      OrderID:
+                        type: integer
+                      UsersID:
+                        type: integer
+                      GroupProductID:
+                        type: integer
+                      Name:
+                        type: string
+          message:
+            type: string  
+    responseCreateGroupProductWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: object
+          properties:
+            GroupProductID:
+              type: integer
+        message:
+          type: string
+    responseCreateOrderWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: object
+          properties:
+            OrderID:
+              type: integer
+            EwalletType: 
+              type: string
+            ExternalId:  
+              type: string
+            Amount:
+              type: number
+            BusinessId:  
+              type: string
+            Created: 
+              type: string
+        message:
+          type: string
+    responseOrderWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: object
+          properties:
+            OrderID:
+              type: integer
+            UsersID:
+              type: integer
+            GroupProductID:
+              type: integer
+            NameProduct:
+              type: string
+            PriceOrder:
+              type: integer
+            DetailCredential:
+              type: string
+        message:
+          type: string
+    responseOrderWithDataArray:
+      type: object
+      properties:
+        code:
+          type: integer
+        Data:
+          type: array 
+          items:
+            type: object
+            properties:
+              OrderID:
+                type: integer
+              UsersID:
+                type: integer
+              GroupProductID:
+                type: integer
+              NameProduct:
+                type: string
+              PriceOrder:
+                type: integer
+              DetailCredential:
+                type: string
+        message:
+          type: string
+    responseNonData: 
+      type: object
+      properties:
+        message:
+          type: string 
+
+  parameters:
+    idGroup:
+      name: id_group
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    idOrder:
+      name: id_order
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    idParam:
+      name: token
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    idProducts:
+      name: id_products
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    idUser:
+      name: id_user
+      in: path
+      required: true
+      schema:
+        type: integer
+        example: 1
+    statusParam:
+      name: status
+      in: path
+      required: true
+      schema:
+        type: string
+        example: available
+
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "use Token"  
+
+  requestBodies:
+    requestBodyLogin:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestDataLogin'
+          examples:
+            User:
+              value:
+                email: mulya@mail.com
+                password: qwerty12345
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataLogin'     
+    requestBodyUser:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestDataUser'
+          examples:
+            newUser1:
+              value:
+                name: Mulya Nurdin
+                email: mulyanurdin@mail.com
+                password: qwerty12345
+                phone: "081234567890"
+                address: "Bandung"
+            newUser2:
+              value:
+                name: David Wahyu
+                email: david@mail.com
+                password: qwerty12345
+                phone: "082123456789"
+                address: "Surabaya"
+            newUser3:
+              value:
+                name: Mohamad Azis
+                email: azisadnan@mail.co.id
+                password: qwerty12345
+                phone: "089444445555"
+                address: "Mustika Wanasari Blok B3"
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataUser'
+    requestBodyGetUser:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestDataUser'
+          examples:
+            newUser1:
+              value:
+                name: Mulya Nurdin
+            newUser2:
+              value:
+                name: David Wahyu
+                email: david@mail.com
+                password: qwerty12345
+                phone: "082123456789"
+                address: "Surabaya"
+            newUser3:
+              value:
+                name: Mohamad Azis
+                email: azisadnan@mail.co.id
+                password: qwerty12345
+                phone: "089444445555"
+                address: "Mustika Wanasari Blok B3"
+    requestBodyUserUpdate:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataUser'
+    requestBodyProduct:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataProduct'
+    requestBodyProductUpdate:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataProductUpdate'
+    requestBodyOrder: 
+      required: true
+      content:
+        application/json:
+          schema:  
+            $ref: '#/components/schemas/requestDataOrder'
+          example:
+            phone: "08123456789"
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataOrder'
+    requestBodyOrderUpdate: 
+      required: true
+      content:
+        application/json:
+          schema:  
+            $ref: '#/components/schemas/requestDataOrderUpdate'
+          example:
+            detail: "Email: subs.netflix@mail.com, Password: qwerty"
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataOrderUpdate'
+
+  responses:
+    loginSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseLoginWithData'
+          examples:
+            User:
+              value:
+                data: {
+                  id: 4,
+                  name: mulya,
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Mzk2OTAwMjMsInJvbGUiOiJhZG1pbiIsInVzZXJJZCI6NH0.1Ij1ZVqpqPDOVXzaXyqcyNMlnbLTfwD28Byv0aWNjAQ,
+                }
+                message: Login Success            
+    loginFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          example:
+            message: Email or Password Incorrect
+
+    successOperationNonData:
+      description: Success Response Non Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          example:
+            message: Success Operation
+    successSignupNonData:
+      description: Success Response Non Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          example:
+            message: Success Sign Up
+    createUserFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Email:
+              $ref: '#/components/examples/invalidEmail'
+            Invalid Password:
+              $ref: '#/components/examples/invalidPassword'
+            Email or Telephone Number Already Exist:
+              $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
+    getAllUsersSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseUserWithDataArray'
+          example:
+            code: 200
+            Data: [
+              {
+                ID: 1,
+                Name: try,
+                Email: try@example.com,
+                Phone: "+6281111222333"
+              },
+              {
+                ID: 2,
+                Name: test123,
+                Email: test123@example.com,
+                Phone: "+6281444555666"
+              },
+              {
+                ID: 3,
+                Name: coba123,
+                Email: coba123@example.com,
+                Phone: "+6281777777777"
+              }
+            ]
+            message: Success Operation
+
+    getAllDataFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    getUserSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseUserWithData'
+          example:
+            data: {
+              id: 1,
+              name: Mulya Nurdin,
+              email: mulyanurdin@mail.com,
+              phone: "081234567890",
+              address: Bandung,
+            }
+            message: Success Get User Data
+    getDataByIdFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Id:
+              $ref: '#/components/examples/invalidId'
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    updateUserFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Email:
+              $ref: '#/components/examples/invalidEmail'
+            Invalid Telephone Number:
+              $ref: '#/components/examples/invalidTelephoneNumber'
+            Email or Telephone Number Already Exist:
+              $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
+    deleteDataByIdFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Access Forbidden:
+              $ref: '#/components/examples/accessForbidden'
+    createProductFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            File Extension Not Allowed:
+              $ref: '#/components/examples/fileExtensionNotAllowed'
+            Illegal File:
+              $ref: '#/components/examples/illegalFile'
+            Size File Too Big:
+              $ref: '#/components/examples/sizeFileTooBig'
+            Access Forbidden: 
+              $ref: '#/components/examples/accessForbidden'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    productServerFailed:
+      description: Internal Server Error Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Can't Connect to Server:
+              $ref: '#/components/examples/cantConnecttoServer'
+            Failed to Upload File:
+              $ref: '#/components/examples/failedtoUploadFile'
+
+    getAllRoomsSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Arjuna,
+                capacity: 50,
+                rental_price: 1500000,
+                address: Jl. Raya Utama No. 15,
+                city: Bandung,
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 3,
+                    name: Projector
+                  }
+                ]
+              },
+              { 
+                id: 2,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Hanoman,
+                capacity: 200,
+                rental_price: 2500000,
+                address: Jl. Raya Selatan No. 25,
+                city: Bandung,
+                user: {
+                  id: 2,
+                  name: Putri Indah  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 4,
+                    name: Sound System
+                  }
+                ]
+              }
+            ]
+            message: Success Operation
+    insertRoomsSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Arjuna,
+                capacity: 50,
+                rental_price: 1500000,
+                address: Jl. Raya Utama No. 15,
+                city: Bandung,
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 3,
+                    name: Projector
+                  }
+                ]
+              }
+            ]
+    getRoomsByIdSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Arjuna,
+                capacity: 50,
+                rental_price: 1500000,
+                address: Jl. Raya Utama No. 15,
+                city: Bandung,
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 3,
+                    name: Projector
+                  }
+                ]
+              },
+              
+            ]
+            message: Success Operation
+    putRoomsByIdSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Arjuna,
+                capacity: 50,
+                rental_price: 1500000,
+                address: Jl. Raya Utama No. 15,
+                city: Bandung,
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 3,
+                    name: Projector
+                  }
+                ]
+              },
+              
+            ]
+            message: Success Operation
+    putRoomsByIdFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    deleteRoomsByIdSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { }
+            ]
+            message: Success Operation
+    deleteRoomsByIdFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+
+    getRoomsByCategoriesSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Arjuna,
+                capacity: 50,
+                rental_price: 1500000,
+                address: Jl. Raya Utama No. 15,
+                city: Bandung,
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 3,
+                    name: Projector
+                  }
+                ]
+              },
+              
+            ]
+            message: Success Operation
+    getRoomsByUserSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                image_room: image_room.jpg,
+                image_pengelola: image_pengelola.jpg,
+                name: Ruang Arjuna,
+                capacity: 50,
+                rental_price: 1500000,
+                address: Jl. Raya Utama No. 15,
+                city: Bandung,
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                categories: {
+                  id: 1,
+                  name: workspace
+                },
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  },
+                  {
+                    id: 3,
+                    name: Projector
+                  }
+                ]
+              },
+              
+            ]
+            message: Success Operation
+    getAllCategoriesSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCategoriesWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                name: Workspace
+              },
+              { 
+                id: 2,
+                name: Hallroom 
+              },
+              { 
+                id: 3,
+                name: Ballroom 
+              }
+            ]
+            message: Success Operation
+
+
+    getProductSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseProductWithData'
+          example:
+            code: 200
+            Data: { 
+              ID: 3,
+                NameProduct: Youtube-Music,
+                DetailProduct: Lorem,
+                Price: 300000,
+                Limit: 6,
+                Photo: Youtube-Music-2021-12-13T10:06:45.jpg,
+                Url: https://storage.googleapis.com/barengin-bucket/Youtube-Music-2021-12-13T10:06:45.jpg
+            }
+            message: Success Operation
+    updateProductFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Id:
+              $ref: '#/components/examples/invalidId'
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Access Forbidden:
+              $ref: '#/components/examples/accessForbidden'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+            File Extension Not Allowed:
+              $ref: '#/components/examples/fileExtensionNotAllowed'
+            Illegal File:
+              $ref: '#/components/examples/illegalFile'
+            Size File Too Big:
+              $ref: '#/components/examples/sizeFileTooBig'
+    createGroupProductSuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCreateGroupProductWithData'
+          example:
+            code: 200
+            Data: { 
+              GroupProductID: 1,
+            }
+            message: Success Operation
+    createGroupProductFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Id:
+              $ref: '#/components/examples/invalidId'
+            Access Forbidden:
+              $ref: '#/components/examples/accessForbidden'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+            Id Product Not Found: 
+              $ref: '#/components/examples/idProductNotFound'
+    getAllGroupProductsSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseGroupProductWithDataArray'
+          example:
+            code: 200
+            Data: [
+              { 
+                ID: 1,
+                ProducstID: 3, 
+                NameGroupProduct: Youtube-Music-1,
+                Limit: 6,
+                CapacityGroupProduct: 2,
+                Price: 300000,
+                AdminFee: 5000,
+                TotalPrice: 305000,
+                DurationGroup: 12-26-2021,
+                Name_Product: Youtube-Music,
+                Status: Available,
+                Url: https://storage.googleapis.com/barengin-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                GetOrder: [
+                  {
+                    OrderID: 1,
+                    UsersID: 79,
+                    GroupProductID: 1,
+                    Name: nuril
+                  }
+                ]
+              },
+              { 
+                ID: 2,
+                ProducstID: 3, 
+                NameGroupProduct: Youtube-Music-2,
+                Limit: 6,
+                CapacityGroupProduct: 1,
+                Price: 300000,
+                AdminFee: 5000,
+                TotalPrice: 305000,
+                DurationGroup: 12-26-2021,
+                Name_Product: Youtube-Music,
+                Status: Available,
+                Url: https://storage.googleapis.com/barengin-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                GetOrder: null
+              }
+            ]
+            message: Success Operation
+    getGroupProductSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseGroupProductWithData'
+          example:
+            code: 200
+            Data: { 
+                ID: 1,
+                ProducstID: 3, 
+                NameGroupProduct: Youtube-Music-1,
+                Limit: 6,
+                CapacityGroupProduct: 1,
+                Price: 300000,
+                AdminFee: 5000,
+                TotalPrice: 305000,
+                DurationGroup: 12-26-2021,
+                Name_Product: Youtube-Music,
+                Status: Available,
+                Url: https://storage.googleapis.com/barengin-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                GetOrder: [
+                  {
+                    OrderID: 1,
+                    UsersID: 79,
+                    GroupProductID: 1,
+                    Name: nuril
+                  }
+                ]
+              }
+            message: Success Operation
+    getAllGroupProductsAvailableFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Param:
+              $ref: '#/components/examples/invalidParam'
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    deleteGroupProductFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Access Forbidden:
+              $ref: '#/components/examples/accessForbidden'
+            Access is denied:
+              $ref: '#/components/examples/accessIsDenied'
+            Invalid Id:  
+              $ref: '#/components/examples/invalidId'
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+    createOrderSuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseCreateOrderWithData'
+          example:
+            code: 200
+            Data: { 
+              OrderID: 3,
+              EwalletType: OVO,
+              ExternalId: OVO-ewallet-20211219043142,
+              Amount: 25000,
+              BusinessId: 61b820fec8dadfc293726c7e,
+              Created: 19-12-2021
+            }
+            message: Success Operation
+    createOrderFailed:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Param:
+              $ref: '#/components/examples/invalidParam'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+            Access Forbidden:
+              $ref: '#/components/examples/accessForbidden'
+            Invalid Telephone Number:
+              $ref: '#/components/examples/invalidTelephoneNumber'
+            Id Group Product Not Found:
+              $ref: '#/components/examples/idGroupProductNotFound'
+            Group Product Full:
+              $ref: '#/components/examples/groupProductFull'
+    getOrderSuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseOrderWithData'
+          example:
+            code: 200
+            Data: {
+              OrderID: 1,
+              UsersID: 150,
+              GroupProductID: 1,
+              NameProduct: Netflix,
+              PriceOrder: 1254,
+              DetailCredential: "Email: , Password: "
+            }
+            message: Success Operation
+    OrderResponseFailed:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Invalid Id:
+              $ref: '#/components/examples/invalidId'
+            Access Forbidden:
+              $ref: '#/components/examples/dataNotFound'
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    getAllOrdersByIdGroupSuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseOrderWithDataArray'
+          example:
+            code: 200
+            Data: [
+              {
+                OrderID: 1,
+                UsersID: 150,
+                GroupProductID: 1,
+                NameProduct: Netflix,
+                PriceOrder: 1254,
+                DetailCredential: "Email: , Password: "
+              },
+              {
+                OrderID: 2,
+                UsersID: 162,
+                GroupProductID: 1,
+                NameProduct: Netfllix,
+                PriceOrder: 1254,
+                DetailCredential: "Email: , Password: "
+              }          
+            ]
+            message: Success Operation
+    getAllOrdersByIdUserSuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseOrderWithDataArray'
+          example:
+            code: 200
+            Data: [
+              {
+                OrderID: 1,
+                UsersID: 150,
+                GroupProductID: 1,
+                NameProduct: Netflix,
+                PriceOrder: 1254,
+                DetailCredential: "Email: , Password: "
+              },
+              {
+                OrderID: 3,
+                UsersID: 150,
+                GroupProductID: 2,
+                NameProduct: Spotify,
+                PriceOrder: 1500,
+                DetailCredential: "Email: , Password: "
+              }
+            ]
+            message: Success Operation
+    UpdateOrderSuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseOrderWithData'
+          example:
+            code: 200
+            Data: {
+              OrderID: 1,
+              UsersID: 150,
+              GroupProductID: 1,
+              NameProduct: Netflix,
+              PriceOrder: 1254,
+              DetailCredential: "Email: subs.netflix@mail.com, Password: qwerty"
+            }
+            message: Success Operation
+    UpdateOrderFailed:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Details Can't Be Empty:
+              $ref: '#/components/examples/detailsCantBeEmpty'
+            Invalid Id:
+              $ref: '#/components/examples/invalidId'
+            Access Forbidden:
+              $ref: '#/components/examples/dataNotFound'
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+  examples:
+    accessIsDenied:
+      value:
+        code: 400
+        message: Access is denied ID data is in the orderInvalid Id
+    accessForbidden:
+      value:
+        # code: 400
+        message: Access Forbidden                
+    badRequest:
+      value:
+        # code: 400
+        message: Bad Request
+    cantConnecttoServer:
+      value:
+        code: 500
+        message: Can't Connect to server
+    dataisAvailable:
+      value:
+        code: 400
+        message: Data is Available
+    dataNotFound:
+      value:
+        # code: 400
+        message: Data Not Found
+    detailsCantBeEmpty:
+      value:
+        code: 400
+        message: Details Can't Be Empty
+    emailOrTelephoneNumberAlreadyExist:
+      value: 
+        message: Email or Telephone Number Already Exist
+    failedtoUploadFile:
+      value:
+        code: 500
+        message: Failed to Upload File
+    fileExtensionNotAllowed:
+      value:
+        code: 400
+        message: File Extension Not Allowed
+    groupProductFull:
+      value:
+        code: 400
+        message: Group Product Full
+    idGroupProductNotFound:
+      value:
+        code: 400
+        message: Id Group Product Not Found
+    idProductNotFound:
+      value:
+        code: 400
+        message: Id Product Not Found
+    illegalFile:
+      value:
+        code: 400
+        message: Illegal File
+    invalidEmail:
+      value:
+        message: Invalid Email
+    invalidId:
+      value:
+        # code: 400
+        message: Invalid Id
+    invalidName:
+      value:
+        message: Invalid Name
+    invalidParam:
+      value:
+        code: 400
+        message: Invalid Param
+    invalidPassword:
+      value:
+        message: Invalid Password
+    invalidTelephoneNumber:
+      value:
+        message: Invalid Telephone Number
+    nameAlphanumeric:
+      value:
+        code: 400
+        message: Name can only contains alphanumeric
+    notAvailable:
+      value:
+        code: 400
+        message: Not Available
+    sizeFileTooBig:
+      value:
+        code: 400
+        message: Size File Too Big
