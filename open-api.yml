@@ -38,6 +38,8 @@ tags:
     description: Endpoint for perform operations on facility
   - name: Rent
     description: Endpoint for perform operations on rent
+  - name: Feedback
+    description: Endpoint for perform operations on feedback
   - name: Group Products
     description: Endpoint for perform operations on group product
   - name: Orders
@@ -257,7 +259,7 @@ paths:
     post:
       tags:
         - Rent
-      summary: Confirmation rent room
+      summary: Form rent room
       requestBody:
         $ref: '#/components/requestBodies/requestBodyRent'
       responses:
@@ -267,6 +269,33 @@ paths:
           $ref: '#/components/responses/createRentFailed'
         '500':
           $ref: '#/components/responses/RentServerFailed'
+
+####################################
+# FEEDBACK
+####################################
+
+  /feedback:
+    get:
+      tags:
+      - Feedback
+      summary: Get all feedback
+      responses:
+        '200':
+          $ref: '#/components/responses/getFeedbackSuccess'
+        '400':
+          $ref: '#/components/responses/getAllDataFailed'
+
+    post:
+      tags:
+        - Feedback
+      summary: Form feedback
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyFeedback'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/createRentFailed'
 
 ####################################
 # PRODUCTS
@@ -547,7 +576,6 @@ components:
         address:
           type: string
           minLength: 20
-
     requestRentUser:
       type: object
       required:
@@ -579,6 +607,22 @@ components:
           type: string
           minLength: 1
         status:
+          type: string
+    requestFeedbackUser:
+      type: object
+      required:
+        - user_id
+        - rooms_rentals_id
+        - rating
+        - comment
+      properties:
+        user_id:
+          type: integer
+        rooms_rentals_id:
+          type: integer
+        rating:
+          type: integer
+        comment:
           type: string
     requestDataProduct:
       type: object
@@ -779,6 +823,48 @@ components:
                 type: integer
               name:
                 type: string
+        message:
+          type: string
+    responseFeedbackWithData:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              rating:
+                type: integer
+              comment:
+                type: string
+              user:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  Name:
+                    type: string
+              room_rentals:
+                type: object
+                properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    rooms_id:
+                      type: integer
+                    date_start:
+                      type: string
+                    date_end:
+                      type: string
+                    bank:
+                      type: string
+                    total_rental_price:
+                      type: integer
+                    status:
+                      type: string
         message:
           type: string
     responseGroupProductWithData:
@@ -1111,6 +1197,22 @@ components:
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestRentUser'
+    requestBodyFeedback:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestFeedbackUser'
+          examples:
+            test:
+              value:
+                user_id: 1
+                rooms_rentals_id: 1
+                rating: 10
+                comment: mantap, fasilitasnya lengkap
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestFeedbackUser'
     requestBodyProduct:
       required: true
       content:
@@ -1749,7 +1851,36 @@ components:
             ]
             message: Success Operation
 
-    
+    getFeedbackSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseFeedbackWithData'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                rating: 10,
+                comment: "mantap, fasilitasnya lengkap",
+                user: {
+                  id: 1,
+                  name: Mulya Nurdin  
+                },
+                room_rentals: {
+                  id: 1,
+                  user_id: 1,
+                  rooms_id: 1,
+                  date_start: "16-07-2022",
+                  date_end: "18-07-2022",
+                  bank: "bca",
+                  total_rental_price: 3000000,
+                  status: "success"
+                },
+              },
+            ]
+            message: Success Operation
 
     getProductSuccess:
       description: Success Response Data
