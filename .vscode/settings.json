@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": "file:///d%3A/Data%20Mulya/Alterra%20Academy/Group%20Project/Capstone-MNRoom-BE/.github/workflows/deploy.yml"
+    }
+}
