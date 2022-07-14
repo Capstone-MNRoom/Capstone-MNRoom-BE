@@ -11,19 +11,12 @@ externalDocs:
   description: "GitHub Repository of Final Project: MNroom"
   url: https://github.com/project-capstone
 servers:
-  - url: https://{environment}.api.alterra.id/v1
-    description: ALTA API server
-    variables:
-      environment:
-        default: dev
-        enum:
-          - dev
-          - staging
-          - production
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/davidwah/MNROOM/1.0
   - url: https://mnroom.capstone.my.id
     description: Base URL that will be used for endpoints
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/davidwah/openapi_mnroom/1.0
+
+
     
 tags:
   - name: Authentication
@@ -155,6 +148,21 @@ paths:
       tags:
       - Rooms
       summary: Get all rooms
+      parameters:
+        - name: idcategory
+          description: id category
+          in: query
+          schema:
+            type: integer
+            example: 1
+          # required: true
+        - name: page
+          description: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           $ref: '#/components/responses/getAllRoomsSuccess'
@@ -171,11 +179,19 @@ paths:
           $ref: '#/components/responses/insertRoomsSuccess'
         '400':
           $ref: '#/components/responses/getAllDataFailed'
-  /rooms/{id}:
+  /rooms/{id_room}:
     get:
       tags:
       - Rooms
       summary: Get rooms by id_rooms
+      parameters:
+        - name: id_room
+          description: id room
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           $ref: '#/components/responses/getRoomsByIdSuccess'
@@ -187,6 +203,14 @@ paths:
       security:
         - JWTAuth: []
       summary:  Put / Update rooms by id_rooms
+      parameters:
+        - name: id_room
+          description: id room
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           $ref: '#/components/responses/putRoomsByIdSuccess'
@@ -198,21 +222,29 @@ paths:
       security:
         - JWTAuth: []
       summary: Delete rooms by id_rooms
+      parameters:
+        - name: id_room
+          description: id room
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           $ref: '#/components/responses/deleteRoomsByIdSuccess'
         '400':
           $ref: '#/components/responses/deleteRoomsByIdFailed'
-  /rooms/{categories}:
-    get:
-      tags:
-      - Rooms
-      summary: Get room by categories
-      responses:
-        '200':
-          $ref: '#/components/responses/getRoomsByCategoriesSuccess'
-        '400':
-          $ref: '#/components/responses/getDataByIdFailed'
+  # /rooms/{categories}:
+  #   get:
+  #     tags:
+  #     - Rooms
+  #     summary: Get room by categories
+  #     responses:
+  #       '200':
+  #         $ref: '#/components/responses/getRoomsByCategoriesSuccess'
+  #       '400':
+  #         $ref: '#/components/responses/getDataByIdFailed'
   /user/rooms:
     get:
       tags:
@@ -229,7 +261,6 @@ paths:
 ####################################
 #  FACILITY
 ####################################
-
   /facility:
     get:
       tags:
@@ -241,11 +272,19 @@ paths:
         '400':
           $ref: '#/components/responses/getAllDataFailed'
 
-  /room/facility/{id}:
+  /rooms/{id_room}/facility:
     get:
       tags:
       - Facility
       summary: Get room facility
+      parameters:
+        - name: id_room
+          description: id room
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           $ref: '#/components/responses/getAllRoomFacilitySuccess'
@@ -261,6 +300,8 @@ paths:
       tags:
         - Rent
       summary: Form rent room
+      security:
+        - JWTAuth: []
       requestBody:
         $ref: '#/components/requestBodies/requestBodyRent'
       responses:
@@ -290,6 +331,8 @@ paths:
       tags:
         - Feedback
       summary: Form feedback
+      security:
+        - JWTAuth: []
       requestBody:
         $ref: '#/components/requestBodies/requestBodyFeedback'
       responses:
