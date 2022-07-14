@@ -40,6 +40,8 @@ tags:
     description: Endpoint for perform operations on rent
   - name: Feedback
     description: Endpoint for perform operations on feedback
+  - name: Payment
+    description: Endpoint for perform operations on payment
   - name: Group Products
     description: Endpoint for perform operations on group product
   - name: Orders
@@ -296,6 +298,37 @@ paths:
           $ref: '#/components/responses/successOperationNonData'
         '400':
           $ref: '#/components/responses/createRentFailed'
+
+####################################
+# PAYMENT
+####################################
+  /payment:
+    get:
+      tags:
+        - Payment
+      summary: Get All Payment for rent room
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getPaymentSuccess'
+        '400':
+          $ref: '#/components/responses/getPaymentFailed'
+
+
+      # tags:
+      #   - Users
+      # summary: Get user data by user loggedin
+      # security:
+      #   - JWTAuth: []
+      # # parameters:
+      # #   - $ref: '#/components/parameters/idParam'
+      # responses:
+      #   '200':
+      #     $ref: '#/components/responses/getUserSuccess'
+      #   '400':
+      #     $ref: '#/components/responses/getDataByIdFailed'
+
 
 ####################################
 # PRODUCTS
@@ -725,6 +758,36 @@ components:
               type: string
         message:
           type: string
+
+    #response Get Payment 
+    responsePaymentWithData:
+      type: object
+      properties:
+        code:
+          type: integer
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+            transaction_id:
+              type: integer
+            order_id:
+              type: string
+            payment_type:
+              type: string
+            rooms_rentals_id:
+              type: integer
+            bank_transfer:
+              type: string
+            gross_amount:
+              type: integer
+            va_number:
+              type: integer
+            transaction_status:
+              type: string
+        message:
+          type: string
     responseUserWithDataArray:
       type: object
       properties:
@@ -1045,6 +1108,11 @@ components:
         message:
           type: string
     responseNonData: 
+      type: object
+      properties:
+        message:
+          type: string 
+    responseNonDataPayment: 
       type: object
       properties:
         message:
@@ -1431,6 +1499,14 @@ components:
               $ref: '#/components/examples/accessForbidden'
             Bad Request:
               $ref: '#/components/examples/badRequest'
+
+    getPaymentFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonDataPayment'
+         
     productServerFailed:
       description: Internal Server Error Response
       content:
@@ -1442,6 +1518,27 @@ components:
               $ref: '#/components/examples/cantConnecttoServer'
             Failed to Upload File:
               $ref: '#/components/examples/failedtoUploadFile'
+
+    ## GET PAYMENT
+    getPaymentSuccess:
+      description: Success Response Data Payment
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responsePaymentWithData'
+          example:
+            data: {
+              id: 1,
+              transaction_id: 1,
+              order_id: MN-2022-01,
+              payment_type: transfer,
+              rooms_rentals_id: 1,
+              bank_transfer: BCA,
+              gross_amount: 3000000,
+              va_number: 98690764630,
+              transaction_status: success,
+            }
+            message: Success Get Data Payment
 
     getAllRoomsSuccess:
       description: Success Response Data
