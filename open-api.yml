@@ -314,20 +314,20 @@ paths:
           $ref: '#/components/responses/getPaymentSuccess'
         '400':
           $ref: '#/components/responses/getPaymentFailed'
+    post:
+      tags:
+        - Payment
+      summary: Post Payment for rent room
+      security:
+        - JWTAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyPayment'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        '400':
+          $ref: '#/components/responses/createRentFailed'
 
-
-      # tags:
-      #   - Users
-      # summary: Get user data by user loggedin
-      # security:
-      #   - JWTAuth: []
-      # # parameters:
-      # #   - $ref: '#/components/parameters/idParam'
-      # responses:
-      #   '200':
-      #     $ref: '#/components/responses/getUserSuccess'
-      #   '400':
-      #     $ref: '#/components/responses/getDataByIdFailed'
 
 
 ####################################
@@ -656,6 +656,28 @@ components:
         rating:
           type: integer
         comment:
+          type: string
+    requestPayment:
+      type: object
+      required:
+        - order_id
+        - payment_type
+        - bank_transfer
+        - gross_amount
+        - va_number
+        - transaction_status
+      properties:
+        order_id:
+          type: string
+        payment_type:
+          type: string
+        bank_transfer:
+          type: string
+        gross_amount:
+          type: integer
+        va_number:
+          type: integer
+        transaction_status:
           type: string
     requestDataProduct:
       type: object
@@ -1281,6 +1303,26 @@ components:
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestFeedbackUser'
+
+    requestBodyPayment:
+      required: true
+      content:
+        application/json:
+          schema:
+            # $ref: '#/components/schemas/requestFeedbackUser'
+            $ref: '#/components/schemas/requestPayment'
+          examples:
+            VA-BCA:
+              value:
+                order_id: MN-2022-01
+                payment_type: transfer
+                bank_transfer: BCA
+                gross_amount: 3000000
+                va_number: 98690764630
+                transaction_status: pending
+        # multipart/form-data:
+        #   schema:
+        #     $ref: '#/components/schemas/requestPayment'
     requestBodyProduct:
       required: true
       content:
