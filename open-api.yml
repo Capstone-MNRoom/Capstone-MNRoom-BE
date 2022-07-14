@@ -34,6 +34,10 @@ tags:
     description: Endpoint for perform operations on categories
   - name: Rooms
     description: Endpoint for perform operations on room
+  - name: Facility
+    description: Endpoint for perform operations on facility
+  - name: Rent
+    description: Endpoint for perform operations on rent
   - name: Group Products
     description: Endpoint for perform operations on group product
   - name: Orders
@@ -206,7 +210,7 @@ paths:
           $ref: '#/components/responses/getRoomsByCategoriesSuccess'
         '400':
           $ref: '#/components/responses/getDataByIdFailed'
-  /rooms/user:
+  /user/rooms:
     get:
       tags:
       - Rooms
@@ -219,6 +223,52 @@ paths:
         '400':
           $ref: '#/components/responses/getDataByIdFailed'
 
+####################################
+#  FACILITY
+####################################
+
+  /facility:
+    get:
+      tags:
+      - Facility
+      summary: Get all facility
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllFacilitySuccess'
+        '400':
+          $ref: '#/components/responses/getAllDataFailed'
+
+  /room/facility/{id}:
+    get:
+      tags:
+      - Facility
+      summary: Get room facility
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllRoomFacilitySuccess'
+        '400':
+          $ref: '#/components/responses/getAllDataFailed'
+
+####################################
+# RENT
+####################################
+
+  /rent:
+    post:
+      tags:
+        - Rent
+      summary: Confirmation rent room
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyRent'
+      responses:
+        '200':
+          $ref: '#/components/responses/successSignupNonData'
+        '400':
+          $ref: '#/components/responses/createUserFailed'
+
+####################################
+# PRODUCTS
+####################################
 
   /products/{id}:
     get:
@@ -495,6 +545,36 @@ components:
         address:
           type: string
           minLength: 20
+
+    requestRentUser:
+      type: object
+      required:
+        - user_id
+        - rooms_id
+        - date_start
+        - date_end
+        - total_rental_price
+        - status
+      properties:
+        user_id:
+          type: integer
+          minLength: 1
+        rooms_id:
+          type: string
+          minLength: 1
+        date_start:
+          type: string
+          format: date
+          description: inputted date dd-mm-yyyy
+        date_end:
+          type: string
+          format: date
+          description: inputted date dd-mm-yyyy
+        total_rental_price:
+          type: string
+          minLength: 1
+        status:
+          type: string
     requestDataProduct:
       type: object
       required:
@@ -669,6 +749,20 @@ components:
         message:
           type: string
     responseCategoriesWithDataArray:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        message:
+          type: string
+    responseFacilityWithDataArray:
       type: object
       properties:
         data:
@@ -989,6 +1083,25 @@ components:
     requestBodyUserUpdate:
       required: true
       content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestDataUser'
+    
+    requestBodyRent:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestRentUser'
+          examples:
+            test:
+              value:
+                user_id: 1
+                rooms_id: 1
+                date_start: 16-07-2022
+                date_end: 18-07-2022
+                total_rental_price: 3000000
+                status: success
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestDataUser'
@@ -1553,6 +1666,63 @@ components:
             ]
             message: Success Operation
 
+    getAllFacilitySuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseFacilityWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                id: 1,
+                name: Meja
+              },
+              { 
+                id: 2,
+                name: Kursi 
+              },
+              { 
+                id: 3,
+                name: Sound System 
+              },
+              { 
+                id: 4,
+                name: Proyektor
+              }
+            ]
+            message: Success Operation
+    
+    getAllRoomFacilitySuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseFacilityWithDataArray'
+          example:
+            # code: 200
+            data: [
+              { 
+                rooms_id: 1,
+                facility_id: 1,
+              },
+              { 
+                rooms_id: 1,
+                facility_id: 2,
+              },
+              { 
+                rooms_id: 2,
+                facility_id: 1,
+              },
+              { 
+                rooms_id: 2,
+                facility_id: 2,
+              }
+            ]
+            message: Success Operation
+
+    
 
     getProductSuccess:
       description: Success Response Data
