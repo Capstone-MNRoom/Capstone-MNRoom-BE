@@ -159,6 +159,8 @@ paths:
       security:
         - JWTAuth: []
       summary: Insert rooms
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyRoom'
       responses:
         '200':
           $ref: '#/components/responses/insertRoomsSuccess'
@@ -495,6 +497,25 @@ components:
         address:
           type: string
           minLength: 20
+    
+    requestDataRoom:
+      type: object
+      required:
+        - image_room
+        - image_pengelola
+        - name
+        - capacity
+        - rental_price
+        - address
+        - city
+      properties:
+        image_room:
+          type: string
+          minLength: 1
+          format: binary
+          description: "allowed file extension: jpg, png, jpeg && size <= 1024000 byte"
+        
+
     requestDataProduct:
       type: object
       required:
@@ -992,6 +1013,41 @@ components:
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestDataUser'
+## room-reqBody
+    requestBodyRoom:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestDataRoom'
+          examples:
+            roomArjuna:
+              value:
+                name: Ruang Arjuna
+                capacity: 50
+                rental_price: 1500000
+                address: Jl. Raya Utama No. 15
+                city: Bandung
+                categories: {
+                  id: 1,
+                  name: workspace
+                }
+                facility: [
+                  {
+                    id: 1,
+                    name: Meja
+                  },
+                  {
+                    id: 2,
+                    name: Kursi
+                  } 
+                ]
+        # multipart/form-data:
+        #   schema:
+        #     $ref: '#/components/schemas/requestDataRoom'
+
+
+
     requestBodyProduct:
       required: true
       content:
