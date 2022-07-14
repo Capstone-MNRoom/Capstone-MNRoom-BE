@@ -262,9 +262,11 @@ paths:
         $ref: '#/components/requestBodies/requestBodyRent'
       responses:
         '200':
-          $ref: '#/components/responses/successSignupNonData'
+          $ref: '#/components/responses/successOperationNonData'
         '400':
-          $ref: '#/components/responses/createUserFailed'
+          $ref: '#/components/responses/createRentFailed'
+        '500':
+          $ref: '#/components/responses/RentServerFailed'
 
 ####################################
 # PRODUCTS
@@ -553,6 +555,7 @@ components:
         - rooms_id
         - date_start
         - date_end
+        - bank
         - total_rental_price
         - status
       properties:
@@ -570,6 +573,8 @@ components:
           type: string
           format: date
           description: inputted date dd-mm-yyyy
+        bank:
+          type: string
         total_rental_price:
           type: string
           minLength: 1
@@ -1100,11 +1105,12 @@ components:
                 rooms_id: 1
                 date_start: 16-07-2022
                 date_end: 18-07-2022
+                bank: bca
                 total_rental_price: 3000000
                 status: success
         multipart/form-data:
           schema:
-            $ref: '#/components/schemas/requestDataUser'
+            $ref: '#/components/schemas/requestRentUser'
     requestBodyProduct:
       required: true
       content:
@@ -1235,6 +1241,7 @@ components:
               $ref: '#/components/examples/dataNotFound'
             Bad Request:
               $ref: '#/components/examples/badRequest'
+    
     getUserSuccess:
       description: Success Response Data
       content:
@@ -1276,6 +1283,26 @@ components:
               $ref: '#/components/examples/invalidTelephoneNumber'
             Email or Telephone Number Already Exist:
               $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
+    createRentFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Access Forbidden: 
+              $ref: '#/components/examples/accessForbidden'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
+    RentServerFailed:
+      description: Internal Server Error Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Can't Connect to Server:
+              $ref: '#/components/examples/cantConnecttoServer'
     deleteDataByIdFailed:
       description: Bad Request Response
       content:
@@ -2068,7 +2095,7 @@ components:
         message: Bad Request
     cantConnecttoServer:
       value:
-        code: 500
+        # code: 500
         message: Can't Connect to server
     dataisAvailable:
       value:
@@ -2121,7 +2148,7 @@ components:
         message: Invalid Name
     invalidParam:
       value:
-        code: 400
+        # code: 400
         message: Invalid Param
     invalidPassword:
       value:
