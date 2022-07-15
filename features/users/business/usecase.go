@@ -31,3 +31,18 @@ func (usecase *userUsecase) GetAllData(limit int, offset int) (data []users.Core
 	data, err = usecase.userData.GetAllData(limit, offset)
 	return data, err
 }
+
+func (usecase *userUsecase) GetData(id int) (data users.Core, err error) {
+	data, err = usecase.userData.GetData(id)
+	return data, err
+}
+
+func (usecase *userUsecase) DeleteData(id int) (row int, err error) {
+	row, err = usecase.userData.DeleteData(id)
+	return row, err
+}
+
+func (usecase *userUsecase) UpdateData(id int, insert users.Core) (row int, err error) {
+	row, err = usecase.userData.UpdateData(id, insert)
+	return row, err
+}
