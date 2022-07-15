@@ -175,10 +175,10 @@ paths:
         - JWTAuth: []
       summary: Insert rooms
       requestBody:
-        $ref: '#/components/requestBodies/requestBodyRoomPOST'
+        $ref: '#/components/responses/insertRoomsSuccess'
       responses:
         '200':
-          $ref: '#/components/responses/insertRoomsSuccess'
+          $ref: '#/components/responses/successPostRoomData'
         '400':
           $ref: '#/components/responses/getAllDataFailed'
   /rooms/{id_room}:
@@ -214,11 +214,11 @@ paths:
             example: 1
           required: true
       requestBody:
-        # $ref: '#/components/requestBodies/requestBodyRoomPOST'
-        $ref: '#/components/requestBodies/requestBodyRoomPUT'
+        $ref: '#/components/responses/putRoomsByIdSuccess'
       responses:
         '200':
-          $ref: '#/components/responses/putRoomsByIdSuccess'
+          # $ref: '#/components/responses/putRoomsByIdSuccess'
+          $ref: '#/components/responses/successPutRoomData'
         '400':
           $ref: '#/components/responses/putRoomsByIdFailed'
     delete:
@@ -299,6 +299,7 @@ paths:
 ####################################
 # RENT
 ####################################
+
   /rent:
     post:
       tags:
@@ -319,6 +320,7 @@ paths:
 ####################################
 # FEEDBACK
 ####################################
+
   /feedback:
     get:
       tags:
@@ -471,90 +473,6 @@ components:
           type: integer
         comment:
           type: string
-    requestRoomPost:
-      type: array
-      required:
-        - user_id
-        - name
-        - capacity
-        - rental_price
-        - address
-        - city
-        - categories
-        - facility
-      properties:
-        user_id:
-          type: integer
-        name:
-          type: string
-        capacity:
-          type: integer
-        rental_price:
-          type: integer
-        address:
-          type: string
-        city:
-          type: string
-        categories:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-        facility:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-    requestRoomPut:
-      type: array
-      required:
-        - user_id
-        - name
-        - capacity
-        - rental_price
-        - address
-        - city
-        - categories
-        - facility
-      properties:
-        user_id:
-          type: integer
-        name:
-          type: string
-        capacity:
-          type: integer
-        rental_price:
-          type: integer
-        address:
-          type: string
-        city:
-          type: string
-        categories:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-        facility:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
     requestPayment:
       type: object
       required:
@@ -1207,6 +1125,7 @@ components:
       content:
         application/json:
           schema:
+            # $ref: '#/components/schemas/requestFeedbackUser'
             $ref: '#/components/schemas/requestPayment'
           examples:
             VA-BCA:
@@ -1216,66 +1135,10 @@ components:
                 bank_transfer: BCA
                 gross_amount: 3000000
                 va_number: 98690764630
-                transaction_status: success
-            VA-BNI:
-              value:
-                order_id: MN-2022-02
-                payment_type: transfer
-                bank_transfer: BNI
-                gross_amount: 3000000
-                va_number: 98690765741
-                transaction_status: success
-
-    requestBodyRoomPOST:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestRoomPost'
-          examples:
-            Ruang-Arjuna:
-              value:
-                name: Ruang Arjuna
-                capacity: 50
-                rental_price: 1500000
-                address: Jl. Raya Utama No. 123
-                city: Semarang
-                categories: {
-                  id: 1,
-                  name: Workspace
-                }
-                facility: 
-                {
-                  id: 1,
-                  name: Meja,
-                }
-
-    requestBodyRoomPUT:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/requestRoomPut'
-          examples:
-            Ruang-Arjuna:
-              value:
-                name: Ruang Arjuna
-                capacity: 50
-                rental_price: 1500000
-                address: Jl. Raya Utama No. 123
-                city: Semarang
-                categories: {
-                  id: 1,
-                  name: Workspace
-                }
-                facility: 
-                {
-                  id: 1,
-                  name: Meja,
-                }
-          
-
-
+                transaction_status: pending
+        # multipart/form-data:
+        #   schema:
+        #     $ref: '#/components/schemas/requestPayment'
     requestBodyProduct:
       required: true
       content:
@@ -1513,7 +1376,22 @@ components:
               $ref: '#/components/examples/cantConnecttoServer'
             Failed to Upload File:
               $ref: '#/components/examples/failedtoUploadFile'
-
+    successPostRoomData:
+      description: Success Response Non Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          example:
+            message: Success Insert Room
+    successPutRoomData:
+      description: Success Response Non Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          example:
+            message: Success Update Room
     ## GET PAYMENT
     getPaymentSuccess:
       description: Success Response Data Payment
