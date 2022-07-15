@@ -1,0 +1,34 @@
+1. User ( Mas David )
+- Create
+- Edit
+- Delete
+- Read (Profile)
+
+2. Login ( Mas Mulya )
+- Auth 
+
+3. Categorys ( Mas Azis )
+- Read
+
+4. Rooms ( Mas David )
+- Create
+- Edit
+- Delete
+- Read All Rooms
+- Read All Rooms By Token User
+- Read Rooms By ID
+
+5. Facilitys ( Mas Mulya )
+- Read All
+- Read Facility BY ID Rooms
+
+6. Rent ( Mas Azis )
+- Create
+
+7. Feedback ( Mas Azis )
+- Create
+- Read Feedback BY ID Rent 
+
+8. Payments ( Mas David )
+- Create
+- Read All Payments BY Token User 
