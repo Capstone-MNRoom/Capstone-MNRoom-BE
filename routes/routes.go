@@ -20,7 +20,7 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.Pre(middleware.RemoveTrailingSlash())
 
 	// Users
-	e.POST("/users", presenter.UserPresenter.InsertData, _middlewares.JWTMiddleware())
+	e.POST("/users", presenter.UserPresenter.InsertData)
 	e.GET("/users", presenter.UserPresenter.GetAllData, _middlewares.JWTMiddleware())
 	e.GET("/users/profile", presenter.UserPresenter.GetData, _middlewares.JWTMiddleware())
 	e.DELETE("/users", presenter.UserPresenter.DeleteData, _middlewares.JWTMiddleware())
