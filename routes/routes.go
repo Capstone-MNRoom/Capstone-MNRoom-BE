@@ -19,6 +19,9 @@ func New(presenter factory.Presenter) *echo.Echo {
 
 	e.Pre(middleware.RemoveTrailingSlash())
 
+	// Login
+	e.POST("/login", presenter.AuthPresenter.Auth)
+
 	// Users
 	e.POST("/users", presenter.UserPresenter.InsertData)
 	e.GET("/users", presenter.UserPresenter.GetAllData, _middlewares.JWTMiddleware())
