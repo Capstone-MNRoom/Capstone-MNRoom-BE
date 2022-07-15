@@ -174,6 +174,8 @@ paths:
       security:
         - JWTAuth: []
       summary: Insert rooms
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyRoomPOST'
       responses:
         '200':
           $ref: '#/components/responses/insertRoomsSuccess'
@@ -211,6 +213,9 @@ paths:
             type: integer
             example: 1
           required: true
+      requestBody:
+        # $ref: '#/components/requestBodies/requestBodyRoomPOST'
+        $ref: '#/components/requestBodies/requestBodyRoomPUT'
       responses:
         '200':
           $ref: '#/components/responses/putRoomsByIdSuccess'
@@ -294,7 +299,6 @@ paths:
 ####################################
 # RENT
 ####################################
-
   /rent:
     post:
       tags:
@@ -315,7 +319,6 @@ paths:
 ####################################
 # FEEDBACK
 ####################################
-
   /feedback:
     get:
       tags:
@@ -468,6 +471,90 @@ components:
           type: integer
         comment:
           type: string
+    requestRoomPost:
+      type: array
+      required:
+        - user_id
+        - name
+        - capacity
+        - rental_price
+        - address
+        - city
+        - categories
+        - facility
+      properties:
+        user_id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        rental_price:
+          type: integer
+        address:
+          type: string
+        city:
+          type: string
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        facility:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+    requestRoomPut:
+      type: array
+      required:
+        - user_id
+        - name
+        - capacity
+        - rental_price
+        - address
+        - city
+        - categories
+        - facility
+      properties:
+        user_id:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        rental_price:
+          type: integer
+        address:
+          type: string
+        city:
+          type: string
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+        facility:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
     requestPayment:
       type: object
       required:
@@ -1120,7 +1207,6 @@ components:
       content:
         application/json:
           schema:
-            # $ref: '#/components/schemas/requestFeedbackUser'
             $ref: '#/components/schemas/requestPayment'
           examples:
             VA-BCA:
@@ -1130,10 +1216,66 @@ components:
                 bank_transfer: BCA
                 gross_amount: 3000000
                 va_number: 98690764630
-                transaction_status: pending
-        # multipart/form-data:
-        #   schema:
-        #     $ref: '#/components/schemas/requestPayment'
+                transaction_status: success
+            VA-BNI:
+              value:
+                order_id: MN-2022-02
+                payment_type: transfer
+                bank_transfer: BNI
+                gross_amount: 3000000
+                va_number: 98690765741
+                transaction_status: success
+
+    requestBodyRoomPOST:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestRoomPost'
+          examples:
+            Ruang-Arjuna:
+              value:
+                name: Ruang Arjuna
+                capacity: 50
+                rental_price: 1500000
+                address: Jl. Raya Utama No. 123
+                city: Semarang
+                categories: {
+                  id: 1,
+                  name: Workspace
+                }
+                facility: 
+                {
+                  id: 1,
+                  name: Meja,
+                }
+
+    requestBodyRoomPUT:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestRoomPut'
+          examples:
+            Ruang-Arjuna:
+              value:
+                name: Ruang Arjuna
+                capacity: 50
+                rental_price: 1500000
+                address: Jl. Raya Utama No. 123
+                city: Semarang
+                categories: {
+                  id: 1,
+                  name: Workspace
+                }
+                facility: 
+                {
+                  id: 1,
+                  name: Meja,
+                }
+          
+
+
     requestBodyProduct:
       required: true
       content:
