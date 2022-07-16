@@ -14,18 +14,21 @@ import (
 
 type Rooms struct {
 	gorm.Model
-	ImageRoom   string `json:"image_room" form:"image_room"`
-	ImageLogo   string `json:"image_logo" form:"image_logo"`
-	RoomName    string `json:"room_name" form:"room_name"`
-	Capacity    int    `json:"capacity" form:"capacity"`
-	RentalPrice int    `json:"rental_price" form:"rental_price"`
-	City        string `json:"city" form:"city"`
-	Address     string `json:"address" form:"address"`
-	Status      string `json:"status" form:"status"`
-	Deskripsi   string `json:"deskripsi" form:"deskrispsi"`
-	User        _users.User
-	Categorys   _categorys.Categorys
-	Facilitys   _facilitys.Facilitys
+	ImageRoom   string               `json:"image_room" form:"image_room"`
+	ImageLogo   string               `json:"image_logo" form:"image_logo"`
+	RoomName    string               `json:"room_name" form:"room_name"`
+	Capacity    int                  `json:"capacity" form:"capacity"`
+	RentalPrice int                  `json:"rental_price" form:"rental_price"`
+	City        string               `json:"city" form:"city"`
+	Address     string               `json:"address" form:"address"`
+	Status      string               `json:"status" form:"status"`
+	Deskripsi   string               `json:"deskripsi" form:"deskrispsi"`
+	UserID      uint                 `json:"user_id" form:"user_id"`
+	CategoryID  uint                 `json:"category_id" form:"category_id"`
+	FacilityID  uint                 `json:"facility_id" form:"facility_id"`
+	User        _users.User          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Categorys   _categorys.Categorys `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Facilitys   _facilitys.Facilitys `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	// User        users.User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
