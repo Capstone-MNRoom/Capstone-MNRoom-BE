@@ -12,7 +12,6 @@ type Rooms struct {
 	Name           string    `json:"name"`
 	Capacity       int       `json:"capacity"`
 	RentalPrice    int       `json:"rental_price"`
-	Status         string    `json:"status"`
 	Address        string    `json:"address"`
 	City           string    `json:"city"`
 	CreatedAt      time.Time `json:"created_at"`
@@ -46,7 +45,6 @@ func FromCore(data rooms.Core) Rooms {
 		Name:           data.Name,
 		Capacity:       data.Capacity,
 		RentalPrice:    data.RentalPrice,
-		Status:         data.Status,
 		Address:        data.Address,
 		City:           data.City,
 		CreatedAt:      data.CreatedAt,

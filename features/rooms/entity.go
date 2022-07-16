@@ -13,7 +13,6 @@ type Core struct {
 	Name           string
 	Capacity       int
 	RentalPrice    int
-	Status         string
 	Address        string
 	City           string
 	CreatedAt      time.Time
@@ -23,7 +22,9 @@ type Core struct {
 }
 
 type Business interface {
+	InsertData(insert Core) (row int, err error)
 }
 
 type Data interface {
+	InsertData(insert Core) (row int, err error)
 }

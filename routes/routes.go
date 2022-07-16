@@ -44,5 +44,8 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.PUT("/users", presenter.UserPresenter.UpdateData, _middlewares.JWTMiddleware())
 	// e.PUT("/users", presenter.UserPresenter.UpdateData, _middlewares.JWTMiddleware())
 
+	// Rooms
+	e.POST("/rooms", presenter.RoomPresenter.InsertData, _middlewares.JWTMiddleware())
+
 	return e
 }

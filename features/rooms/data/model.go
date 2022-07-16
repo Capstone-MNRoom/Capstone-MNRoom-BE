@@ -17,7 +17,6 @@ type Rooms struct {
 	Name           string `json:"name" form:"name"`
 	Capacity       int    `json:"capacity" form:"capacity"`
 	RentalPrice    int    `json:"rental_price" form:"rental_price"`
-	Status         string `json:"status" form:"status"`
 	Address        string `json:"address" form:"address"`
 	City           string `json:"city" form:"city"`
 	UserID         uint   `json:"user_id" form:"user_id"`
@@ -42,7 +41,6 @@ func (data *Rooms) toCore() rooms.Core {
 		Name:           data.Name,
 		Capacity:       data.Capacity,
 		RentalPrice:    data.RentalPrice,
-		Status:         data.Status,
 		Address:        data.Address,
 		City:           data.City,
 		CreatedAt:      data.CreatedAt,
@@ -65,7 +63,6 @@ func fromCore(core rooms.Core) Rooms {
 		Name:           core.Name,
 		Capacity:       core.Capacity,
 		RentalPrice:    core.RentalPrice,
-		Status:         core.Status,
 		Address:        core.Address,
 		City:           core.City,
 		UserID:         uint(core.User.ID),
