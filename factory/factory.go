@@ -13,6 +13,10 @@ import (
 	_categoryData "be9/mnroom/features/categorys/data"
 	_categoryPresentation "be9/mnroom/features/categorys/presentation"
 
+	_facilityBusiness "be9/mnroom/features/facilitys/business"
+	_facilityData "be9/mnroom/features/facilitys/data"
+	_facilityPresentation "be9/mnroom/features/facilitys/presentation"
+
 	"gorm.io/gorm"
 )
 
@@ -23,6 +27,8 @@ type Presenter struct {
 	UserPresenter *_userPresentation.UserHandler
 	// Categorys
 	CategoryPresenter *_categoryPresentation.CategoryHandler
+	// Facilitys
+	FacilityPresenter *_facilityPresentation.FacilityHandler
 }
 
 func InitFactory(dbConn *gorm.DB) Presenter {
@@ -38,9 +44,14 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	categoryBusiness := _categoryBusiness.NewCategoryBusiness(categoryData)
 	categoryPresentation := _categoryPresentation.NewCategoryHandler(categoryBusiness)
 
+	facilityData := _facilityData.NewFacilityRepository(dbConn)
+	facilityBusiness := _facilityBusiness.NewFacilityBusiness(facilityData)
+	facilityPresentation := _facilityPresentation.NewFacilityHandler(facilityBusiness)
+
 	return Presenter{
 		UserPresenter:     userPresentation,
 		AuthPresenter:     authPresentation,
 		CategoryPresenter: categoryPresentation,
+		FacilityPresenter: facilityPresentation,
 	}
 }
