@@ -26,9 +26,9 @@ type Rooms struct {
 	UserID      uint                 `json:"user_id" form:"user_id"`
 	CategoryID  uint                 `json:"category_id" form:"category_id"`
 	FacilityID  uint                 `json:"facility_id" form:"facility_id"`
-	User        _users.User          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Categorys   _categorys.Categorys `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Facilitys   _facilitys.Facilitys `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	User        _users.User          `gorm:"foreignKey:UserID;"`
+	Categorys   _categorys.Categorys `gorm:"foreignKey:CategoryID;"`
+	Facilitys   _facilitys.Facilitys `gorm:"foreignKey:FacilityID;"`
 	// User        users.User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
