@@ -22,6 +22,13 @@ func New(presenter factory.Presenter) *echo.Echo {
 	// Login
 	e.POST("/login", presenter.AuthPresenter.Auth)
 
+	// Categorys
+	e.POST("/categorys", presenter.CategoryPresenter.InsertData)
+	e.GET("/categorys", presenter.CategoryPresenter.GetDataAll)
+	e.GET("/categorys/:id", presenter.CategoryPresenter.GetData)
+	e.PUT("/categorys/:id", presenter.CategoryPresenter.UpdateData)
+	e.DELETE("/categorys/:id", presenter.CategoryPresenter.DeleteData)
+
 	// Users
 	e.POST("/users", presenter.UserPresenter.InsertData)
 	e.GET("/users", presenter.UserPresenter.GetAllData, _middlewares.JWTMiddleware())
