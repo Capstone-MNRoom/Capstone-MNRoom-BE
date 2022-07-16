@@ -31,7 +31,7 @@ func (repo *mysqlRoomRepository) InsertData(insert rooms.Core) (row int, err err
 
 func (repo *mysqlRoomRepository) GetAllData(limit int, offset int) (data []rooms.Core, err error) {
 	var getAllData []Rooms
-	tx := repo.db.Limit(limit).Offset(offset).Preload("User").Preload("Categorys").Find(&getAllData)
+	tx := repo.db.Limit(limit).Offset(offset).Preload("User").Preload("Categorys").Preload("Facilitys").Find(&getAllData)
 	if tx.Error != nil {
 		return []rooms.Core{}, tx.Error
 	}
@@ -40,7 +40,7 @@ func (repo *mysqlRoomRepository) GetAllData(limit int, offset int) (data []rooms
 
 func (repo *mysqlRoomRepository) GetData(id int) (data rooms.Core, err error) {
 	var getData Rooms
-	tx := repo.db.Preload("User").Preload("Categorys").First(&getData, id)
+	tx := repo.db.Preload("User").Preload("Categorys").Preload("Facilitys").First(&getData, id)
 	if tx.Error != nil {
 		return rooms.Core{}, tx.Error
 	}

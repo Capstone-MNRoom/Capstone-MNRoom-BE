@@ -30,9 +30,9 @@ type Business interface {
 	GetAllData(limit int, offset int) (data []Core, err error)
 	GetData(id int) (data Core, err error)
 	DeleteData(id int) (row int, err error)
+	GetToken(id int, idToken int) (data Core, err error)
 	// UpdatedData(id int, insert Core) (row int, err error)
-	// GetToken(id int, idToken int) (data Core, err error)
-	
+
 }
 
 type Data interface {
@@ -40,7 +40,7 @@ type Data interface {
 	GetAllData(limit int, offset int) (data []Core, err error)
 	GetData(id int) (data Core, err error)
 	DeleteData(id int) (row int, err error)
+	GetToken(id int, idToken int) (data Core, err error)
 	// UpdatedData(id int, insert Core) (row int, err error)
-	// GetToken(id int, idToken int) (data Core, err error)
-	
+
 }
