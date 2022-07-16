@@ -16,3 +16,8 @@ func (rm *roomCase) InsertData(insert rooms.Core) (row int, err error) {
 	row, err = rm.roomData.InsertData(insert)
 	return row, err
 }
+
+func (rm *roomCase) GetDataAll() (data []rooms.Core, err error) {
+	data, err = rm.roomData.GetDataAll()
+	return data, err
+}

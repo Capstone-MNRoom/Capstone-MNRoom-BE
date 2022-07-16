@@ -3,6 +3,7 @@ package presentation
 import (
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/rooms/presentation/request"
+	"be9/mnroom/features/rooms/presentation/response"
 	"be9/mnroom/helper"
 	_middlewares "be9/mnroom/middlewares"
 	"net/http"
@@ -48,4 +49,12 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert data"))
+}
+
+func (r *RoomHandler) GetDataAll(c echo.Context) error {
+	data, err := r.roomBusiness.GetDataAll()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
 }

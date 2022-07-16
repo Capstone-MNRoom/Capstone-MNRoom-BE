@@ -24,3 +24,12 @@ func (repo *mysqlRoomRepository) InsertData(insert rooms.Core) (row int, err err
 	}
 	return int(tx.RowsAffected), nil
 }
+
+func (repo *mysqlRoomRepository) GetDataAll() (data []rooms.Core, err error) {
+	var getDataAll []Rooms
+	tx := repo.db.Preload("User").Preload("Categorys").Find(&getDataAll)
+	if tx.Error != nil {
+		return []rooms.Core{}, tx.Error
+	}
+	return toCoreList(getDataAll), nil
+}
