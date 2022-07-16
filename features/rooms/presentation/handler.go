@@ -7,6 +7,7 @@ import (
 	"be9/mnroom/helper"
 	_middlewares "be9/mnroom/middlewares"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
@@ -57,4 +58,14 @@ func (r *RoomHandler) GetDataAll(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
+}
+
+func (r *RoomHandler) GetData(c echo.Context) error {
+	id := c.Param("id")
+	idRoom, _ := strconv.Atoi(id)
+	data, err := r.roomBusiness.GetData(idRoom)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCore(data)))
 }

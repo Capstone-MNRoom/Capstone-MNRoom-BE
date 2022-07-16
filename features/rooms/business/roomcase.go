@@ -21,3 +21,8 @@ func (rm *roomCase) GetDataAll() (data []rooms.Core, err error) {
 	data, err = rm.roomData.GetDataAll()
 	return data, err
 }
+
+func (rm *roomCase) GetData(id int) (data rooms.Core, err error) {
+	data, err = rm.roomData.GetData(id)
+	return data, err
+}

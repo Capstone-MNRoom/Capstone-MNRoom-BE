@@ -33,3 +33,12 @@ func (repo *mysqlRoomRepository) GetDataAll() (data []rooms.Core, err error) {
 	}
 	return toCoreList(getDataAll), nil
 }
+
+func (repo *mysqlRoomRepository) GetData(id int) (data rooms.Core, err error) {
+	var getData Rooms
+	tx := repo.db.Preload("User").Preload("Categorys").First(&getData, id)
+	if tx.Error != nil {
+		return rooms.Core{}, tx.Error
+	}
+	return getData.toCore(), nil
+}
