@@ -35,9 +35,10 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.GET("/facilitys/:id", presenter.FacilityPresenter.GetData)
 	e.PUT("/facilitys/:id", presenter.FacilityPresenter.UpdateData)
 	e.DELETE("/facilitys/:id", presenter.FacilityPresenter.DeleteData)
-
+	
+	// Signup
+	e.POST("/signup", presenter.UserPresenter.InsertData)
 	// Users
-	e.POST("/users", presenter.UserPresenter.InsertData)
 	e.GET("/users", presenter.UserPresenter.GetAllData, _middlewares.JWTMiddleware())
 	e.GET("/users/profile", presenter.UserPresenter.GetData, _middlewares.JWTMiddleware())
 	e.DELETE("/users", presenter.UserPresenter.DeleteData, _middlewares.JWTMiddleware())
