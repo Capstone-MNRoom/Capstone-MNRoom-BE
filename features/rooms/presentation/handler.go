@@ -144,10 +144,10 @@ func (v *RoomHandler) UpdateData(c echo.Context) error {
 	if updatedData.CategorysID == 0 {
 		updatedData.CategorysID = uint(data.Categorys.ID)
 	}
-	if updatedData.ImageRoom == "https://storage.googleapis.com/event2022/event-gomeet.png" {
+	if updatedData.ImageRoom == "https://storage.googleapis.com/event2022/default_room.jpg" {
 		updatedData.ImageRoom = data.ImageRoom
 	}
-	if updatedData.ImageLogo == "https://storage.googleapis.com/event2022/event-gomeet.png" {
+	if updatedData.ImageLogo == "https://storage.googleapis.com/event2022/default_room.jpg" {
 		updatedData.ImageLogo = data.ImageLogo
 	}
 	if updatedData.RoomName == "" {
