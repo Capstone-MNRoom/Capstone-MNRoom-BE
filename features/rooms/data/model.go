@@ -3,8 +3,6 @@ package data
 import (
 	"be9/mnroom/features/categorys"
 	_categorys "be9/mnroom/features/categorys/data"
-	"be9/mnroom/features/facilitys"
-	_facilitys "be9/mnroom/features/facilitys/data"
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/users"
 	_users "be9/mnroom/features/users/data"
@@ -21,14 +19,10 @@ type Rooms struct {
 	RentalPrice int                  `json:"rental_price" form:"rental_price"`
 	City        string               `json:"city" form:"city"`
 	Address     string               `json:"address" form:"address"`
-	Status      string               `json:"status" form:"status"`
-	Deskripsi   string               `json:"deskripsi" form:"deskrispsi"`
 	UserID      uint                 `json:"user_id" form:"user_id"`
 	CategoryID  uint                 `json:"category_id" form:"category_id"`
-	FacilityID  uint                 `json:"facility_id" form:"facility_id"`
 	User        _users.User          `gorm:"foreignKey:UserID;"`
 	Categorys   _categorys.Categorys `gorm:"foreignKey:CategoryID;"`
-	Facilitys   _facilitys.Facilitys `gorm:"foreignKey:FacilityID;"`
 	// User        users.User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
@@ -49,7 +43,6 @@ func (data *Rooms) toCore() rooms.Core {
 		RentalPrice: data.RentalPrice,
 		City:        data.City,
 		Address:     data.Address,
-		Status:      data.Status,
 		CreatedAt:   data.CreatedAt,
 		UpdatedAt:   data.UpdatedAt,
 		User: users.Core{
@@ -64,9 +57,6 @@ func (data *Rooms) toCore() rooms.Core {
 			ID:           int(data.Categorys.ID),
 			CategoryName: data.Categorys.CategoryName,
 		},
-		Facilitys: facilitys.Core{
-			ID: int(data.Facilitys.ID),
-		},
 	}
 }
 
@@ -79,8 +69,8 @@ func fromCore(core rooms.Core) Rooms {
 		RentalPrice: core.RentalPrice,
 		City:        core.City,
 		Address:     core.Address,
-		Status:      core.Status,
-		Deskripsi:   core.Deskripsi,
+		UserID:      uint(core.User.ID),
+		CategoryID:  uint(core.Categorys.ID),
 		// User:        uint(core.User.ID),
 		// Categorys:   uint(core.Categorys.ID),
 

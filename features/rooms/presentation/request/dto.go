@@ -1,6 +1,9 @@
 package request
 
-import "be9/mnroom/features/rooms"
+import (
+	"be9/mnroom/features/categorys"
+	"be9/mnroom/features/rooms"
+)
 
 type Rooms struct {
 	ImageRoom   string `json:"image_room" form:"image_room"`
@@ -10,10 +13,8 @@ type Rooms struct {
 	RentalPrice int    `json:"rental_price" form:"rental_price"`
 	City        string `json:"city" form:"city"`
 	Address     string `json:"address" form:"address"`
-	Status      string `json:"status" form:"status"`
-	Deskripsi   string `json:"deskripsi" form:"deskrispsi"`
 	CategorysID uint   `json:"categorys_id" validate:"required" form:"categorys_id"`
-	FacilityID  uint   `json:"facility_id" validate:"required" form:"facility_id"`
+	// FacilityID  uint   `json:"facility_id" validate:"required" form:"facility_id"`
 }
 
 func ToCore(req Rooms) rooms.Core {
@@ -25,7 +26,8 @@ func ToCore(req Rooms) rooms.Core {
 		RentalPrice: req.RentalPrice,
 		City:        req.City,
 		Address:     req.Address,
-		Status:      req.Status,
-		Deskripsi:   req.Deskripsi,
+		Categorys: categorys.Core{
+			ID: int(req.CategorysID),
+		},
 	}
 }
