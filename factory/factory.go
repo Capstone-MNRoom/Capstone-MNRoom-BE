@@ -21,6 +21,10 @@ import (
 	_roomData "be9/mnroom/features/rooms/data"
 	_roomPresentation "be9/mnroom/features/rooms/presentation"
 
+	_roomfacilitysBusiness "be9/mnroom/features/roomfacilitys/business"
+	_roomfacilitysData "be9/mnroom/features/roomfacilitys/data"
+	_roomfacilitysPresentation "be9/mnroom/features/roomfacilitys/presentation"
+
 	_rentBusiness "be9/mnroom/features/rents/business"
 	_rentData "be9/mnroom/features/rents/data"
 	_rentPresentation "be9/mnroom/features/rents/presentation"
@@ -39,6 +43,8 @@ type Presenter struct {
 	FacilityPresenter *_facilityPresentation.FacilityHandler
 	// Rooms
 	RoomPresenter *_roomPresentation.RoomHandler
+	// Room Facilitys
+	RoomFacilitysPresenter *_roomfacilitysPresentation.RoomFacilityHandler
 	// Rents
 	RentPresenter *_rentPresentation.RentHandler
 }
@@ -63,17 +69,23 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	roomData := _roomData.NewRoomRepository(dbConn)
 	roomBusiness := _roomBusiness.NewRoomBusiness(roomData)
 	roomPresentation := _roomPresentation.NewRoomHandler(roomBusiness)
-
-	rentData := _rentData.NewRentRepository(dbConn)
+  
+  roomfacilityData := _roomfacilitysData.NewRoomFacilityRepository(dbConn)
+	roomfacilityBusiness := _roomfacilitysBusiness.NewRoomFacilityBusiness(roomfacilityData)
+	roomfacilityPresentation := _roomfacilitysPresentation.NewRoomFacilitysHandler(roomfacilityBusiness)
+  
+  rentData := _rentData.NewRentRepository(dbConn)
 	rentBusiness := _rentBusiness.NewRentBusiness(rentData)
-	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)
+	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)	
 
 	return Presenter{
-		UserPresenter:     userPresentation,
-		AuthPresenter:     authPresentation,
-		CategoryPresenter: categoryPresentation,
-		FacilityPresenter: facilityPresentation,
-		RoomPresenter:     roomPresentation,
-		RentPresenter:     rentPresentation,
+		UserPresenter:          userPresentation,
+		AuthPresenter:          authPresentation,
+		CategoryPresenter:      categoryPresentation,
+		FacilityPresenter:      facilityPresentation,
+		RoomPresenter:          roomPresentation,
+		RoomFacilitysPresenter: roomfacilityPresentation,
+    RentPresenter:     rentPresentation,
+
 	}
 }
