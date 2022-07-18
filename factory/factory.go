@@ -69,14 +69,14 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	roomData := _roomData.NewRoomRepository(dbConn)
 	roomBusiness := _roomBusiness.NewRoomBusiness(roomData)
 	roomPresentation := _roomPresentation.NewRoomHandler(roomBusiness)
-  
-  roomfacilityData := _roomfacilitysData.NewRoomFacilityRepository(dbConn)
+
+	roomfacilityData := _roomfacilitysData.NewRoomFacilityRepository(dbConn)
 	roomfacilityBusiness := _roomfacilitysBusiness.NewRoomFacilityBusiness(roomfacilityData)
 	roomfacilityPresentation := _roomfacilitysPresentation.NewRoomFacilitysHandler(roomfacilityBusiness)
-  
-  rentData := _rentData.NewRentRepository(dbConn)
+
+	rentData := _rentData.NewRentRepository(dbConn)
 	rentBusiness := _rentBusiness.NewRentBusiness(rentData)
-	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)	
+	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)
 
 	return Presenter{
 		UserPresenter:          userPresentation,
@@ -85,7 +85,6 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 		FacilityPresenter:      facilityPresentation,
 		RoomPresenter:          roomPresentation,
 		RoomFacilitysPresenter: roomfacilityPresentation,
-    RentPresenter:     rentPresentation,
-
+		RentPresenter:          rentPresentation,
 	}
 }

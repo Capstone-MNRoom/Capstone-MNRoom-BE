@@ -172,3 +172,15 @@ func (r *RoomHandler) DeleteData(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to deleted data"))
 }
+
+func (r *RoomHandler) GetDataAllUserRoom(c echo.Context) error {
+	idToken, errToken := _middlewares.ExtractToken(c)
+	if errToken != nil {
+		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
+	}
+	data, err := r.roomBusiness.GetDataAllUserRoom(idToken)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreList(data)))
+}

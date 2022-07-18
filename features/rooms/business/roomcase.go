@@ -41,3 +41,8 @@ func (rm *roomCase) GetToken(id int, idToken int) (data rooms.Core, err error) {
 	data, err = rm.roomData.GetToken(id, idToken)
 	return data, err
 }
+
+func (rm *roomCase) GetDataAllUserRoom(idToken int) (data []rooms.Core, err error) {
+	data, err = rm.roomData.GetDataAllUserRoom(idToken)
+	return data, err
+}
