@@ -114,8 +114,9 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	updateData := request.Rooms{
 		ImageRoom:      link,
 		ImagePengelola: linkPengelola,
-		Name:           c.FormValue("name"),
+		RoomName:       c.FormValue("room_name"),
 		Capacity:       CapacityInt,
+		HotelName:      c.FormValue("hotel_name"),
 		RentalPrice:    RentalPriceInt,
 		Address:        c.FormValue("address"),
 		City:           c.FormValue("city"),
@@ -130,11 +131,14 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	if updateData.ImagePengelola == "https://storage.googleapis.com/event2022/event-gomeet.png" {
 		updateData.ImagePengelola = data.ImagePengelola
 	}
-	if updateData.Name == "" {
-		updateData.Name = data.Name
+	if updateData.RoomName == "" {
+		updateData.RoomName = data.RoomName
 	}
 	if updateData.Capacity == 0 {
 		updateData.Capacity = data.Capacity
+	}
+	if updateData.HotelName == "" {
+		updateData.HotelName = data.HotelName
 	}
 	if updateData.RentalPrice == 0 {
 		updateData.RentalPrice = data.RentalPrice

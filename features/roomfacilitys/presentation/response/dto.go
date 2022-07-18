@@ -19,8 +19,9 @@ type User struct {
 }
 
 type Rooms struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID        int    `json:"id"`
+	RoomName  string `json:"room_name"`
+	HotelName string `json:"hotel_name"`
 }
 
 type Facilitys struct {
@@ -45,8 +46,9 @@ func FromCore(data roomfacilitys.Core) RoomFacilitys {
 			Username: data.User.Username,
 		},
 		Rooms: Rooms{
-			ID:   data.Rooms.ID,
-			Name: data.Rooms.Name,
+			ID:        data.Rooms.ID,
+			RoomName:  data.Rooms.RoomName,
+			HotelName: data.Rooms.HotelName,
 		},
 		Facilitys: Facilitys{
 			ID:   data.Facilitys.ID,

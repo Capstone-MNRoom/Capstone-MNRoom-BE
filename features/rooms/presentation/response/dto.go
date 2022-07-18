@@ -9,8 +9,9 @@ type Rooms struct {
 	ID             int       `json:"id"`
 	ImageRoom      string    `json:"image_room"`
 	ImagePengelola string    `json:"image_pengelola"`
-	Name           string    `json:"name"`
+	RoomName       string    `json:"room_name"`
 	Capacity       int       `json:"capacity"`
+	HotelName      string    `json:"hotel_name"`
 	RentalPrice    int       `json:"rental_price"`
 	Address        string    `json:"address"`
 	City           string    `json:"city"`
@@ -42,8 +43,9 @@ func FromCore(data rooms.Core) Rooms {
 		ID:             data.ID,
 		ImageRoom:      data.ImageRoom,
 		ImagePengelola: data.ImagePengelola,
-		Name:           data.Name,
+		RoomName:       data.RoomName,
 		Capacity:       data.Capacity,
+		HotelName:      data.HotelName,
 		RentalPrice:    data.RentalPrice,
 		Address:        data.Address,
 		City:           data.City,
