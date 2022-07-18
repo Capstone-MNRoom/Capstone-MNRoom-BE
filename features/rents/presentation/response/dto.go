@@ -2,19 +2,30 @@ package response
 
 import (
 	"be9/mnroom/features/rents"
-	_rooms "be9/mnroom/features/rooms/presentation/response"
-	_users "be9/mnroom/features/users/presentation/response"
+	"time"
 )
 
 type Rents struct {
-	ID                 int    `json:"id"`
-	Date_start         string `json:"date_start"`
-	Date_end           string `json:"date_end"`
-	Bank               string `json:"bank"`
-	Total_rental_price int    `json:"total_rental_price"`
-	Status             string `json:"status"`
-	User               _users.User
-	Rooms              _rooms.Rooms
+	ID               int       `json:"id"`
+	DateStart        string    `json:"date_start"`
+	DateEnd          string    `json:"date_end"`
+	Bank             string    `json:"bank"`
+	TotalRentalPrice int       `json:"total_rental_price"`
+	Status           string    `json:"status"`
+	CreatedAt        time.Time `json:"created_at"`
+	User             User
+	Rooms            Rooms
+}
+
+type User struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+}
+
+type Rooms struct {
+	ID        int    `json:"id"`
+	RoomName  string `json:"room_name"`
+	HotelName string `json:"hotel_name"`
 }
 
 func FromCoreList(data []rents.Core) []Rents {
@@ -27,30 +38,20 @@ func FromCoreList(data []rents.Core) []Rents {
 
 func FromCore(data rents.Core) Rents {
 	return Rents{
-		ID:                 data.ID,
-		Date_start:         data.Date_start,
-		Date_end:           data.Date_end,
-		Bank:               data.Bank,
-		Total_rental_price: data.Total_rental_price,
-		Status:             data.Status,
-		User: _users.User{
+		ID:               data.ID,
+		DateStart:        data.DateStart,
+		DateEnd:          data.DateEnd,
+		Bank:             data.Bank,
+		TotalRentalPrice: data.TotalRentalPrice,
+		Status:           data.Status,
+		User: User{
 			ID:       data.User.ID,
-			Image:    data.User.Image,
 			Username: data.User.Username,
-			Email:    data.User.Email,
-			Phone:    data.User.Phone,
-			Address:  data.User.Address,
 		},
-		Rooms: _rooms.Rooms{
-			ID:             data.Room.ID,
-			ImageRoom:      data.Room.ImageRoom,
-			ImagePengelola: data.Room.ImagePengelola,
-			RoomName:       data.Room.RoomName,
-			Capacity:       data.Room.Capacity,
-			HotelName:      data.Room.HotelName,
-			RentalPrice:    data.Room.RentalPrice,
-			City:           data.Room.City,
-			Address:        data.Room.Address,
+		Rooms: Rooms{
+			ID:        data.Room.ID,
+			RoomName:  data.Room.RoomName,
+			HotelName: data.Room.HotelName,
 		},
 	}
 }

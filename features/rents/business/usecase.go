@@ -11,8 +11,3 @@ func NewRentBusiness(rent rents.Data) rents.Business {
 		rentData: rent,
 	}
 }
-
-func (uc *rentUseCase) InsertData(insert rents.Core) (row int, err error) {
-	row, err = uc.rentData.InsertData(insert)
-	return row, err
-}
