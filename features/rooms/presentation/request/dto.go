@@ -6,26 +6,25 @@ import (
 )
 
 type Rooms struct {
-	ImageRoom   string `json:"image_room" form:"image_room"`
-	ImageLogo   string `json:"image_logo" form:"image_logo"`
-	RoomName    string `json:"room_name" form:"room_name"`
-	Capacity    int    `json:"capacity" form:"capacity"`
-	RentalPrice int    `json:"rental_price" form:"rental_price"`
-	City        string `json:"city" form:"city"`
-	Address     string `json:"address" form:"address"`
-	CategorysID uint   `json:"categorys_id" validate:"required" form:"categorys_id"`
-	// FacilityID  uint   `json:"facility_id" validate:"required" form:"facility_id"`
+	ImageRoom      string `json:"image_room" validate:"required" form:"image_room"`
+	ImagePengelola string `json:"image_pengelola" validate:"required" form:"image_pengelola"`
+	Name           string `json:"name" validate:"required" form:"name"`
+	Capacity       int    `json:"capacity" validate:"required,numeric" form:"capacity"`
+	RentalPrice    int    `json:"rental_price" validate:"required,numeric" form:"rental_price"`
+	Address        string `json:"address" validate:"required" form:"address"`
+	City           string `json:"city" validate:"required" form:"city"`
+	CategorysID    uint   `json:"categorys_id" validate:"required" form:"categorys_id"`
 }
 
 func ToCore(req Rooms) rooms.Core {
 	return rooms.Core{
-		ImageRoom:   req.ImageRoom,
-		ImageLogo:   req.ImageLogo,
-		RoomName:    req.RoomName,
-		Capacity:    req.Capacity,
-		RentalPrice: req.RentalPrice,
-		City:        req.City,
-		Address:     req.Address,
+		ImageRoom:      req.ImageRoom,
+		ImagePengelola: req.ImagePengelola,
+		Name:           req.Name,
+		Capacity:       req.Capacity,
+		RentalPrice:    req.RentalPrice,
+		Address:        req.Address,
+		City:           req.City,
 		Categorys: categorys.Core{
 			ID: int(req.CategorysID),
 		},
