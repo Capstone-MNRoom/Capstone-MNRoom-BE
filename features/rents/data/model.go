@@ -49,14 +49,14 @@ func (data *Rents) toCore() rents.Core {
 			Address:  data.User.Address,
 		},
 		Room: rooms.Core{
-			ID:          int(data.Rooms.ID),
-			ImageRoom:   data.Rooms.ImageRoom,
-			ImageLogo:   data.Rooms.ImageLogo,
-			RoomName:    data.Rooms.RoomName,
-			Capacity:    data.Rooms.Capacity,
-			RentalPrice: data.Rooms.RentalPrice,
-			City:        data.Rooms.City,
-			Address:     data.Rooms.Address,
+			ID:             int(data.Rooms.ID),
+			ImageRoom:      data.Rooms.ImageRoom,
+			ImagePengelola: data.Rooms.ImagePengelola,
+			Name:           data.Rooms.Name,
+			Capacity:       data.Rooms.Capacity,
+			RentalPrice:    data.Rooms.RentalPrice,
+			City:           data.Rooms.City,
+			Address:        data.Rooms.Address,
 		},
 	}
 }

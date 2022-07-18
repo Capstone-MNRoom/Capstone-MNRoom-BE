@@ -42,14 +42,14 @@ func FromCore(data rents.Core) Rents {
 			Address:  data.User.Address,
 		},
 		Rooms: _rooms.Rooms{
-			ID:          data.Room.ID,
-			ImageRoom:   data.Room.ImageRoom,
-			ImageLogo:   data.Room.ImageLogo,
-			RoomName:    data.Room.RoomName,
-			Capacity:    data.Room.Capacity,
-			RentalPrice: data.Room.RentalPrice,
-			City:        data.Room.City,
-			Address:     data.Room.Address,
+			ID:             data.Room.ID,
+			ImageRoom:      data.Room.ImageRoom,
+			ImagePengelola: data.Room.ImagePengelola,
+			Name:           data.Room.Name,
+			Capacity:       data.Room.Capacity,
+			RentalPrice:    data.Room.RentalPrice,
+			City:           data.Room.City,
+			Address:        data.Room.Address,
 		},
 	}
 }
