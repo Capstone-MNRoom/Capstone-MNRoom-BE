@@ -26,3 +26,18 @@ func (rm *roomCase) GetData(id int) (data rooms.Core, err error) {
 	data, err = rm.roomData.GetData(id)
 	return data, err
 }
+
+func (rm *roomCase) UpdateData(id int, insert rooms.Core) (row int, err error) {
+	row, err = rm.roomData.UpdateData(id, insert)
+	return row, err
+}
+
+func (rm *roomCase) DeleteData(id int) (row int, err error) {
+	row, err = rm.roomData.DeleteData(id)
+	return row, err
+}
+
+func (rm *roomCase) GetToken(id int, idToken int) (data rooms.Core, err error) {
+	data, err = rm.roomData.GetToken(id, idToken)
+	return data, err
+}
