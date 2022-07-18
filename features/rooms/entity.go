@@ -28,6 +28,7 @@ type Business interface {
 	UpdateData(id int, insert Core) (row int, err error)
 	DeleteData(id int) (row int, err error)
 	GetToken(id int, idToken int) (data Core, err error)
+	GetDataAllUserRoom(idToken int) (data []Core, err error)
 }
 
 type Data interface {
@@ -37,4 +38,5 @@ type Data interface {
 	UpdateData(id int, insert Core) (row int, err error)
 	DeleteData(id int) (row int, err error)
 	GetToken(id int, idToken int) (data Core, err error)
+	GetDataAllUserRoom(idToken int) (data []Core, err error)
 }
