@@ -175,7 +175,7 @@ paths:
         - JWTAuth: []
       summary: Insert rooms
       requestBody:
-        $ref: '#/components/responses/insertRoomsSuccess'
+        $ref: '#/components/requestBodies/requestBodyRoom'
       responses:
         '200':
           $ref: '#/components/responses/successPostRoomData'
@@ -304,7 +304,7 @@ paths:
     post:
       tags:
         - Rent
-      summary: Form rent room
+      summary: Form rent room by user loggedin
       security:
         - JWTAuth: []
       requestBody:
@@ -325,7 +325,15 @@ paths:
     get:
       tags:
       - Feedback
-      summary: Get all feedback
+      summary: Get feedback by id rent
+      parameters:
+        - name: rent-id
+          description: id rent
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           $ref: '#/components/responses/getFeedbackSuccess'
@@ -353,7 +361,7 @@ paths:
     get:
       tags:
         - Payment
-      summary: Get All Payment for rent room
+      summary: Get All Payment by user loggedin
       security:
         - JWTAuth: []
       responses:
@@ -425,6 +433,38 @@ components:
         address:
           type: string
           minLength: 20
+    requestRoomUser:
+      type: object
+      required:
+        - categorys_id
+        - room_name
+        - capacity
+        - rental_price
+        - status
+        - address
+        - city
+        - facility_id
+      properties:
+        user_id:
+          type: integer
+          minLength: 1
+        categorys_id:
+          type: integer
+        room_name:
+          type: string
+        capacity:
+          type: integer
+        rental_price:
+          type: integer
+        status:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        facility_id:
+          type: array
+
     requestRentUser:
       type: object
       required:
@@ -747,7 +787,7 @@ components:
                     type: integer
                   Name:
                     type: string
-              room_rentals:
+              rents:
                 type: object
                 properties:
                     id:
@@ -1083,7 +1123,27 @@ components:
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestDataUser'
-    
+    requestBodyRoom:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestRoomUser'
+          examples:
+            test:
+              value:
+                categorys_id: 1
+                room_name: Ruang Rahwana
+                capacity: 50
+                rental_price: 1500000
+                status: ada
+                address: Jl. Raya Utama No. 15
+                city: Bandung
+                facility_id: [1]
+
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/requestRentUser'
     requestBodyRent:
       required: true
       content:
@@ -1093,7 +1153,6 @@ components:
           examples:
             test:
               value:
-                user_id: 1
                 rooms_id: 1
                 date_start: 16-07-2022
                 date_end: 18-07-2022
@@ -1114,7 +1173,7 @@ components:
               value:
                 user_id: 1
                 rooms_rentals_id: 1
-                rating: 10
+                rating: 5
                 comment: mantap, fasilitasnya lengkap
         multipart/form-data:
           schema:
@@ -1364,7 +1423,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/responseNonDataPayment'
-         
+
     productServerFailed:
       description: Internal Server Error Response
       content:
@@ -1400,17 +1459,19 @@ components:
           schema:
             $ref: '#/components/schemas/responsePaymentWithData'
           example:
-            data: {
-              id: 1,
-              transaction_id: 1,
-              order_id: MN-2022-01,
-              payment_type: transfer,
-              rooms_rentals_id: 1,
-              bank_transfer: BCA,
-              gross_amount: 3000000,
-              va_number: 98690764630,
-              transaction_status: success,
-            }
+            data: [
+              {
+                id: 1,
+                transaction_id: 1,
+                order_id: MN-2022-01,
+                payment_type: transfer,
+                rooms_rentals_id: 1,
+                bank_transfer: BCA,
+                gross_amount: 3000000,
+                va_number: 98690764630,
+                transaction_status: success,
+              }
+            ]
             message: Success Get Data Payment
 
     getAllRoomsSuccess:
@@ -1582,42 +1643,15 @@ components:
             $ref: '#/components/schemas/responseCategoriesWithDataArray'
           example:
             # code: 200
-            data: [
-              { 
-                id: 1,
-                image_room: image_room.jpg,
-                image_pengelola: image_pengelola.jpg,
-                name: Ruang Arjuna,
-                capacity: 50,
-                rental_price: 1500000,
-                address: Jl. Raya Utama No. 15,
-                city: Bandung,
-                user: {
-                  id: 1,
-                  name: Mulya Nurdin  
-                },
-                categories: {
-                  id: 1,
-                  name: workspace
-                },
-                facility: [
-                  {
-                    id: 1,
-                    name: Meja
-                  },
-                  {
-                    id: 2,
-                    name: Kursi
-                  },
-                  {
-                    id: 3,
-                    name: Projector
-                  }
-                ]
-              },
-              
-            ]
-            message: Success Operation
+            categorys_id: 1
+            room_name: Ruang Arjuna
+            capacity: 50
+            rental_price: 1500000
+            status: ada
+            address: Jl. Raya Utama No. 15
+            city: Bandung
+            facility_id: [1]
+
     putRoomsByIdFailed:
       description: Bad Request Response
       content:
@@ -1637,9 +1671,6 @@ components:
             $ref: '#/components/schemas/responseCategoriesWithDataArray'
           example:
             # code: 200
-            data: [
-              { }
-            ]
             message: Success Operation
     deleteRoomsByIdFailed:
       description: Bad Request Response
@@ -1810,14 +1841,7 @@ components:
                 rooms_id: 1,
                 facility_id: 2,
               },
-              { 
-                rooms_id: 2,
-                facility_id: 1,
-              },
-              { 
-                rooms_id: 2,
-                facility_id: 2,
-              }
+            
             ]
             message: Success Operation
 
@@ -1832,13 +1856,13 @@ components:
             data: [
               { 
                 id: 1,
-                rating: 10,
+                rating: 5,
                 comment: "mantap, fasilitasnya lengkap",
                 user: {
                   id: 1,
                   name: Mulya Nurdin  
                 },
-                room_rentals: {
+                rents: {
                   id: 1,
                   user_id: 1,
                   rooms_id: 1,

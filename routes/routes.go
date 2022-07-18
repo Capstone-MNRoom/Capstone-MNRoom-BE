@@ -36,8 +36,9 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.PUT("/facilitys/:id", presenter.FacilityPresenter.UpdateData)
 	e.DELETE("/facilitys/:id", presenter.FacilityPresenter.DeleteData)
 
+	// Signup
+	e.POST("/signup", presenter.UserPresenter.InsertData)
 	// Users
-	e.POST("/users", presenter.UserPresenter.InsertData)
 	e.GET("/users", presenter.UserPresenter.GetAllData, _middlewares.JWTMiddleware())
 	e.GET("/users/profile", presenter.UserPresenter.GetData, _middlewares.JWTMiddleware())
 	e.DELETE("/users", presenter.UserPresenter.DeleteData, _middlewares.JWTMiddleware())
@@ -50,6 +51,9 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.GET("/rooms/:id", presenter.RoomPresenter.GetData, _middlewares.JWTMiddleware())
 	e.PUT("/rooms/:id", presenter.RoomPresenter.UpdateData, _middlewares.JWTMiddleware())
 	e.DELETE("/rooms/:id", presenter.RoomPresenter.DeleteData, _middlewares.JWTMiddleware())
-
+  
+  // Rents
+	e.POST("/rents", presenter.RentPresenter.InsertData, _middlewares.JWTMiddleware())
+  
 	return e
 }
