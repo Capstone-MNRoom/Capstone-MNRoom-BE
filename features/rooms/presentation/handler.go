@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	_requestFacilitys "be9/mnroom/features/roomfacilitys/presentation/request"
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/rooms/presentation/request"
 	"be9/mnroom/features/rooms/presentation/response"
@@ -51,9 +52,17 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 	}
 	newRoom := request.ToCore(insertRoom)
 	newRoom.User.ID = idToken
-	row, err := r.roomBusiness.InsertData(newRoom)
-	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
+	data, err := r.roomBusiness.InsertData(newRoom)
+	var insertRoomFacilitys _requestFacilitys.RoomFacilitys
+	for _, v := range newRoom.Facilitys {
+		newRoomFacilitys := _requestFacilitys.ToCore(insertRoomFacilitys)
+		newRoomFacilitys.User.ID = idToken
+		newRoomFacilitys.Rooms.ID = data.ID
+		newRoomFacilitys.Facilitys.ID = v
+		row, _ := r.roomBusiness.InsertDataRoomFacilitys(rooms.CoreRoomFacilitys(newRoomFacilitys))
+		if row != 1 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
+		}
 	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))

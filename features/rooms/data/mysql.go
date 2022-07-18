@@ -16,9 +16,19 @@ func NewRoomRepository(conn *gorm.DB) rooms.Data {
 	}
 }
 
-func (repo *mysqlRoomRepository) InsertData(insert rooms.Core) (row int, err error) {
+func (repo *mysqlRoomRepository) InsertData(insert rooms.Core) (data rooms.Core, err error) {
 	insertRoom := fromCore(insert)
 	tx := repo.db.Create(&insertRoom)
+	if tx.Error != nil {
+		return rooms.Core{}, tx.Error
+	}
+	return insertRoom.toCore(), nil
+}
+
+func (repo *mysqlRoomRepository) InsertDataRoomFacilitys(insert rooms.CoreRoomFacilitys) (row int, err error) {
+	tx := repo.db.Model(&RoomFacilitys{}).Create([]map[string]interface{}{
+		{"user_id": insert.User.ID, "rooms_id": insert.Rooms.ID, "facilitys_id": insert.Facilitys.ID},
+	})
 	if tx.Error != nil {
 		return 0, tx.Error
 	}

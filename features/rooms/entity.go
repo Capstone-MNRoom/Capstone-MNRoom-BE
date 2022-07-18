@@ -2,6 +2,7 @@ package rooms
 
 import (
 	"be9/mnroom/features/categorys"
+	"be9/mnroom/features/facilitys"
 	"be9/mnroom/features/users"
 	"time"
 )
@@ -15,14 +16,25 @@ type Core struct {
 	RentalPrice    int
 	Address        string
 	City           string
+	Facilitys      []int
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	User           users.Core
 	Categorys      categorys.Core
 }
 
+type CoreRoomFacilitys struct {
+	ID        int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	User      users.Core
+	Rooms     Core
+	Facilitys facilitys.Core
+}
+
 type Business interface {
-	InsertData(insert Core) (row int, err error)
+	InsertData(insert Core) (data Core, err error)
+	InsertDataRoomFacilitys(insert CoreRoomFacilitys) (row int, err error)
 	GetDataAll() (data []Core, err error)
 	GetData(id int) (data Core, err error)
 	UpdateData(id int, insert Core) (row int, err error)
@@ -32,7 +44,8 @@ type Business interface {
 }
 
 type Data interface {
-	InsertData(insert Core) (row int, err error)
+	InsertData(insert Core) (data Core, err error)
+	InsertDataRoomFacilitys(insert CoreRoomFacilitys) (row int, err error)
 	GetDataAll() (data []Core, err error)
 	GetData(id int) (data Core, err error)
 	UpdateData(id int, insert Core) (row int, err error)

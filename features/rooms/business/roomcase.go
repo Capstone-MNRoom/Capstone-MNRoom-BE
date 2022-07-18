@@ -12,8 +12,13 @@ func NewRoomBusiness(rmsData rooms.Data) rooms.Business {
 	}
 }
 
-func (rm *roomCase) InsertData(insert rooms.Core) (row int, err error) {
-	row, err = rm.roomData.InsertData(insert)
+func (rm *roomCase) InsertData(insert rooms.Core) (data rooms.Core, err error) {
+	data, err = rm.roomData.InsertData(insert)
+	return data, err
+}
+
+func (rm *roomCase) InsertDataRoomFacilitys(insert rooms.CoreRoomFacilitys) (row int, err error) {
+	row, err = rm.roomData.InsertDataRoomFacilitys(insert)
 	return row, err
 }
 

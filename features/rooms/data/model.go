@@ -3,6 +3,7 @@ package data
 import (
 	"be9/mnroom/features/categorys"
 	_categorys "be9/mnroom/features/categorys/data"
+	_facilitys "be9/mnroom/features/facilitys/data"
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/users"
 	_users "be9/mnroom/features/users/data"
@@ -23,6 +24,16 @@ type Rooms struct {
 	CategorysID    uint   `json:"categorys_id" form:"categorys_id"`
 	User           _users.User
 	Categorys      _categorys.Categorys
+}
+
+type RoomFacilitys struct {
+	gorm.Model
+	UserID      uint `json:"users_id" form:"users_id"`
+	RoomsID     uint `json:"rooms_id" form:"rooms_id"`
+	FacilitysID uint `json:"facilitys_id" form:"facilitys_id"`
+	User        _users.User
+	Rooms       Rooms
+	Facilitys   _facilitys.Facilitys
 }
 
 func toCoreList(data []Rooms) []rooms.Core {

@@ -12,6 +12,7 @@ type Rooms struct {
 	Capacity       int    `json:"capacity" validate:"required,numeric" form:"capacity"`
 	RentalPrice    int    `json:"rental_price" validate:"required,numeric" form:"rental_price"`
 	Address        string `json:"address" validate:"required" form:"address"`
+	Facilitys      []int  `json:"facilitys" form:"facilitys"`
 	City           string `json:"city" validate:"required" form:"city"`
 	CategorysID    uint   `json:"categorys_id" validate:"required" form:"categorys_id"`
 }
@@ -25,6 +26,7 @@ func ToCore(req Rooms) rooms.Core {
 		RentalPrice:    req.RentalPrice,
 		Address:        req.Address,
 		City:           req.City,
+		Facilitys:      req.Facilitys,
 		Categorys: categorys.Core{
 			ID: int(req.CategorysID),
 		},
