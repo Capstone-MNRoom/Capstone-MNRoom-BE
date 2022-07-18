@@ -11,8 +11,9 @@ type Core struct {
 	ID             int
 	ImageRoom      string
 	ImagePengelola string
-	Name           string
+	RoomName       string
 	Capacity       int
+	HotelName      string
 	RentalPrice    int
 	Address        string
 	City           string
