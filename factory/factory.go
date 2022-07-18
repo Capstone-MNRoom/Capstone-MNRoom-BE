@@ -21,6 +21,10 @@ import (
 	_roomData "be9/mnroom/features/rooms/data"
 	_roomPresentation "be9/mnroom/features/rooms/presentation"
 
+	_rentBusiness "be9/mnroom/features/rents/business"
+	_rentData "be9/mnroom/features/rents/data"
+	_rentPresentation "be9/mnroom/features/rents/presentation"
+
 	"gorm.io/gorm"
 )
 
@@ -35,6 +39,8 @@ type Presenter struct {
 	FacilityPresenter *_facilityPresentation.FacilityHandler
 	// Rooms
 	RoomPresenter *_roomPresentation.RoomHandler
+	// Rents
+	RentPresenter *_rentPresentation.RentHandler
 }
 
 func InitFactory(dbConn *gorm.DB) Presenter {
@@ -58,11 +64,16 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	roomBusiness := _roomBusiness.NewRoomBusiness(roomData)
 	roomPresentation := _roomPresentation.NewRoomHandler(roomBusiness)
 
+	rentData := _rentData.NewRentRepository(dbConn)
+	rentBusiness := _rentBusiness.NewRentBusiness(rentData)
+	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)
+
 	return Presenter{
 		UserPresenter:     userPresentation,
 		AuthPresenter:     authPresentation,
 		CategoryPresenter: categoryPresentation,
 		FacilityPresenter: facilityPresentation,
 		RoomPresenter:     roomPresentation,
+		RentPresenter:     rentPresentation,
 	}
 }
