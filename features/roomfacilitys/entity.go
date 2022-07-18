@@ -17,7 +17,9 @@ type Core struct {
 }
 
 type Business interface {
+	GetData(id int) (data []Core, err error)
 }
 
 type Data interface {
+	GetData(id int) (data []Core, err error)
 }

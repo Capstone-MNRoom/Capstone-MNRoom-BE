@@ -2,6 +2,12 @@ package presentation
 
 import (
 	"be9/mnroom/features/roomfacilitys"
+	"be9/mnroom/features/roomfacilitys/presentation/response"
+	"be9/mnroom/helper"
+	"net/http"
+	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
 
 type RoomFacilityHandler struct {
@@ -12,4 +18,14 @@ func NewRoomFacilitysHandler(business roomfacilitys.Business) *RoomFacilityHandl
 	return &RoomFacilityHandler{
 		roomfacilitysBusiness: business,
 	}
+}
+
+func (m *RoomFacilityHandler) GetData(c echo.Context) error {
+	id := c.Param("id")
+	idRoom, _ := strconv.Atoi(id)
+	data, err := m.roomfacilitysBusiness.GetData(idRoom)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
 }
