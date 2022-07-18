@@ -327,7 +327,7 @@ paths:
       - Feedback
       summary: Get feedback by id rent
       parameters:
-        - name: room_rentals_id
+        - name: rent-id
           description: id rent
           in: path
           schema:
@@ -787,7 +787,7 @@ components:
                     type: integer
                   Name:
                     type: string
-              room_rentals:
+              rents:
                 type: object
                 properties:
                     id:
@@ -1862,7 +1862,7 @@ components:
                   id: 1,
                   name: Mulya Nurdin  
                 },
-                room_rentals: {
+                rents: {
                   id: 1,
                   user_id: 1,
                   rooms_id: 1,
