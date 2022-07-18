@@ -7,36 +7,34 @@ import (
 )
 
 type Core struct {
-	ID          int
-	ImageRoom   string
-	ImageLogo   string
-	RoomName    string
-	Capacity    int
-	RentalPrice int
-	City        string
-	Address     string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	User        users.Core
-	Categorys   categorys.Core
+	ID             int
+	ImageRoom      string
+	ImagePengelola string
+	Name           string
+	Capacity       int
+	RentalPrice    int
+	Address        string
+	City           string
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	User           users.Core
+	Categorys      categorys.Core
 }
 
 type Business interface {
 	InsertData(insert Core) (row int, err error)
-	GetAllData(limit int, offset int) (data []Core, err error)
+	GetDataAll() (data []Core, err error)
 	GetData(id int) (data Core, err error)
+	UpdateData(id int, insert Core) (row int, err error)
 	DeleteData(id int) (row int, err error)
 	GetToken(id int, idToken int) (data Core, err error)
-	UpdatedData(id int, insert Core) (row int, err error)
-
 }
 
 type Data interface {
 	InsertData(insert Core) (row int, err error)
-	GetAllData(limit int, offset int) (data []Core, err error)
+	GetDataAll() (data []Core, err error)
 	GetData(id int) (data Core, err error)
+	UpdateData(id int, insert Core) (row int, err error)
 	DeleteData(id int) (row int, err error)
 	GetToken(id int, idToken int) (data Core, err error)
-	UpdatedData(id int, insert Core) (row int, err error)
-
 }

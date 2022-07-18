@@ -86,11 +86,12 @@ func AddImageRoom(c echo.Context) (link string, message map[string]interface{}, 
 		}, nil
 	}
 }
-func AddImageLogo(c echo.Context) (link string, message map[string]interface{}, err error) {
+
+func AddImagePengelola(c echo.Context) (link string, message map[string]interface{}, err error) {
 	file, err := c.FormFile("image")
 	bucket := os.Getenv("DB_BUCKET")
 	if err != nil {
-		url := "https://storage.googleapis.com/" + bucket + "/default_room.jpg"
+		url := "https://storage.googleapis.com/" + bucket + "/event-gomeet.png"
 		return url, map[string]interface{}{
 			"message": "Success create url",
 			"code":    200,
