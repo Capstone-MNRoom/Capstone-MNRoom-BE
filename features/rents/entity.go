@@ -20,7 +20,11 @@ type Core struct {
 }
 
 type Business interface {
+	GetData(id int) (data int, err error)
+	InsertData(insert Core) (row int, err error)
 }
 
 type Data interface {
+	GetData(id int) (data int, err error)
+	InsertData(insert Core) (row int, err error)
 }

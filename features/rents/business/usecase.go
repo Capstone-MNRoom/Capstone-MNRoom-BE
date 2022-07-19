@@ -11,3 +11,13 @@ func NewRentBusiness(rent rents.Data) rents.Business {
 		rentData: rent,
 	}
 }
+
+func (rnt *rentUseCase) GetData(id int) (data int, err error) {
+	data, err = rnt.rentData.GetData(id)
+	return data, err
+}
+
+func (rnt *rentUseCase) InsertData(insert rents.Core) (row int, err error) {
+	row, err = rnt.rentData.InsertData(insert)
+	return row, err
+}
