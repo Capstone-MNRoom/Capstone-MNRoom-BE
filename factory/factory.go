@@ -29,6 +29,10 @@ import (
 	_rentData "be9/mnroom/features/rents/data"
 	_rentPresentation "be9/mnroom/features/rents/presentation"
 
+	_feedbackBusiness "be9/mnroom/features/feedback/business"
+	_feedbackData "be9/mnroom/features/feedback/data"
+	_feedbackPresentation "be9/mnroom/features/feedback/presentation"
+
 	"gorm.io/gorm"
 )
 
@@ -47,6 +51,8 @@ type Presenter struct {
 	RoomFacilitysPresenter *_roomfacilitysPresentation.RoomFacilityHandler
 	// Rents
 	RentPresenter *_rentPresentation.RentHandler
+	// Feedback
+	FeedbackPresenter *_feedbackPresentation.FeedbackHandler
 }
 
 func InitFactory(dbConn *gorm.DB) Presenter {
@@ -69,14 +75,18 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	roomData := _roomData.NewRoomRepository(dbConn)
 	roomBusiness := _roomBusiness.NewRoomBusiness(roomData)
 	roomPresentation := _roomPresentation.NewRoomHandler(roomBusiness)
-  
-  roomfacilityData := _roomfacilitysData.NewRoomFacilityRepository(dbConn)
+
+	roomfacilityData := _roomfacilitysData.NewRoomFacilityRepository(dbConn)
 	roomfacilityBusiness := _roomfacilitysBusiness.NewRoomFacilityBusiness(roomfacilityData)
 	roomfacilityPresentation := _roomfacilitysPresentation.NewRoomFacilitysHandler(roomfacilityBusiness)
-  
-  rentData := _rentData.NewRentRepository(dbConn)
+
+	rentData := _rentData.NewRentRepository(dbConn)
 	rentBusiness := _rentBusiness.NewRentBusiness(rentData)
-	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)	
+	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)
+
+	feedbackData := _feedbackData.NewFeedbackRepository(dbConn)
+	feedbackBusiness := _feedbackBusiness.NewFeedbackBusiness(feedbackData)
+	feedbackPresentation := _feedbackPresentation.NewFeedbackHandler(feedbackBusiness)
 
 	return Presenter{
 		UserPresenter:          userPresentation,
@@ -85,7 +95,7 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 		FacilityPresenter:      facilityPresentation,
 		RoomPresenter:          roomPresentation,
 		RoomFacilitysPresenter: roomfacilityPresentation,
-    RentPresenter:     rentPresentation,
-
+		RentPresenter:          rentPresentation,
+		FeedbackPresenter:      feedbackPresentation,
 	}
 }

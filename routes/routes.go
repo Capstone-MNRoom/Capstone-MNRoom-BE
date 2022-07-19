@@ -55,5 +55,8 @@ func New(presenter factory.Presenter) *echo.Echo {
 	// Rents
 	e.POST("/rents", presenter.RentPresenter.InsertData, _middlewares.JWTMiddleware())
 
+	// Feedback
+	e.POST("/feedback", presenter.FeedbackPresenter.InsertFeedback, _middlewares.JWTMiddleware())
+	e.GET("/feedback/:id", presenter.FeedbackPresenter.GetFeedbackByRoom, _middlewares.JWTMiddleware())
 	return e
 }
