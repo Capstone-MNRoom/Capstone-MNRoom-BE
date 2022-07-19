@@ -53,3 +53,12 @@ func (repo *mysqlFeedbackRepository) GetFeedbackByRoom(id int) (data []feedback.
 	}
 	return toCoreList(getFeedbackByRoom), nil
 }
+
+func (repo *mysqlFeedbackRepository) GetDataRentUser(idToken int) (data int, err error) {
+	var getDataRent _rents.Rents
+	tx := repo.db.Where("user_id = ?", idToken).Preload("User").First(&getDataRent)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(getDataRent.ID), nil
+}

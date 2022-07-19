@@ -38,6 +38,7 @@ type Business interface {
 	InsertFeedback(insert Core) (row int, err error)
 	GetDataRoom(id int) (data int, err error)
 	GetDataRent(id int) (data int, err error)
+	GetDataRentUser(idToken int) (data int, err error)
 }
 
 type Data interface {
@@ -45,4 +46,5 @@ type Data interface {
 	InsertFeedback(insert Core) (row int, err error)
 	GetDataRoom(id int) (data int, err error)
 	GetDataRent(id int) (data int, err error)
+	GetDataRentUser(idToken int) (data int, err error)
 }

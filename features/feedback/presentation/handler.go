@@ -28,6 +28,8 @@ func (h *FeedbackHandler) InsertFeedback(c echo.Context) error {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
 
+	data, _ := h.feedbackBusiness.GetDataRentUser(idToken)
+
 	var insertFeedback request.Feedback
 	errBind := c.Bind(&insertFeedback)
 	if errBind != nil {
@@ -36,6 +38,7 @@ func (h *FeedbackHandler) InsertFeedback(c echo.Context) error {
 
 	newFeedback := request.ToCore(insertFeedback)
 	newFeedback.User.ID = idToken
+	newFeedback.Rents.ID = data
 	row, err := h.feedbackBusiness.InsertFeedback(newFeedback)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert feedback"))
