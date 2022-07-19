@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	_requestFacilitys "be9/mnroom/features/roomfacilitys/presentation/request"
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/rooms/presentation/request"
 	"be9/mnroom/features/rooms/presentation/response"
@@ -51,9 +52,17 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 	}
 	newRoom := request.ToCore(insertRoom)
 	newRoom.User.ID = idToken
-	row, err := r.roomBusiness.InsertData(newRoom)
-	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
+	data, err := r.roomBusiness.InsertData(newRoom)
+	var insertRoomFacilitys _requestFacilitys.RoomFacilitys
+	for _, v := range newRoom.Facilitys {
+		newRoomFacilitys := _requestFacilitys.ToCore(insertRoomFacilitys)
+		newRoomFacilitys.User.ID = idToken
+		newRoomFacilitys.Rooms.ID = data.ID
+		newRoomFacilitys.Facilitys.ID = v
+		row, _ := r.roomBusiness.InsertDataRoomFacilitys(rooms.CoreRoomFacilitys(newRoomFacilitys))
+		if row != 1 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
+		}
 	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
@@ -105,8 +114,9 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	updateData := request.Rooms{
 		ImageRoom:      link,
 		ImagePengelola: linkPengelola,
-		Name:           c.FormValue("name"),
+		RoomName:       c.FormValue("room_name"),
 		Capacity:       CapacityInt,
+		HotelName:      c.FormValue("hotel_name"),
 		RentalPrice:    RentalPriceInt,
 		Address:        c.FormValue("address"),
 		City:           c.FormValue("city"),
@@ -121,11 +131,14 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	if updateData.ImagePengelola == "https://storage.googleapis.com/event2022/event-gomeet.png" {
 		updateData.ImagePengelola = data.ImagePengelola
 	}
-	if updateData.Name == "" {
-		updateData.Name = data.Name
+	if updateData.RoomName == "" {
+		updateData.RoomName = data.RoomName
 	}
 	if updateData.Capacity == 0 {
 		updateData.Capacity = data.Capacity
+	}
+	if updateData.HotelName == "" {
+		updateData.HotelName = data.HotelName
 	}
 	if updateData.RentalPrice == 0 {
 		updateData.RentalPrice = data.RentalPrice
@@ -171,4 +184,16 @@ func (r *RoomHandler) DeleteData(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to deleted data"))
+}
+
+func (r *RoomHandler) GetDataAllUserRoom(c echo.Context) error {
+	idToken, errToken := _middlewares.ExtractToken(c)
+	if errToken != nil {
+		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
+	}
+	data, err := r.roomBusiness.GetDataAllUserRoom(idToken)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreList(data)))
 }

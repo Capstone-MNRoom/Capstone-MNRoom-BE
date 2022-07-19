@@ -3,6 +3,7 @@ package data
 import (
 	"be9/mnroom/features/categorys"
 	_categorys "be9/mnroom/features/categorys/data"
+	_facilitys "be9/mnroom/features/facilitys/data"
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/users"
 	_users "be9/mnroom/features/users/data"
@@ -14,8 +15,9 @@ type Rooms struct {
 	gorm.Model
 	ImageRoom      string `json:"image_room" form:"image_room"`
 	ImagePengelola string `json:"image_pengelola" form:"image_pengelola"`
-	Name           string `json:"name" form:"name"`
+	RoomName       string `json:"room_name" form:"room_name"`
 	Capacity       int    `json:"capacity" form:"capacity"`
+	HotelName      string `json:"hotel_name" form:"hotel_name"`
 	RentalPrice    int    `json:"rental_price" form:"rental_price"`
 	Address        string `json:"address" form:"address"`
 	City           string `json:"city" form:"city"`
@@ -23,6 +25,16 @@ type Rooms struct {
 	CategorysID    uint   `json:"categorys_id" form:"categorys_id"`
 	User           _users.User
 	Categorys      _categorys.Categorys
+}
+
+type RoomFacilitys struct {
+	gorm.Model
+	UserID      uint `json:"users_id" form:"users_id"`
+	RoomsID     uint `json:"rooms_id" form:"rooms_id"`
+	FacilitysID uint `json:"facilitys_id" form:"facilitys_id"`
+	User        _users.User
+	Rooms       Rooms
+	Facilitys   _facilitys.Facilitys
 }
 
 func toCoreList(data []Rooms) []rooms.Core {
@@ -38,8 +50,9 @@ func (data *Rooms) toCore() rooms.Core {
 		ID:             int(data.ID),
 		ImageRoom:      data.ImageRoom,
 		ImagePengelola: data.ImagePengelola,
-		Name:           data.Name,
+		RoomName:       data.RoomName,
 		Capacity:       data.Capacity,
+		HotelName:      data.HotelName,
 		RentalPrice:    data.RentalPrice,
 		Address:        data.Address,
 		City:           data.City,
@@ -60,8 +73,9 @@ func fromCore(core rooms.Core) Rooms {
 	return Rooms{
 		ImageRoom:      core.ImageRoom,
 		ImagePengelola: core.ImagePengelola,
-		Name:           core.Name,
+		RoomName:       core.RoomName,
 		Capacity:       core.Capacity,
+		HotelName:      core.HotelName,
 		RentalPrice:    core.RentalPrice,
 		Address:        core.Address,
 		City:           core.City,

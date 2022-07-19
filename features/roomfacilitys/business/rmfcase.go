@@ -11,3 +11,8 @@ func NewRoomFacilityBusiness(rmfData roomfacilitys.Data) roomfacilitys.Business 
 		roomfacilityData: rmfData,
 	}
 }
+
+func (rmf *roomfacilityCase) GetData(id int) (data []roomfacilitys.Core, err error) {
+	data, err = rmf.roomfacilityData.GetData(id)
+	return data, err
+}

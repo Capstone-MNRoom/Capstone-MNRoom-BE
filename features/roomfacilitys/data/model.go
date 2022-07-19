@@ -38,8 +38,9 @@ func (data *RoomFacilitys) toCore() roomfacilitys.Core {
 			Username: data.User.Username,
 		},
 		Rooms: rooms.Core{
-			ID:   int(data.Rooms.ID),
-			Name: data.Rooms.Name,
+			ID:        int(data.Rooms.ID),
+			RoomName:  data.Rooms.RoomName,
+			HotelName: data.Rooms.HotelName,
 		},
 		Facilitys: facilitys.Core{
 			ID:   int(data.Facilitys.ID),
