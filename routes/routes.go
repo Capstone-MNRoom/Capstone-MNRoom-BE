@@ -57,7 +57,8 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.GET("/rooms/:id/facility", presenter.RoomFacilitysPresenter.GetData, _middlewares.JWTMiddleware())
 
 	// Rents
-	e.POST("/rents", presenter.RentPresenter.InsertData, _middlewares.JWTMiddleware())
+	e.POST("/rent", presenter.RentPresenter.GetData, _middlewares.JWTMiddleware())
+	e.GET("/rent/:id", presenter.RentPresenter.GetDataRent, _middlewares.JWTMiddleware())
 
 	// Feedback
 	e.POST("/feedback", presenter.FeedbackPresenter.InsertFeedback, _middlewares.JWTMiddleware())

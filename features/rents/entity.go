@@ -7,22 +7,28 @@ import (
 )
 
 type Core struct {
-	ID                 int
-	Date_start         string
-	Date_end           string
-	Bank               string
-	Total_rental_price int
-	Status             string
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
-	User               users.Core
-	Room               rooms.Core
+	ID               int
+	DateStart        string
+	DateEnd          string
+	Bank             string
+	TotalRentalPrice int
+	Status           string
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	User             users.Core
+	Room             rooms.Core
 }
 
 type Business interface {
+	GetData(id int) (data int, err error)
+	GetDataRentUser(id int, idToken int) (data Core, err error)
 	InsertData(insert Core) (row int, err error)
+	GetDataRent(id int) (data []Core, err error)
 }
 
 type Data interface {
+	GetData(id int) (data int, err error)
+	GetDataRentUser(id int, idToken int) (data Core, err error)
 	InsertData(insert Core) (row int, err error)
+	GetDataRent(id int) (data []Core, err error)
 }
