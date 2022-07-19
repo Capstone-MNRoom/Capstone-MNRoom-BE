@@ -46,12 +46,14 @@ func (h *FeedbackHandler) InsertFeedback(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert feedback"))
 }
 
-func (h *FeedbackHandler) GetFeedbackByRoom(c echo.Context) error {
+func (h *FeedbackHandler) GetDataRoom(c echo.Context) error {
 	id := c.Param("id")
 	idRoom, _ := strconv.Atoi(id)
-	data, err := h.feedbackBusiness.GetFeedbackByRoom(idRoom)
+	data, _ := h.feedbackBusiness.GetDataRoom(idRoom)
+	dataRentInt, _ := h.feedbackBusiness.GetDataRent(data)
+	dataFeedback, err := h.feedbackBusiness.GetFeedbackByRoom(dataRentInt)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
-	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreList(data)))
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(dataFeedback)))
 }

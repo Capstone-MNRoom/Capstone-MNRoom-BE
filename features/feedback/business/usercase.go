@@ -17,6 +17,16 @@ func (uc *feedbackUseCase) InsertFeedback(insert feedback.Core) (row int, err er
 	return row, err
 }
 
+func (uc *feedbackUseCase) GetDataRoom(id int) (data int, err error) {
+	data, err = uc.feedbackData.GetDataRoom(id)
+	return data, err
+}
+
+func (uc *feedbackUseCase) GetDataRent(id int) (data int, err error) {
+	data, err = uc.feedbackData.GetDataRent(id)
+	return data, err
+}
+
 func (uc *feedbackUseCase) GetFeedbackByRoom(id int) (data []feedback.Core, err error) {
 	data, err = uc.feedbackData.GetFeedbackByRoom(id)
 	return data, err
