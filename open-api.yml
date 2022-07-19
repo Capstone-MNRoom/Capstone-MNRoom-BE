@@ -98,6 +98,8 @@ paths:
           $ref: '#/components/responses/getUserSuccess'
         '400':
           $ref: '#/components/responses/getDataByIdFailed'
+        '404':
+          $ref: '#/components/responses/getDataByIdFailedNotFound'
     put:
       tags:
         - Users
@@ -129,7 +131,7 @@ paths:
 ####################################
 #  CATEGORIES
 ####################################
-  /categories:
+  /categorys:
       get:
         tags:
         - Categories
@@ -215,6 +217,7 @@ paths:
           required: true
       requestBody:
         $ref: '#/components/responses/putRoomsByIdSuccess'
+        # $ref: '#/components/responses/requestDataUpdateRoom'
       responses:
         '200':
           # $ref: '#/components/responses/putRoomsByIdSuccess'
@@ -250,7 +253,7 @@ paths:
   #         $ref: '#/components/responses/getRoomsByCategoriesSuccess'
   #       '400':
   #         $ref: '#/components/responses/getDataByIdFailed'
-  /user/rooms:
+  /users/rooms:
     get:
       tags:
       - Rooms
@@ -266,7 +269,7 @@ paths:
 ####################################
 #  FACILITY
 ####################################
-  /facility:
+  /facilitys:
     get:
       tags:
       - Facility
@@ -300,7 +303,7 @@ paths:
 # RENT
 ####################################
 
-  /rent:
+  /rents:
     post:
       tags:
         - Rent
@@ -312,7 +315,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/successOperationNonData'
-        '400':
+        '405':
           $ref: '#/components/responses/createRentFailed'
         '500':
           $ref: '#/components/responses/RentServerFailed'
@@ -321,7 +324,7 @@ paths:
 # FEEDBACK
 ####################################
 
-  /feedback:
+  /feedbacks:
     get:
       tags:
       - Feedback
@@ -636,6 +639,28 @@ components:
               type: string
         message:
           type: string
+
+
+    # roomupdate
+    requestDataUpdateRoom:
+      type: object
+      required:
+      - image_room
+      - image_pengelola
+      # - rental_price
+      properties:
+        image_room:
+          minLength: 1
+          format: binary
+          description: "allowed file extension: jpg, png, jpeg && size <= 1024000 byte"
+        image_pengelola:
+          minLength: 1
+          format: binary
+          description: "allowed file extension: jpg, png, jpeg && size <= 1024000 byte"
+        # rentral_price:
+        #   type: integer
+        # capacity:
+        #   type: integer
 
     #response Get Payment 
     responsePaymentWithData:
@@ -1055,9 +1080,13 @@ components:
           schema:
             $ref: '#/components/schemas/requestDataLogin'
           examples:
-            User:
+            newUser1:
               value:
                 email: mulya@mail.com
+                password: qwerty12345
+            newUser2:
+              value:
+                email: david@mail.com
                 password: qwerty12345
         multipart/form-data:
           schema:
@@ -1071,21 +1100,21 @@ components:
           examples:
             newUser1:
               value:
-                name: Mulya Nurdin
-                email: mulyanurdin@mail.com
+                username: Mulya Nurdin
+                email: mulya@mail.com
                 password: qwerty12345
                 phone: "081234567890"
                 address: "Bandung"
             newUser2:
               value:
-                name: David Wahyu
+                username: David Wahyu
                 email: david@mail.com
                 password: qwerty12345
                 phone: "082123456789"
                 address: "Surabaya"
             newUser3:
               value:
-                name: Mohamad Azis
+                username: Mohamad Azis
                 email: azisadnan@mail.co.id
                 password: qwerty12345
                 phone: "089444445555"
@@ -1133,13 +1162,13 @@ components:
             test:
               value:
                 categorys_id: 1
-                room_name: Ruang Rahwana
-                capacity: 50
+                room_name: Ruang Arjuna
+                capacity: 100
+                hotel_name: Arjuna
                 rental_price: 1500000
-                status: ada
                 address: Jl. Raya Utama No. 15
                 city: Bandung
-                facility_id: [1]
+                facilitys: [1,2]
 
         multipart/form-data:
           schema:
@@ -1151,14 +1180,14 @@ components:
           schema:
             $ref: '#/components/schemas/requestRentUser'
           examples:
-            test:
+            room-1:
               value:
                 rooms_id: 1
                 date_start: 16-07-2022
                 date_end: 18-07-2022
-                bank: bca
-                total_rental_price: 3000000
-                status: success
+                bank: BCA
+                # total_rental_price: 3000000
+                # status: success
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestRentUser'
@@ -1171,8 +1200,7 @@ components:
           examples:
             test:
               value:
-                user_id: 1
-                rooms_rentals_id: 1
+                rents_id: 1
                 rating: 5
                 comment: mantap, fasilitasnya lengkap
         multipart/form-data:
@@ -1281,12 +1309,12 @@ components:
           schema:
             $ref: '#/components/schemas/responseNonData'
           examples:
+            Email or Telephone Number Already Exist:
+              $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
             Invalid Email:
               $ref: '#/components/examples/invalidEmail'
             Invalid Password:
               $ref: '#/components/examples/invalidPassword'
-            Email or Telephone Number Already Exist:
-              $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
     getAllUsersSuccess:
       description: Success Response Data
       content:
@@ -1353,10 +1381,20 @@ components:
           examples:
             Invalid Id:
               $ref: '#/components/examples/invalidId'
-            Data Not Found:
-              $ref: '#/components/examples/dataNotFound'
             Bad Request:
               $ref: '#/components/examples/badRequest'
+            # Data Not Found:
+            #   $ref: '#/components/examples/dataNotFound'
+    getDataByIdFailedNotFound:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            Data Not Found:
+              $ref: '#/components/examples/dataNotFound'
+            
     updateUserFailed:
       description: Bad Request Response
       content:
@@ -1364,12 +1402,14 @@ components:
           schema:
             $ref: '#/components/schemas/responseNonData'
           examples:
+            Email or Telephone Number Already Exist:
+              $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
+            Bad Request:
+              $ref: '#/components/examples/badRequest'
             Invalid Email:
               $ref: '#/components/examples/invalidEmail'
             Invalid Telephone Number:
               $ref: '#/components/examples/invalidTelephoneNumber'
-            Email or Telephone Number Already Exist:
-              $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
     createRentFailed:
       description: Bad Request Response
       content:
@@ -1378,9 +1418,11 @@ components:
             $ref: '#/components/schemas/responseNonData'
           examples:
             Access Forbidden: 
-              $ref: '#/components/examples/accessForbidden'
+              $ref: '#/components/examples/accessForbiddenRent'
+              # $ref: '#/components/examples/methodNotAllow'
             Bad Request:
-              $ref: '#/components/examples/badRequest'
+              $ref: '#/components/examples/badRequestRent'
+              # $ref: '#/components/examples/badRequest'
     RentServerFailed:
       description: Internal Server Error Response
       content:
@@ -1465,7 +1507,7 @@ components:
                 transaction_id: 1,
                 order_id: MN-2022-01,
                 payment_type: transfer,
-                rooms_rentals_id: 1,
+                rents_id: 1,
                 bank_transfer: BCA,
                 gross_amount: 3000000,
                 va_number: 98690764630,
@@ -1487,8 +1529,9 @@ components:
                 id: 1,
                 image_room: image_room.jpg,
                 image_pengelola: image_pengelola.jpg,
-                name: Ruang Arjuna,
+                room_name: Ruang Arjuna,
                 capacity: 50,
+                hotel_name: Arjuna,
                 rental_price: 1500000,
                 address: Jl. Raya Utama No. 15,
                 city: Bandung,
@@ -1519,8 +1562,9 @@ components:
                 id: 2,
                 image_room: image_room.jpg,
                 image_pengelola: image_pengelola.jpg,
-                name: Ruang Hanoman,
+                room_name: Ruang Hanoman,
                 capacity: 200,
+                hotel_name: Hanoman,
                 rental_price: 2500000,
                 address: Jl. Raya Selatan No. 25,
                 city: Bandung,
@@ -1549,48 +1593,57 @@ components:
               }
             ]
             message: Success Operation
-    insertRoomsSuccess:
-      description: Success Response Data
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseCategoriesWithDataArray'
-          example:
-            # code: 200
-            data: [
-              { 
-                id: 1,
-                image_room: image_room.jpg,
-                image_pengelola: image_pengelola.jpg,
-                name: Ruang Arjuna,
-                capacity: 50,
-                rental_price: 1500000,
-                address: Jl. Raya Utama No. 15,
-                city: Bandung,
-                user: {
-                  id: 1,
-                  name: Mulya Nurdin  
-                },
-                categories: {
-                  id: 1,
-                  name: workspace
-                },
-                facility: [
-                  {
-                    id: 1,
-                    name: Meja
-                  },
-                  {
-                    id: 2,
-                    name: Kursi
-                  },
-                  {
-                    id: 3,
-                    name: Projector
-                  }
-                ]
-              }
-            ]
+    # insertRoomsSuccess:
+    #   description: Success Response Data
+    #   content:
+        # multipart/form-data:
+        #   type: object
+        #   required:
+        #   - id_room
+        #   properties:
+        #     image_room:
+        #       type: string
+        #     image_pengelola:
+        #       type: string
+        # application/json:
+        #   schema:
+        #     $ref: '#/components/schemas/responseCategoriesWithDataArray'
+        #   example:
+        #     # code: 200
+        #     data: [
+        #       { 
+        #         id: 1,
+        #         image_room: image_room.jpg,
+        #         image_pengelola: image_pengelola.jpg,
+        #         name: Ruang Arjuna,
+        #         capacity: 50,
+        #         rental_price: 1500000,
+        #         address: Jl. Raya Utama No. 15,
+        #         city: Bandung,
+        #         user: {
+        #           id: 1,
+        #           name: Mulya Nurdin  
+        #         },
+        #         categories: {
+        #           id: 1,
+        #           name: workspace
+        #         },
+        #         facility: [
+        #           {
+        #             id: 1,
+        #             name: Meja
+        #           },
+        #           {
+        #             id: 2,
+        #             name: Kursi
+        #           },
+        #           {
+        #             id: 3,
+        #             name: Projector
+        #           }
+        #         ]
+        #       }
+        #     ]
     getRoomsByIdSuccess:
       description: Success Response Data
       content:
@@ -1638,19 +1691,21 @@ components:
     putRoomsByIdSuccess:
       description: Success Response Data
       content:
-        application/json:
+        # application/json:
+        #   schema:
+        #     $ref: '#/components/schemas/responseCategoriesWithDataArray'
+        #   example:
+        #     # code: 200
+        #     categorys_id: 1
+        #     room_name: Ruang Arjuna
+        #     capacity: 50
+        #     rental_price: 1500000
+        #     status: ada
+        #     address: Jl. Raya Utama No. 15
+        #     city: Bandung
+        multipart/form-data:
           schema:
-            $ref: '#/components/schemas/responseCategoriesWithDataArray'
-          example:
-            # code: 200
-            categorys_id: 1
-            room_name: Ruang Arjuna
-            capacity: 50
-            rental_price: 1500000
-            status: ada
-            address: Jl. Raya Utama No. 15
-            city: Bandung
-            facility_id: [1]
+            $ref: '#/components/schemas/requestDataUpdateRoom'
 
     putRoomsByIdFailed:
       description: Bad Request Response
@@ -2214,10 +2269,18 @@ components:
       value:
         # code: 400
         message: Access Forbidden                
+    accessForbiddenRent:
+      value:
+        # code: 400
+        message: you already booked this room                
     badRequest:
       value:
         # code: 400
         message: Bad Request
+    badRequestRent:
+      value:
+        # code: 400
+        message: this room has booked
     cantConnecttoServer:
       value:
         # code: 500
