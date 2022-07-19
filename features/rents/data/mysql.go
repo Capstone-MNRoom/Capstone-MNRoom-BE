@@ -26,13 +26,22 @@ func (repo *mysqlRentRepository) GetData(id int) (data int, err error) {
 	return getData.RentalPrice, nil
 }
 
-func (repo *mysqlRentRepository) GetDataRentUser(id int, idToken int) (data rents.Core, err error) {
+func (repo *mysqlRentRepository) GetDataRentToken(idToken int) (row int, err error) {
 	var getData Rents
-	tx := repo.db.Where("user_id = ? AND rooms_id = ?", idToken, id).Preload("User").Preload("Rooms").First(&getData)
+	tx := repo.db.Where("user_id = ?", idToken).Preload("User").Preload("Rooms").First(&getData)
 	if tx.Error != nil {
-		return rents.Core{}, tx.Error
+		return 0, tx.Error
 	}
-	return getData.toCore(), nil
+	return int(tx.RowsAffected), nil
+}
+
+func (repo *mysqlRentRepository) GetDataRentUser(id int, start string, end string) (row int, err error) {
+	var getData Rents
+	tx := repo.db.Where("rooms_id = ? AND date_start = ? AND date_end = ?", id, start, end).Preload("User").Preload("Rooms").First(&getData)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(tx.RowsAffected), nil
 }
 
 func (repo *mysqlRentRepository) InsertData(insert rents.Core) (row int, err error) {

@@ -39,22 +39,26 @@ func (t *RentHandler) GetData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newRent := request.ToCore(insertData)
-	dataRent, _ := t.rentBusiness.GetDataRentUser(idToken, newRent.Room.ID)
-	if idToken == dataRent.User.ID && newRent.Room.ID == dataRent.Room.ID {
-		return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("you have booked this room"))
+	rowToken, _ := t.rentBusiness.GetDataRentToken(idToken)
+	if rowToken != 1 {
+		rowDataRent, _ := t.rentBusiness.GetDataRentUser(newRent.Room.ID, newRent.DateStart, newRent.DateEnd)
+		if rowDataRent != 1 {
+			data, _ := t.rentBusiness.GetData(newRent.Room.ID)
+			newRent.TotalRentalPrice = data
+			newRent.Status = "Success"
+			newRent.User.ID = idToken
+			row, err := t.rentBusiness.InsertData(newRent)
+			if row != 1 {
+				return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
+			}
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+			}
+			return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert data"))
+		}
+		return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("this room has booked"))
 	}
-	data, _ := t.rentBusiness.GetData(newRent.Room.ID)
-	newRent.TotalRentalPrice = data
-	newRent.Status = "Success"
-	newRent.User.ID = idToken
-	row, err := t.rentBusiness.InsertData(newRent)
-	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
-	}
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
-	}
-	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert data"))
+	return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("you already booked this room"))
 }
 
 func (t *RentHandler) GetDataRent(c echo.Context) error {
