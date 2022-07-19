@@ -21,10 +21,14 @@ type Core struct {
 
 type Business interface {
 	GetData(id int) (data int, err error)
+	GetDataRentUser(id int, idToken int) (data Core, err error)
 	InsertData(insert Core) (row int, err error)
+	GetDataRent(id int) (data []Core, err error)
 }
 
 type Data interface {
 	GetData(id int) (data int, err error)
+	GetDataRentUser(id int, idToken int) (data Core, err error)
 	InsertData(insert Core) (row int, err error)
+	GetDataRent(id int) (data []Core, err error)
 }
