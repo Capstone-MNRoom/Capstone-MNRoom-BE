@@ -39,7 +39,7 @@ func (a *AuthHandler) Auth(c echo.Context) error {
 	authUser := request.ToCore(insertLogin)
 	dataAuth, err := a.authBusiness.Auth(authUser)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error login"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or password incorrect"))
 	}
 	token, errToken := _middlewares.CreateToken(int(dataAuth.ID))
 	if errToken != nil {
