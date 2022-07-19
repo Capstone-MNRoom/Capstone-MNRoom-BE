@@ -48,7 +48,7 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(insertRoom)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newRoom := request.ToCore(insertRoom)
 	newRoom.User.ID = idToken
@@ -152,7 +152,7 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	val := validator.New()
 	errValidator := val.Struct(updateData)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newRoom := request.ToCore(updateData)
 	row, errRoom := r.roomBusiness.UpdateData(idRoom, newRoom)

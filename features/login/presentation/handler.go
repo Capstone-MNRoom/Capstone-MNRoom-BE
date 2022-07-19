@@ -34,7 +34,7 @@ func (a *AuthHandler) Auth(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(insertLogin)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	authUser := request.ToCore(insertLogin)
 	dataAuth, err := a.authBusiness.Auth(authUser)

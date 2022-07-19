@@ -12,15 +12,15 @@ import (
 
 type Rents struct {
 	gorm.Model
-	DateStart        string `json:"date_start" form:"date_start"`
-	DateEnd          string `json:"date_end" form:"date_end"`
-	Bank             string `json:"bank" form:"bank"`
-	TotalRentalPrice int    `json:"total_rental_price" form:"total_rental_price"`
-	Status           string `json:"status" form:"status"`
-	UserID           uint   `json:"user_id" form:"user_id"`
-	RoomsID          uint   `json:"rooms_id" form:"rooms_id"`
-	User             _users.User
-	Rooms            _rooms.Rooms
+	DateStart        string       `json:"date_start" form:"date_start"`
+	DateEnd          string       `json:"date_end" form:"date_end"`
+	Bank             string       `json:"bank" form:"bank"`
+	TotalRentalPrice int          `json:"total_rental_price" form:"total_rental_price"`
+	Status           string       `json:"status" form:"status"`
+	UserID           uint         `json:"user_id" form:"user_id"`
+	RoomsID          uint         `json:"rooms_id" form:"rooms_id"`
+	User             _users.User  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Rooms            _rooms.Rooms `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func toCoreList(data []Rents) []rents.Core {

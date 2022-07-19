@@ -31,7 +31,7 @@ func (g *CategoryHandler) InsertData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(insertCategory)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newCategory := request.ToCore(insertCategory)
 	row, err := g.categoryBusiness.InsertData(newCategory)
@@ -71,7 +71,7 @@ func (g *CategoryHandler) UpdateData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(updateCategory)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUpdate := request.ToCore(updateCategory)
 	row, err := g.categoryBusiness.UpdateData(idCategory, newUpdate)

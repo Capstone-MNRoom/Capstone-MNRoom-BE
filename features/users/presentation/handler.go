@@ -39,12 +39,12 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(insertData)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUser := request.ToCore(insertData)
 	row, err := h.userBusiness.InsertData(newUser)
 	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or telephone number already exist"))
 	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
@@ -136,7 +136,7 @@ func (h *UserHandler) UpdateData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(updatedData)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUser := request.ToCore(updatedData)
 	row, err := h.userBusiness.UpdateData(idToken, newUser)

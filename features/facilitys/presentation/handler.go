@@ -31,7 +31,7 @@ func (f *FacilityHandler) InsertData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(insertFacility)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newFacility := request.ToCore(insertFacility)
 	row, err := f.facilityBusiness.InsertData(newFacility)
@@ -71,7 +71,7 @@ func (f *FacilityHandler) UpdateData(c echo.Context) error {
 	v := validator.New()
 	errValidator := v.Struct(updateFacility)
 	if errValidator != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errValidator.Error()))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUpdate := request.ToCore(updateFacility)
 	row, err := f.facilityBusiness.UpdateData(idFacility, newUpdate)

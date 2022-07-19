@@ -14,12 +14,12 @@ import (
 
 type RoomFacilitys struct {
 	gorm.Model
-	UserID      uint `json:"users_id" form:"users_id"`
-	RoomsID     uint `json:"rooms_id" form:"rooms_id"`
-	FacilitysID uint `json:"facilitys_id" form:"facilitys_id"`
-	User        _users.User
-	Rooms       _rooms.Rooms
-	Facilitys   _facilitys.Facilitys
+	UserID      uint                 `json:"users_id" form:"users_id"`
+	RoomsID     uint                 `json:"rooms_id" form:"rooms_id"`
+	FacilitysID uint                 `json:"facilitys_id" form:"facilitys_id"`
+	User        _users.User          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Rooms       _rooms.Rooms         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Facilitys   _facilitys.Facilitys `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func toCoreList(data []RoomFacilitys) []roomfacilitys.Core {
