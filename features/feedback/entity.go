@@ -36,9 +36,13 @@ type Rooms struct {
 type Business interface {
 	GetFeedbackByRoom(id int) (data []Core, err error)
 	InsertFeedback(insert Core) (row int, err error)
+	GetDataRoom(id int) (data int, err error)
+	GetDataRent(id int) (data int, err error)
 }
 
 type Data interface {
 	GetFeedbackByRoom(id int) (data []Core, err error)
 	InsertFeedback(insert Core) (row int, err error)
+	GetDataRoom(id int) (data int, err error)
+	GetDataRent(id int) (data int, err error)
 }

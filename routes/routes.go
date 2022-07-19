@@ -62,6 +62,6 @@ func New(presenter factory.Presenter) *echo.Echo {
 
 	// Feedback
 	e.POST("/feedback", presenter.FeedbackPresenter.InsertFeedback, _middlewares.JWTMiddleware())
-	e.GET("/feedback/:id", presenter.FeedbackPresenter.GetFeedbackByRoom, _middlewares.JWTMiddleware())
+	e.GET("/feedback/:id", presenter.FeedbackPresenter.GetDataRoom, _middlewares.JWTMiddleware())
 	return e
 }
