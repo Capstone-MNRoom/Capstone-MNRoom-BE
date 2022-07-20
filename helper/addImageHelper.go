@@ -14,7 +14,7 @@ import (
 )
 
 func AddImageRoom(c echo.Context) (link string, message map[string]interface{}, err error) {
-	file, err := c.FormFile("image")
+	file, err := c.FormFile("image_room")
 	bucket := os.Getenv("DB_BUCKET")
 	if err != nil {
 		url := "https://storage.googleapis.com/" + bucket + "/default_room.jpg"
@@ -88,10 +88,10 @@ func AddImageRoom(c echo.Context) (link string, message map[string]interface{}, 
 }
 
 func AddImagePengelola(c echo.Context) (link string, message map[string]interface{}, err error) {
-	file, err := c.FormFile("image")
+	file, err := c.FormFile("image_pengelola")
 	bucket := os.Getenv("DB_BUCKET")
 	if err != nil {
-		url := "https://storage.googleapis.com/" + bucket + "/event-gomeet.png"
+		url := "https://storage.googleapis.com/" + bucket + "/image_pengelola.png"
 		return url, map[string]interface{}{
 			"message": "Success create url",
 			"code":    200,
