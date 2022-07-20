@@ -17,6 +17,7 @@ servers:
     description: Base URL that will be used for endpoints
 
 
+
     
 tags:
   - name: Authentication
@@ -404,7 +405,7 @@ components:
       type: object
       required:
         - image
-        - name
+        - username
         - email
         - password
         - phone
@@ -415,7 +416,7 @@ components:
           minLength: 1
           format: binary
           description: "allowed file extension: jpg, png, jpeg && size <= 1024000 byte"
-        name:
+        username:
           type: string
           minLength: 1
           pattern: '^0-9A-Za-z_.$'
@@ -1131,17 +1132,21 @@ components:
           examples:
             newUser1:
               value:
-                name: Mulya Nurdin
+                username: Mulya Nurdin
+                email: mulya@mail.com
+                password: qwerty12345
+                phone: "082123456777"
+                address: "Bandung"
             newUser2:
               value:
-                name: David Wahyu
+                username: David Wahyu
                 email: david@mail.com
                 password: qwerty12345
                 phone: "082123456789"
                 address: "Surabaya"
             newUser3:
               value:
-                name: Mohamad Azis
+                username: Mohamad Azis
                 email: azisadnan@mail.co.id
                 password: qwerty12345
                 phone: "089444445555"
@@ -1273,7 +1278,7 @@ components:
               value:
                 data: {
                   id: 4,
-                  name: mulya,
+                  username: mulya,
                   token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2Mzk2OTAwMjMsInJvbGUiOiJhZG1pbiIsInVzZXJJZCI6NH0.1Ij1ZVqpqPDOVXzaXyqcyNMlnbLTfwD28Byv0aWNjAQ,
                 }
                 message: Login Success            
