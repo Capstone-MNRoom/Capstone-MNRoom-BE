@@ -18,8 +18,10 @@ type Core struct {
 
 type Business interface {
 	GetData(id int) (data []Core, err error)
+	GetDataRow(id int) (row int, err error)
 }
 
 type Data interface {
 	GetData(id int) (data []Core, err error)
+	GetDataRow(id int) (row int, err error)
 }

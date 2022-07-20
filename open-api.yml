@@ -243,7 +243,9 @@ paths:
         '200':
           $ref: '#/components/responses/deleteRoomsByIdSuccess'
         '400':
-          $ref: '#/components/responses/deleteRoomsByIdFailed'
+          $ref: '#/components/responses/deleteRoomsByIdFailed400'
+        '401':
+          $ref: '#/components/responses/putRoomsByIdFailed'
   # /rooms/{categories}:
   #   get:
   #     tags:
@@ -299,6 +301,7 @@ paths:
           $ref: '#/components/responses/getAllRoomFacilitySuccess'
         '400':
           $ref: '#/components/responses/getAllDataFailed'
+          # $ref: '#/components/responses/getAllDataFailed'
 
 ####################################
 # RENT
@@ -1372,10 +1375,10 @@ components:
           schema:
             $ref: '#/components/schemas/responseNonData'
           examples:
-            Data Not Found:
-              $ref: '#/components/examples/dataNotFound'
-            # Bad Request:
-            #   $ref: '#/components/examples/badRequest'
+            # Data Not Found:
+            #   $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequestFacility'
     
     getUserSuccess:
       description: Success Response Data
@@ -1747,7 +1750,19 @@ components:
           example:
             # code: 200
             message: Success Operation
-    deleteRoomsByIdFailed:
+    deleteRoomsByIdFailed400:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            # Data Not Found:
+            #   $ref: '#/components/examples/dataNotFound'
+            Bad Request:
+              $ref: '#/components/examples/badRequestRoom'
+
+    deleteRoomsByIdFailed401:
       description: Bad Request Response
       content:
         application/json:
@@ -2297,6 +2312,14 @@ components:
       value:
         # code: 400
         message: Bad Request
+    badRequestFacility:
+      value:
+        # code: 400
+        message: invalid input
+    badRequestRoom:
+      value:
+        # code: 400
+        message: invalid input
     badRequestRent:
       value:
         # code: 400

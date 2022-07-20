@@ -24,3 +24,12 @@ func (repo *mysqlRoomFacilityRepository) GetData(id int) (data []roomfacilitys.C
 	}
 	return toCoreList(getData), nil
 }
+
+func (repo *mysqlRoomFacilityRepository) GetDataRow(id int) (row int, err error)  {
+	var getData RoomFacilitys
+	tx := repo.db.Where("rooms_id = ?", id).Preload("User").Preload("Rooms").Preload("Facilitys").First(&getData)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(tx.RowsAffected), nil
+}
