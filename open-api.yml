@@ -223,7 +223,7 @@ paths:
         '200':
           # $ref: '#/components/responses/putRoomsByIdSuccess'
           $ref: '#/components/responses/successPutRoomData'
-        '400':
+        '401':
           $ref: '#/components/responses/putRoomsByIdFailed'
     delete:
       tags:
@@ -321,18 +321,39 @@ paths:
         '500':
           $ref: '#/components/responses/RentServerFailed'
 
+  # /rents/{id_user}
+    get:
+      tags:
+        - Rent
+      summary: Form rent room by user loggedin
+      # parameters:
+      #   - name: id_user
+      #     description: id user
+      #     in: path
+      security:
+        - JWTAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/requestBodyRent'
+      responses:
+        '200':
+          $ref: '#/components/responses/successOperationNonData'
+        # '405':
+        #   $ref: '#/components/responses/createRentFailed'
+        '500':
+          $ref: '#/components/responses/RentServerFailed'
+
 ####################################
 # FEEDBACK
 ####################################
 
-  /feedbacks:
+  /feedbacks/{id_room}:
     get:
       tags:
       - Feedback
       summary: Get feedback by id rent
       parameters:
-        - name: rent-id
-          description: id rent
+        - name: id room
+          description: id_room
           in: path
           schema:
             type: integer
@@ -341,9 +362,10 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/getFeedbackSuccess'
-        '400':
+        '404':
           $ref: '#/components/responses/getAllDataFailed'
 
+  # /feedbacks:
     post:
       tags:
         - Feedback
@@ -403,13 +425,6 @@ components:
           type: string
     requestDataUser:
       type: object
-      required:
-        - image
-        - username
-        - email
-        - password
-        - phone
-        - address
       properties:
         image:
           type: string
@@ -645,9 +660,9 @@ components:
     # roomupdate
     requestDataUpdateRoom:
       type: object
-      required:
-      - image_room
-      - image_pengelola
+      # required:
+      # - image_room
+      # - image_pengelola
       # - rental_price
       properties:
         image_room:
@@ -1359,8 +1374,8 @@ components:
           examples:
             Data Not Found:
               $ref: '#/components/examples/dataNotFound'
-            Bad Request:
-              $ref: '#/components/examples/badRequest'
+            # Bad Request:
+            #   $ref: '#/components/examples/badRequest'
     
     getUserSuccess:
       description: Success Response Data
@@ -1719,10 +1734,10 @@ components:
           schema:
             $ref: '#/components/schemas/responseNonData'
           examples:
-            Data Not Found:
-              $ref: '#/components/examples/dataNotFound'
-            Bad Request:
-              $ref: '#/components/examples/badRequest'
+            Unauthorized:
+              $ref: '#/components/examples/dataNotFoundUnauthorized'
+            # Bad Request:
+            #   $ref: '#/components/examples/badRequest'
     deleteRoomsByIdSuccess:
       description: Success Response Data
       content:
@@ -2298,6 +2313,10 @@ components:
       value:
         # code: 400
         message: Data Not Found
+    dataNotFoundUnauthorized:
+      value:
+        # code: 400
+        message: unauthorized
     detailsCantBeEmpty:
       value:
         code: 400

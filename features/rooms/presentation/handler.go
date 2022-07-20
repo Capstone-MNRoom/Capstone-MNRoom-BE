@@ -83,7 +83,7 @@ func (r *RoomHandler) GetData(c echo.Context) error {
 	idRoom, _ := strconv.Atoi(id)
 	data, err := r.roomBusiness.GetData(idRoom)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCore(data)))
 }
@@ -172,13 +172,13 @@ func (r *RoomHandler) DeleteData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
+	row, err := r.roomBusiness.DeleteData(idRoom)
+	if row != 1 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
+	}
 	dataToken, _ := r.roomBusiness.GetToken(idRoom, idToken)
 	if dataToken.User.ID != idToken {
 		return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
-	}
-	row, err := r.roomBusiness.DeleteData(idRoom)
-	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
 	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
