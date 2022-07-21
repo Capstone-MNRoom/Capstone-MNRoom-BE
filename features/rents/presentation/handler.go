@@ -8,6 +8,7 @@ import (
 	_middlewares "be9/mnroom/middlewares"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
@@ -44,13 +45,13 @@ func (t *RentHandler) GetData(c echo.Context) error {
 		rowDataRent, _ := t.rentBusiness.GetDataRentUser(newRent.Room.ID, newRent.DateStart, newRent.DateEnd)
 		if rowDataRent != 1 {
 			data, _ := t.rentBusiness.GetData(newRent.Room.ID)
-			newRent.TotalRentalPrice = data
+			date1, _ := time.Parse("2006-01-02", newRent.DateStart)
+			date2, _ := time.Parse("2006-01-02", newRent.DateEnd)
+			difference := date2.Sub(date1)
+			newRent.TotalRentalPrice = data * int(int64(difference.Hours()/24))
 			newRent.Status = "Success"
 			newRent.User.ID = idToken
-			row, err := t.rentBusiness.InsertData(newRent)
-			if row != 1 {
-				return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
-			}
+			_, err := t.rentBusiness.InsertData(newRent)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 			}

@@ -33,6 +33,10 @@ import (
 	_feedbackData "be9/mnroom/features/feedback/data"
 	_feedbackPresentation "be9/mnroom/features/feedback/presentation"
 
+	_paymentBusiness "be9/mnroom/features/payments/business"
+	_paymentData "be9/mnroom/features/payments/data"
+	_paymentPresentation "be9/mnroom/features/payments/presentation"
+
 	"gorm.io/gorm"
 )
 
@@ -53,6 +57,8 @@ type Presenter struct {
 	RentPresenter *_rentPresentation.RentHandler
 	// Feedback
 	FeedbackPresenter *_feedbackPresentation.FeedbackHandler
+	// Payments
+	PaymentPresenter *_paymentPresentation.PaymentHandler
 }
 
 func InitFactory(dbConn *gorm.DB) Presenter {
@@ -88,6 +94,10 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	feedbackBusiness := _feedbackBusiness.NewFeedbackBusiness(feedbackData)
 	feedbackPresentation := _feedbackPresentation.NewFeedbackHandler(feedbackBusiness)
 
+	paymentData := _paymentData.NewPaymentRepository(dbConn)
+	paymentBusiness := _paymentBusiness.NewPaymentBusiness(paymentData)
+	paymentPresentation := _paymentPresentation.NewPaymentHandler(paymentBusiness)
+
 	return Presenter{
 		UserPresenter:          userPresentation,
 		AuthPresenter:          authPresentation,
@@ -97,5 +107,6 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 		RoomFacilitysPresenter: roomfacilityPresentation,
 		RentPresenter:          rentPresentation,
 		FeedbackPresenter:      feedbackPresentation,
+		PaymentPresenter:       paymentPresentation,
 	}
 }
