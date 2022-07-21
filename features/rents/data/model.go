@@ -47,6 +47,7 @@ func (data *Rents) toCore() rents.Core {
 			ID:        int(data.Rooms.ID),
 			RoomName:  data.Rooms.RoomName,
 			HotelName: data.Rooms.HotelName,
+			ImageRoom: data.Rooms.ImageRoom,
 		},
 	}
 }

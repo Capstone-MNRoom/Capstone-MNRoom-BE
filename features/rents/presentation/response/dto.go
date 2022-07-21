@@ -26,6 +26,7 @@ type Rooms struct {
 	ID        int    `json:"id"`
 	RoomName  string `json:"room_name"`
 	HotelName string `json:"hotel_name"`
+	ImageRoom string `json:"image_room"`
 }
 
 func FromCoreList(data []rents.Core) []Rents {
@@ -41,9 +42,9 @@ func FromCore(data rents.Core) Rents {
 		ID:               data.ID,
 		DateStart:        data.DateStart,
 		DateEnd:          data.DateEnd,
-		Bank:             data.Bank,
+		// Bank:             data.Bank,
 		TotalRentalPrice: data.TotalRentalPrice,
-		Status:           data.Status,
+		// Status:           data.Status,
 		User: User{
 			ID:       data.User.ID,
 			Username: data.User.Username,
@@ -52,6 +53,7 @@ func FromCore(data rents.Core) Rents {
 			ID:        data.Room.ID,
 			RoomName:  data.Room.RoomName,
 			HotelName: data.Room.HotelName,
+			ImageRoom: data.Room.ImageRoom,
 		},
 	}
 }
