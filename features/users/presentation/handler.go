@@ -38,6 +38,27 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	insertData.Image = link
 	v := validator.New()
 	errValidator := v.Struct(insertData)
+	errUsername := v.Var(insertData.Username, "required,alpha")
+	if errUsername != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username can only contains alphabet"))
+	}
+	if len(insertData.Username) < 3 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username must be at least 3 characters"))
+	}
+	errEmail := v.Var(insertData.Email, "required,email")
+	if errEmail != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid email"))
+	}
+	if len(insertData.Password) < 6 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password must be at least 6 characters"))
+	}
+	if len(insertData.Phone) < 8 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be at least 8 characters"))
+	}
+	errPhone := v.Var(insertData.Phone, "required,numeric")
+	if errPhone != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone number must be in numeric"))
+	}
 	if errValidator != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
