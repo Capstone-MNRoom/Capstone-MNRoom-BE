@@ -42,6 +42,7 @@ type Business interface {
 	DeleteData(id int) (row int, err error)
 	GetToken(id int, idToken int) (data Core, err error)
 	GetDataAllUserRoom(idToken int) (data []Core, err error)
+	GetDataIDRoom(id int) (row int, err error)
 }
 
 type Data interface {
@@ -53,4 +54,5 @@ type Data interface {
 	DeleteData(id int) (row int, err error)
 	GetToken(id int, idToken int) (data Core, err error)
 	GetDataAllUserRoom(idToken int) (data []Core, err error)
+	GetDataIDRoom(id int) (row int, err error)
 }

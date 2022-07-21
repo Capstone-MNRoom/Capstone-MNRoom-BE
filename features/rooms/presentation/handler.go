@@ -172,13 +172,16 @@ func (r *RoomHandler) DeleteData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
+	rowIDRoom, _ := r.roomBusiness.GetDataIDRoom(idRoom)
+	dataToken, _ := r.roomBusiness.GetToken(idRoom, idToken)
+	if rowIDRoom != 1 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
+	} else if rowIDRoom == 1 && dataToken.User.ID != idToken {
+		return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+	}
 	row, err := r.roomBusiness.DeleteData(idRoom)
 	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
-	}
-	dataToken, _ := r.roomBusiness.GetToken(idRoom, idToken)
-	if dataToken.User.ID != idToken {
-		return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
 	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
