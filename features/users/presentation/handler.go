@@ -47,13 +47,13 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	}
 	errEmail := v.Var(insertData.Email, "required,email")
 	if errEmail != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid email"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid format email"))
 	}
 	if len(insertData.Password) < 6 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password must be at least 6 characters"))
 	}
 	if len(insertData.Phone) < 8 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be at least 8 characters"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be at least 8 numbers"))
 	}
 	errPhone := v.Var(insertData.Phone, "required,numeric")
 	if errPhone != nil {

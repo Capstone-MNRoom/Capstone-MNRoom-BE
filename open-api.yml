@@ -439,7 +439,7 @@ components:
         username:
           type: string
           minLength: 1
-          pattern: '^0-9A-Za-z_.$'
+          pattern: 'Username must be alphabet and minimal 3 character'
         email:
           type: string
           format: email
@@ -448,6 +448,7 @@ components:
         password:
           type: string
           minLength: 6
+          description: Password must be at least 6 character
         phone:
           type: string
           format: phone
@@ -456,7 +457,8 @@ components:
           description: inputted phone number must be unique
         address:
           type: string
-          minLength: 20
+          minLength: 10
+          description: Your address 
     requestRoomUser:
       type: object
       required:
@@ -1336,10 +1338,18 @@ components:
           examples:
             Email or Telephone Number Already Exist:
               $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
+            Invalid Usernme:
+              $ref: '#/components/examples/invalidUsername'
+            Invalid Username Minimal:
+              $ref: '#/components/examples/invalidUsernameMin'
             Invalid Email:
               $ref: '#/components/examples/invalidEmail'
             Invalid Password:
               $ref: '#/components/examples/invalidPassword'
+            Invalid Phone:
+              $ref: '#/components/examples/invalidPhone'
+            Invalid Phone Minimal:
+              $ref: '#/components/examples/invalidPhoneMin'
     getAllUsersSuccess:
       description: Success Response Data
       content:
@@ -2375,7 +2385,19 @@ components:
         message: Illegal File
     invalidEmail:
       value:
-        message: Invalid Email
+        message: Invalid Format Email
+    invalidUsername:
+      value:
+        message: username can only contains alphabet
+    invalidUsernameMin:
+      value:
+        message: username must be at least 3 characters
+    invalidPhone:
+      value:
+        message: phone number must be in numeric
+    invalidPhoneMin:
+      value:
+        message: phone nummber must be at least 8 numbers
     invalidId:
       value:
         # code: 400
@@ -2393,7 +2415,7 @@ components:
         message: Invalid Param
     invalidPassword:
       value:
-        message: Invalid Password
+        message: password must be at least 6 characters
     invalidTelephoneNumber:
       value:
         message: Invalid Telephone Number
