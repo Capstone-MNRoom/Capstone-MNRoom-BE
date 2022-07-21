@@ -288,6 +288,8 @@ paths:
       tags:
       - Facility
       summary: Get room facility
+      security:
+        - JWTAuth: []
       parameters:
         - name: id_room
           description: id room
@@ -1566,20 +1568,20 @@ components:
                   id: 1,
                   name: workspace
                 },
-                facility: [
-                  {
-                    id: 1,
-                    name: Meja
-                  },
-                  {
-                    id: 2,
-                    name: Kursi
-                  },
-                  {
-                    id: 3,
-                    name: Projector
-                  }
-                ]
+                # facility: [
+                #   {
+                #     id: 1,
+                #     name: Meja
+                #   },
+                #   {
+                #     id: 2,
+                #     name: Kursi
+                #   },
+                #   {
+                #     id: 3,
+                #     name: Projector
+                #   }
+                # ]
               },
               { 
                 id: 2,
@@ -1599,20 +1601,20 @@ components:
                   id: 1,
                   name: workspace
                 },
-                facility: [
-                  {
-                    id: 1,
-                    name: Meja
-                  },
-                  {
-                    id: 2,
-                    name: Kursi
-                  },
-                  {
-                    id: 4,
-                    name: Sound System
-                  }
-                ]
+                # facility: [
+                #   {
+                #     id: 1,
+                #     name: Meja
+                #   },
+                #   {
+                #     id: 2,
+                #     name: Kursi
+                #   },
+                #   {
+                #     id: 4,
+                #     name: Sound System
+                #   }
+                # ]
               }
             ]
             message: Success Operation
@@ -1693,20 +1695,20 @@ components:
                   id: 1,
                   name: workspace
                 },
-                facility: [
-                  {
-                    id: 1,
-                    name: Meja
-                  },
-                  {
-                    id: 2,
-                    name: Kursi
-                  },
-                  {
-                    id: 3,
-                    name: Projector
-                  }
-                ]
+                # facility: [
+                #   {
+                #     id: 1,
+                #     name: Meja
+                #   },
+                #   {
+                #     id: 2,
+                #     name: Kursi
+                #   },
+                #   {
+                #     id: 3,
+                #     name: Projector
+                #   }
+                # ]
               },
               
             ]
@@ -1844,20 +1846,20 @@ components:
                   id: 1,
                   name: workspace
                 },
-                facility: [
-                  {
-                    id: 1,
-                    name: Meja
-                  },
-                  {
-                    id: 2,
-                    name: Kursi
-                  },
-                  {
-                    id: 3,
-                    name: Projector
-                  }
-                ]
+                # facility: [
+                #   {
+                #     id: 1,
+                #     name: Meja
+                #   },
+                #   {
+                #     id: 2,
+                #     name: Kursi
+                #   },
+                #   {
+                #     id: 3,
+                #     name: Projector
+                #   }
+                # ]
               },
               
             ]
