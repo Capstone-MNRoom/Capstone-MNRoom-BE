@@ -22,16 +22,28 @@ type Core struct {
 type CorePayments struct {
 	ID                int
 	TransactionID     string
-	OrderID           int
+	OrderID           string
 	PaymentType       string
 	BankTransfer      string
 	GrossAmount       int
-	VANumber          int
+	VANumber          string
 	TransactionStatus string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	User              users.Core
 	Rents             Core
+}
+
+type CoreUser struct {
+	ID        int
+	Image     string
+	Username  string
+	Email     string
+	Password  string
+	Phone     string
+	Address   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Business interface {
@@ -41,6 +53,7 @@ type Business interface {
 	InsertData(insert Core) (row int, err error)
 	GetDataRent(id int) (data []Core, err error)
 	InsertDataPayment(insert CorePayments) (data CorePayments, err error)
+	GetDataUser(idToken int) (data CoreUser, err error)
 }
 
 type Data interface {
@@ -50,4 +63,5 @@ type Data interface {
 	InsertData(insert Core) (row int, err error)
 	GetDataRent(id int) (data []Core, err error)
 	InsertDataPayment(insert CorePayments) (data CorePayments, err error)
+	GetDataUser(idToken int) (data CoreUser, err error)
 }
