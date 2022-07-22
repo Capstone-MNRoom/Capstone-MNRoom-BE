@@ -47,7 +47,7 @@ func (f *FacilityHandler) InsertData(c echo.Context) error {
 func (f *FacilityHandler) GetDataAll(c echo.Context) error {
 	data, err := f.facilityBusiness.GetDataAll()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to get all data"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
 }
@@ -60,7 +60,7 @@ func (f *FacilityHandler) GetData(c echo.Context) error {
 	}
 	data, err := f.facilityBusiness.GetData(idFacility)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCore(data)))
 }
