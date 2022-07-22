@@ -9,13 +9,16 @@ import (
 	"be9/mnroom/features/rents/presentation/response"
 	"be9/mnroom/helper"
 	_middlewares "be9/mnroom/middlewares"
-	"math/rand"
+	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
+	"github.com/midtrans/midtrans-go"
+	"github.com/midtrans/midtrans-go/coreapi"
 )
 
 type RentHandler struct {
@@ -67,16 +70,48 @@ func (t *RentHandler) GetData(c echo.Context) error {
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 			}
-			rand.Seed(5)
+
+			w := time.Now()
+			formatted := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
+				w.Year(), w.Month(), w.Day(),
+				w.Hour(), w.Minute(), w.Second())
+			var s = coreapi.Client{}
+			s.New(os.Getenv("SERVER_KEY"), midtrans.Sandbox)
+
+			dataUser, _ := t.rentBusiness.GetDataUser(idToken)
+
+			chargeReq := &coreapi.ChargeReq{
+				PaymentType: coreapi.PaymentTypeBankTransfer,
+				TransactionDetails: midtrans.TransactionDetails{
+					OrderID:  formatted,
+					GrossAmt: int64(newRent.TotalRentalPrice),
+				},
+				BankTransfer: &coreapi.BankTransferDetails{
+					Bank: midtrans.Bank(newRent.Bank),
+				},
+				CustomerDetails: &midtrans.CustomerDetails{
+					FName: dataUser.Username,
+					Phone: dataUser.Phone,
+					Email: dataUser.Email,
+					BillAddr: &midtrans.CustomerAddress{
+						Address: dataUser.Address,
+					},
+				},
+			}
+
+			res, _ := s.ChargeTransaction(chargeReq)
+
 			var insertPayment _payments.Payments
 			newPayment := _payments.ToCore(insertPayment)
-			newPayment.TransactionID = "be03df7d-2f97-4c8c-a53c-8959f1b67295"
-			newPayment.PaymentType = "bank transfer"
-			newPayment.OrderID = rand.Int()
+			newPayment.TransactionID = res.TransactionID
+			newPayment.PaymentType = res.PaymentType
+			newPayment.OrderID = res.OrderID
 			newPayment.BankTransfer = newRent.Bank
 			newPayment.GrossAmount = newRent.TotalRentalPrice
-			newPayment.VANumber = 812785002530231
-			newPayment.TransactionStatus = "Pending"
+			for _, v := range res.VaNumbers {
+				newPayment.VANumber = v.VANumber
+			}
+			newPayment.TransactionStatus = res.TransactionStatus
 			newPayment.Rents.ID = rowIDRent
 			newPayment.User.ID = idToken
 			dataPayment, _ := t.rentBusiness.InsertDataPayment(rents.CorePayments(newPayment))

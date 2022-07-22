@@ -9,11 +9,11 @@ import (
 type Core struct {
 	ID                int
 	TransactionID     string
-	OrderID           int
+	OrderID           string
 	PaymentType       string
 	BankTransfer      string
 	GrossAmount       int
-	VANumber          int
+	VANumber          string
 	TransactionStatus string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time

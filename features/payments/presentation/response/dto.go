@@ -9,10 +9,10 @@ type Payments struct {
 	ID                int       `json:"id"`
 	TransactionID     string    `json:"transaction_id"`
 	PaymentType       string    `json:"payment_type"`
-	OrderID           int       `json:"order_id"`
+	OrderID           string    `json:"order_id"`
 	BankTransfer      string    `json:"bank_transfer"`
 	GrossAmount       int       `json:"gross_amount"`
-	VANumber          int       `json:"va_number"`
+	VANumber          string    `json:"va_number"`
 	TransactionStatus string    `json:"transaction_status"`
 	CreatedAt         time.Time `json:"created_at"`
 }

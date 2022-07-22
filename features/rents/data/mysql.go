@@ -70,3 +70,12 @@ func (repo *mysqlRentRepository) InsertDataPayment(insert rents.CorePayments) (d
 	}
 	return insertData.toCorePayment(), nil
 }
+
+func (repo *mysqlRentRepository) GetDataUser(idToken int) (data rents.CoreUser, err error) {
+	var getData User
+	tx := repo.db.First(&getData, idToken)
+	if tx.Error != nil {
+		return rents.CoreUser{}, tx.Error
+	}
+	return rents.CoreUser(getData.toCoreUser()), nil
+}
