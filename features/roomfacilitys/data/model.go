@@ -36,11 +36,13 @@ func (data *RoomFacilitys) toCore() roomfacilitys.Core {
 		User: users.Core{
 			ID:       int(data.User.ID),
 			Username: data.User.Username,
+			Email:    data.User.Email,
 		},
 		Rooms: rooms.Core{
 			ID:        int(data.Rooms.ID),
 			RoomName:  data.Rooms.RoomName,
 			HotelName: data.Rooms.HotelName,
+			Capacity:  data.Rooms.Capacity,
 		},
 		Facilitys: facilitys.Core{
 			ID:   int(data.Facilitys.ID),

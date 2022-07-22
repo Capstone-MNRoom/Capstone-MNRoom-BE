@@ -3,7 +3,7 @@ package request
 import "be9/mnroom/features/categorys"
 
 type Categorys struct {
-	CategoryName string `json:"category_name" validate:"required" form:"category_name"`
+	CategoryName string `json:"category_name" form:"category_name"`
 }
 
 func ToCore(req Categorys) categorys.Core {

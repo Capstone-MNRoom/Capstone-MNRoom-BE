@@ -51,7 +51,10 @@ func (h *FeedbackHandler) InsertFeedback(c echo.Context) error {
 
 func (h *FeedbackHandler) GetDataRoom(c echo.Context) error {
 	id := c.Param("id")
-	idRoom, _ := strconv.Atoi(id)
+	idRoom, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	data, _ := h.feedbackBusiness.GetDataRoom(idRoom)
 	dataRentInt, _ := h.feedbackBusiness.GetDataRent(data)
 	dataFeedback, err := h.feedbackBusiness.GetFeedbackByRoom(dataRentInt)

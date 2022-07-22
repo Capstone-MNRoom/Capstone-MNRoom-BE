@@ -37,7 +37,7 @@ func (repo *mysqlRentRepository) GetDataRentToken(idToken int) (row int, err err
 
 func (repo *mysqlRentRepository) GetDataRentUser(id int, start string, end string) (row int, err error) {
 	var getData Rents
-	tx := repo.db.Where("rooms_id = ? AND date_start = ? AND date_end = ?", id, start, end).Preload("User").Preload("Rooms").First(&getData)
+	tx := repo.db.Where("rooms_id = ? AND date_start AND date_end BETWEEN ? AND ?", id, start, end).Preload("User").Preload("Rooms").Find(&getData)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
@@ -50,7 +50,7 @@ func (repo *mysqlRentRepository) InsertData(insert rents.Core) (row int, err err
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
-	return int(tx.RowsAffected), nil
+	return int(insertData.ID), nil
 }
 
 func (repo *mysqlRentRepository) GetDataRent(id int) (data []rents.Core, err error) {
@@ -60,4 +60,13 @@ func (repo *mysqlRentRepository) GetDataRent(id int) (data []rents.Core, err err
 		return []rents.Core{}, tx.Error
 	}
 	return toCoreList(getData), nil
+}
+
+func (repo *mysqlRentRepository) InsertDataPayment(insert rents.CorePayments) (data rents.CorePayments, err error) {
+	insertData := fromCorePayment(insert)
+	tx := repo.db.Create(&insertData)
+	if tx.Error != nil {
+		return rents.CorePayments{}, tx.Error
+	}
+	return insertData.toCorePayment(), nil
 }

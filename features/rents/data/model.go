@@ -23,6 +23,21 @@ type Rents struct {
 	Rooms            _rooms.Rooms `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
+type Payments struct {
+	gorm.Model
+	TransactionID     string `json:"transaction_id" form:"transaction_id"`
+	PaymentType       string `json:"payment_type" form:"payment_type"`
+	OrderID           int    `json:"order_id" form:"order_id"`
+	BankTransfer      string `json:"bank_transfer" form:"bank_transfer"`
+	GrossAmount       int    `json:"gross_amount" form:"gross_amount"`
+	VANumber          int    `json:"va_number" form:"va_number"`
+	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
+	UserID            int    `json:"user_id" form:"user_id"`
+	RentsID           int    `json:"rents_id" form:"rents_id"`
+	User              _users.User
+	Rents             Rents
+}
+
 func toCoreList(data []Rents) []rents.Core {
 	result := []rents.Core{}
 	for key := range data {
@@ -42,12 +57,14 @@ func (data *Rents) toCore() rents.Core {
 		User: users.Core{
 			ID:       int(data.User.ID),
 			Username: data.User.Username,
+			Email:    data.User.Email,
 		},
 		Room: rooms.Core{
 			ID:        int(data.Rooms.ID),
 			RoomName:  data.Rooms.RoomName,
 			HotelName: data.Rooms.HotelName,
 			ImageRoom: data.Rooms.ImageRoom,
+			Capacity:  data.Rooms.Capacity,
 		},
 	}
 }
@@ -61,5 +78,53 @@ func fromCore(core rents.Core) Rents {
 		Status:           core.Status,
 		UserID:           uint(core.User.ID),
 		RoomsID:          uint(core.Room.ID),
+	}
+}
+
+func toCoreListPayments(data []Payments) []rents.CorePayments {
+	result := []rents.CorePayments{}
+	for key := range data {
+		result = append(result, data[key].toCorePayment())
+	}
+	return result
+}
+
+func (data *Payments) toCorePayment() rents.CorePayments {
+	return rents.CorePayments{
+		ID:                int(data.ID),
+		TransactionID:     data.TransactionID,
+		PaymentType:       data.PaymentType,
+		OrderID:           data.OrderID,
+		BankTransfer:      data.BankTransfer,
+		GrossAmount:       data.GrossAmount,
+		VANumber:          data.VANumber,
+		TransactionStatus: data.TransactionStatus,
+		CreatedAt:         data.CreatedAt,
+		UpdatedAt:         data.UpdatedAt,
+		User: users.Core{
+			ID:       int(data.User.ID),
+			Username: data.User.Username,
+			Email:    data.User.Email,
+		},
+		Rents: rents.Core{
+			ID:               int(data.Rents.ID),
+			DateStart:        data.Rents.DateStart,
+			DateEnd:          data.Rents.DateEnd,
+			TotalRentalPrice: data.Rents.TotalRentalPrice,
+		},
+	}
+}
+
+func fromCorePayment(core rents.CorePayments) Payments {
+	return Payments{
+		TransactionID:     core.TransactionID,
+		PaymentType:       core.PaymentType,
+		OrderID:           core.OrderID,
+		BankTransfer:      core.BankTransfer,
+		GrossAmount:       core.GrossAmount,
+		VANumber:          core.VANumber,
+		TransactionStatus: core.TransactionStatus,
+		UserID:            core.User.ID,
+		RentsID:           core.Rents.ID,
 	}
 }

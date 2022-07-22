@@ -4,6 +4,7 @@ import (
 	_mCategorys "be9/mnroom/features/categorys/data"
 	_mFacilitys "be9/mnroom/features/facilitys/data"
 	_mFeedback "be9/mnroom/features/feedback/data"
+	_mPayments "be9/mnroom/features/payments/data"
 	_mRents "be9/mnroom/features/rents/data"
 	_mRoomFacilitys "be9/mnroom/features/roomfacilitys/data"
 	_mRooms "be9/mnroom/features/rooms/data"
@@ -20,4 +21,5 @@ func InitMigrate(db *gorm.DB) {
 	db.AutoMigrate(&_mRoomFacilitys.RoomFacilitys{})
 	db.AutoMigrate(&_mRents.Rents{})
 	db.AutoMigrate(&_mFeedback.Feedback{})
+	db.AutoMigrate(&_mPayments.Payments{})
 }

@@ -5,9 +5,9 @@ import (
 )
 
 type Feedback struct {
-	Rating  int    `json:"rating" validate:"required" form:"rating"`
-	Comment string `json:"comment" validate:"required" form:"comment"`
-	RentsID uint   `json:"rents_id" validate:"required" form:"rents_id"`
+	Rating  int    `json:"rating" form:"rating"`
+	Comment string `json:"comment" form:"comment"`
+	RentsID uint   `json:"rents_id" form:"rents_id"`
 }
 
 func ToCore(req Feedback) feedback.Core {
