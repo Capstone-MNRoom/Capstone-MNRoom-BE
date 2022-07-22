@@ -37,7 +37,7 @@ func (repo *mysqlRentRepository) GetDataRentToken(idToken int) (row int, err err
 
 func (repo *mysqlRentRepository) GetDataRentUser(id int, start string, end string) (row int, err error) {
 	var getData Rents
-	tx := repo.db.Where("rooms_id = ? AND date_start = ? AND date_end = ?", id, start, end).Preload("User").Preload("Rooms").First(&getData)
+	tx := repo.db.Where("rooms_id = ? AND date_start AND date_end BETWEEN ? AND ?", id, start, end).Preload("User").Preload("Rooms").Find(&getData)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
