@@ -1,11 +1,15 @@
 package presentation
 
 import (
+	"be9/mnroom/features/payments"
+	_payments "be9/mnroom/features/payments/presentation/request"
+	_response "be9/mnroom/features/payments/presentation/response"
 	"be9/mnroom/features/rents"
 	"be9/mnroom/features/rents/presentation/request"
 	"be9/mnroom/features/rents/presentation/response"
 	"be9/mnroom/helper"
 	_middlewares "be9/mnroom/middlewares"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -51,11 +55,24 @@ func (t *RentHandler) GetData(c echo.Context) error {
 			newRent.TotalRentalPrice = data * int(int64(difference.Hours()/24))
 			newRent.Status = "Success"
 			newRent.User.ID = idToken
-			_, err := t.rentBusiness.InsertData(newRent)
+			rowIDRent, err := t.rentBusiness.InsertData(newRent)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 			}
-			return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert data"))
+			rand.Seed(5)
+			var insertPayment _payments.Payments
+			newPayment := _payments.ToCore(insertPayment)
+			newPayment.TransactionID = "be03df7d-2f97-4c8c-a53c-8959f1b67295"
+			newPayment.PaymentType = "bank transfer"
+			newPayment.OrderID = rand.Int()
+			newPayment.BankTransfer = newRent.Bank
+			newPayment.GrossAmount = newRent.TotalRentalPrice
+			newPayment.VANumber = 812785002530231
+			newPayment.TransactionStatus = "Pending"
+			newPayment.Rents.ID = rowIDRent
+			newPayment.User.ID = idToken
+			dataPayment, _ := t.rentBusiness.InsertDataPayment(rents.CorePayments(newPayment))
+			return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to insert data", _response.FromCore(payments.Core(dataPayment))))
 		}
 		return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("this room has booked"))
 	}

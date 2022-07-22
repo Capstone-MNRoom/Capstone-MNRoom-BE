@@ -12,15 +12,15 @@ import (
 
 type Payments struct {
 	gorm.Model
-	UserID            int    `json:"user_id" form:"user_id"`
 	TransactionID     string `json:"transaction_id" form:"transaction_id"`
 	PaymentType       string `json:"payment_type" form:"payment_type"`
 	OrderID           int    `json:"order_id" form:"order_id"`
-	RentsID           int    `json:"rents_id" form:"rents_id"`
 	BankTransfer      string `json:"bank_transfer" form:"bank_transfer"`
 	GrossAmount       int    `json:"gross_amount" form:"gross_amount"`
 	VANumber          int    `json:"va_number" form:"va_number"`
 	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
+	UserID            int    `json:"user_id" form:"user_id"`
+	RentsID           int    `json:"rents_id" form:"rents_id"`
 	User              _users.User
 	Rents             _rents.Rents
 }

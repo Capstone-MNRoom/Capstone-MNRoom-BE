@@ -50,7 +50,7 @@ func (repo *mysqlRentRepository) InsertData(insert rents.Core) (row int, err err
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
-	return int(tx.RowsAffected), nil
+	return int(insertData.ID), nil
 }
 
 func (repo *mysqlRentRepository) GetDataRent(id int) (data []rents.Core, err error) {
@@ -60,4 +60,13 @@ func (repo *mysqlRentRepository) GetDataRent(id int) (data []rents.Core, err err
 		return []rents.Core{}, tx.Error
 	}
 	return toCoreList(getData), nil
+}
+
+func (repo *mysqlRentRepository) InsertDataPayment(insert rents.CorePayments) (data rents.CorePayments, err error) {
+	insertData := fromCorePayment(insert)
+	tx := repo.db.Create(&insertData)
+	if tx.Error != nil {
+		return rents.CorePayments{}, tx.Error
+	}
+	return insertData.toCorePayment(), nil
 }
