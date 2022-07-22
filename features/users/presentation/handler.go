@@ -64,11 +64,11 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	}
 	newUser := request.ToCore(insertData)
 	row, err := h.userBusiness.InsertData(newUser)
-	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or telephone number already exist"))
-	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+	}
+	if row != 1 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or telephone number already exist"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert data"))
 }
@@ -155,6 +155,31 @@ func (h *UserHandler) UpdateData(c echo.Context) error {
 		updatedData.Address = data.Address
 	}
 	v := validator.New()
+	errUsername := v.Var(updatedData.Username, "required,alpha")
+	if errUsername != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username can only contains alphabet"))
+	}
+	if len(updatedData.Username) < 3 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username must be at least 3 characters"))
+	}
+	errEmail := v.Var(updatedData.Email, "required,email")
+	if errEmail != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid format email"))
+	}
+	if len(updatedData.Password) < 6 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password must be at least 6 characters"))
+	}
+	// errPhone := v.Var(updatedData.Phone, "required,numeric")
+	errPhone := v.Var(updatedData.Phone, "required,numeric")
+	if errPhone != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone number must be in numeric"))
+	}
+	if len(updatedData.Phone) < 8 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be at least 8 numbers"))
+	}
+	if len(updatedData.Phone) > 16 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be less 16 numbers"))
+	}
 	errValidator := v.Struct(updatedData)
 	if errValidator != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))

@@ -2,7 +2,11 @@ package data
 
 import (
 	"be9/mnroom/features/users"
+	"errors"
 	"fmt"
+
+	"github.com/go-sql-driver/mysql"
+	// "google.golang.org/protobuf/internal/errors"
 
 	"gorm.io/gorm"
 )
@@ -20,12 +24,16 @@ func NewUserRepository(conn *gorm.DB) users.Data {
 func (repo *mysqlUserRepository) InsertData(insert users.Core) (row int, err error) {
 	insertData := fromCore(insert)
 	tx := repo.db.Create(&insertData)
-	if tx.Error != nil {
-		return 0, tx.Error
+	if tx.Error.(*mysql.MySQLError).Number == 1062 {
+		return 0, errors.New("email already exist")
 	}
-	if tx.RowsAffected != 1 {
-		return 0, fmt.Errorf("failed to insert data")
-	}
+
+	// if tx.Error != nil {
+	// 	return 0, tx.Error
+	// }
+	// if tx.RowsAffected != 1 {
+	// 	return 0, fmt.Errorf("failed to insert data")
+	// }
 	return int(tx.RowsAffected), nil
 }
 
