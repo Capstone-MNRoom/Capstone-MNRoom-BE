@@ -102,7 +102,7 @@ func (repo *mysqlRoomRepository) GetDataAllUserRoom(idToken int) (data []rooms.C
 
 func (repo *mysqlRoomRepository) GetDataByCategory(id int) (data []rooms.Core, err error) {
 	var categoryId []Rooms
-	tx := repo.db.Where("categorys_id = ? ", id).Preload("Categorys").Find(&categoryId)
+	tx := repo.db.Where("categorys_id = ? ", id).Preload("User").Preload("Categorys").Find(&categoryId)
 	if tx.Error != nil {
 		return []rooms.Core{}, tx.Error
 	}

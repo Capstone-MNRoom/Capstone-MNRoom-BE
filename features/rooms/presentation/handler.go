@@ -272,5 +272,5 @@ func (r *RoomHandler) GetDataByCategory(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Check your input"))
 	}
-	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("Success to get data", data))
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("Success to get data", response.FromCoreList(data)))
 }
