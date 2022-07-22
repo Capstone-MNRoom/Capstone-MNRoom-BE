@@ -16,12 +16,14 @@ type RoomFacilitys struct {
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 type Rooms struct {
 	ID        int    `json:"id"`
 	RoomName  string `json:"room_name"`
 	HotelName string `json:"hotel_name"`
+	Capacity  int    `json:"capacity"`
 }
 
 type Facilitys struct {
@@ -44,11 +46,13 @@ func FromCore(data roomfacilitys.Core) RoomFacilitys {
 		User: User{
 			ID:       data.User.ID,
 			Username: data.User.Username,
+			Email:    data.User.Email,
 		},
 		Rooms: Rooms{
 			ID:        data.Rooms.ID,
 			RoomName:  data.Rooms.RoomName,
 			HotelName: data.Rooms.HotelName,
+			Capacity:  data.Rooms.Capacity,
 		},
 		Facilitys: Facilitys{
 			ID:   data.Facilitys.ID,

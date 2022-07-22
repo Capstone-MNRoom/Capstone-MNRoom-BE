@@ -22,7 +22,10 @@ func NewRoomFacilitysHandler(business roomfacilitys.Business) *RoomFacilityHandl
 
 func (m *RoomFacilityHandler) GetData(c echo.Context) error {
 	id := c.Param("id")
-	idRoom, _ := strconv.Atoi(id)
+	idRoom, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	row, err := m.roomfacilitysBusiness.GetDataRow(idRoom)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))

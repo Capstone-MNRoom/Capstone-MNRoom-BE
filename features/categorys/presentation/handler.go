@@ -29,9 +29,9 @@ func (g *CategoryHandler) InsertData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
 	v := validator.New()
-	errValidator := v.Struct(insertCategory)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	errCategoryName := v.Var(insertCategory.CategoryName, "required")
+	if errCategoryName != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("category cannot be empty"))
 	}
 	newCategory := request.ToCore(insertCategory)
 	row, err := g.categoryBusiness.InsertData(newCategory)
@@ -54,7 +54,10 @@ func (g *CategoryHandler) GetDataAll(c echo.Context) error {
 
 func (g *CategoryHandler) GetData(c echo.Context) error {
 	id := c.Param("id")
-	idCategory, _ := strconv.Atoi(id)
+	idCategory, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	data, err := g.categoryBusiness.GetData(idCategory)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
@@ -64,7 +67,10 @@ func (g *CategoryHandler) GetData(c echo.Context) error {
 
 func (g *CategoryHandler) UpdateData(c echo.Context) error {
 	id := c.Param("id")
-	idCategory, _ := strconv.Atoi(id)
+	idCategory, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	updateCategory := request.Categorys{
 		CategoryName: c.FormValue("category_name"),
 	}
@@ -86,7 +92,10 @@ func (g *CategoryHandler) UpdateData(c echo.Context) error {
 
 func (g *CategoryHandler) DeleteData(c echo.Context) error {
 	id := c.Param("id")
-	idCategory, _ := strconv.Atoi(id)
+	idCategory, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	row, err := g.categoryBusiness.DeleteData(idCategory)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
