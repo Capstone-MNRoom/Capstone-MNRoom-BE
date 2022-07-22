@@ -41,3 +41,8 @@ func (rnt *rentUseCase) InsertDataPayment(insert rents.CorePayments) (data rents
 	data, err = rnt.rentData.InsertDataPayment(insert)
 	return data, err
 }
+
+func (rnt *rentUseCase) GetDataUser(idToken int) (data rents.CoreUser, err error) {
+	data, err = rnt.rentData.GetDataUser(idToken)
+	return data, err
+}

@@ -4,6 +4,27 @@ on:
     branches:
       - main
 jobs:
+  build2:
+    name: NewVM
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing deploy to new-vm using remote ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTNEW }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/vmgcp/newroom
+            ls -la
+            whoami
+            git pull origin main
+            docker stop appMNRoomNew
+            docker rm appMNRoomNew
+            docker rm appMNRoomNew
+            docker build -t apps-mnroom:latest .
+            docker run -d -p 80:8000 -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e DB_PORT=${{ secrets.DB_PORT }} -e DB_HOST=${{ secrets.DB_HOST }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_BUCKET=${{ secrets.DB_BUCKET }} -e SERVER_KEY=${{ secrets.SERVER_KEY }} --restart always --name appMNRoomNew apps-mnroom:latest
 #   build:
 #     name: Build
 #     runs-on: ubuntu-latest
@@ -25,24 +46,3 @@ jobs:
 #             docker rm appMNRoom
 #             docker build -t apps-mnroom:latest .
 #             docker run -d -p 80:8000 -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e DB_PORT=${{ secrets.DB_PORT }} -e DB_HOST=${{ secrets.DB_HOST }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_BUCKET=${{ secrets.DB_BUCKET }} --restart always --name appMNRoom apps-mnroom:latest
-  build2:
-    name: NewVM
-    runs-on: ubuntu-latest
-    steps:
-      - name: executing deploy to new-vm using remote ssh key
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOSTNEW }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd /home/vmgcp/newroom
-            ls -la
-            whoami
-            git pull origin main
-            docker stop appMNRoomNew
-            docker rm appMNRoomNew
-            docker rm appMNRoomNew
-            docker build -t apps-mnroom:latest .
-            docker run -d -p 80:8000 -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e DB_PORT=${{ secrets.DB_PORT }} -e DB_HOST=${{ secrets.DB_HOST }} -e DB_NAME=${{ secrets.DB_NAME }} -e DB_BUCKET=${{ secrets.DB_BUCKET }} --restart always --name appMNRoomNew apps-mnroom:latest

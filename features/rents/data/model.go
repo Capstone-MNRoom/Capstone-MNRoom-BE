@@ -27,15 +27,25 @@ type Payments struct {
 	gorm.Model
 	TransactionID     string `json:"transaction_id" form:"transaction_id"`
 	PaymentType       string `json:"payment_type" form:"payment_type"`
-	OrderID           int    `json:"order_id" form:"order_id"`
+	OrderID           string `json:"order_id" form:"order_id"`
 	BankTransfer      string `json:"bank_transfer" form:"bank_transfer"`
 	GrossAmount       int    `json:"gross_amount" form:"gross_amount"`
-	VANumber          int    `json:"va_number" form:"va_number"`
+	VANumber          string `json:"va_number" form:"va_number"`
 	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
 	UserID            int    `json:"user_id" form:"user_id"`
 	RentsID           int    `json:"rents_id" form:"rents_id"`
 	User              _users.User
 	Rents             Rents
+}
+
+type User struct {
+	gorm.Model
+	Image    string `json:"image" form:"image"`
+	Username string `json:"username" form:"username"`
+	Email    string `gorm:"unique" json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
+	Phone    string `gorm:"unique" json:"phone" form:"phone"`
+	Address  string `json:"address" form:"address"`
 }
 
 func toCoreList(data []Rents) []rents.Core {
@@ -126,5 +136,27 @@ func fromCorePayment(core rents.CorePayments) Payments {
 		TransactionStatus: core.TransactionStatus,
 		UserID:            core.User.ID,
 		RentsID:           core.Rents.ID,
+	}
+}
+
+func toCoreListUser(data []User) []users.Core {
+	result := []users.Core{}
+	for key := range data {
+		result = append(result, data[key].toCoreUser())
+	}
+	return result
+}
+
+func (data *User) toCoreUser() users.Core {
+	return users.Core{
+		ID:        int(data.ID),
+		Image:     data.Image,
+		Username:  data.Username,
+		Email:     data.Email,
+		Password:  data.Password,
+		Phone:     data.Phone,
+		Address:   data.Address,
+		CreatedAt: data.CreatedAt,
+		UpdatedAt: data.UpdatedAt,
 	}
 }

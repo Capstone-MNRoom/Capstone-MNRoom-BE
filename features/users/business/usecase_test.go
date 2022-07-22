@@ -37,8 +37,6 @@ func (mock mockUserData) DeleteData(id int) (row int, err error) {
 	return 1, nil
 }
 
-
-
 type mockUserDataFailed struct {
 }
 
