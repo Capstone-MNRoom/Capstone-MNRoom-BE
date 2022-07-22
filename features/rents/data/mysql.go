@@ -26,9 +26,9 @@ func (repo *mysqlRentRepository) GetData(id int) (data int, err error) {
 	return getData.RentalPrice, nil
 }
 
-func (repo *mysqlRentRepository) GetDataRentToken(idToken int) (row int, err error) {
+func (repo *mysqlRentRepository) GetDataRentToken(idToken int, idRoom int) (row int, err error) {
 	var getData Rents
-	tx := repo.db.Where("user_id = ?", idToken).Preload("User").Preload("Rooms").First(&getData)
+	tx := repo.db.Where("user_id = ? AND rooms_id = ?", idToken, idRoom).Preload("User").Preload("Rooms").First(&getData)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}

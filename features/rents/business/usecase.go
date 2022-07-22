@@ -22,8 +22,8 @@ func (rnt *rentUseCase) InsertData(insert rents.Core) (row int, err error) {
 	return row, err
 }
 
-func (rnt *rentUseCase) GetDataRentToken(idToken int) (row int, err error) {
-	row, err = rnt.rentData.GetDataRentToken(idToken)
+func (rnt *rentUseCase) GetDataRentToken(idToken int, idRoom int) (row int, err error) {
+	row, err = rnt.rentData.GetDataRentToken(idToken, idRoom)
 	return row, err
 }
 

@@ -52,7 +52,7 @@ func (t *RentHandler) GetData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("bank cannot be empty"))
 	}
 	newRent := request.ToCore(insertData)
-	rowToken, _ := t.rentBusiness.GetDataRentToken(idToken)
+	rowToken, _ := t.rentBusiness.GetDataRentToken(idToken, newRent.Room.ID)
 	if rowToken != 1 {
 		rowDataRent, _ := t.rentBusiness.GetDataRentUser(newRent.Room.ID, newRent.DateStart, newRent.DateEnd)
 		if rowDataRent != 1 {

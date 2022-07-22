@@ -36,7 +36,7 @@ type CorePayments struct {
 
 type Business interface {
 	GetData(id int) (data int, err error)
-	GetDataRentToken(idToken int) (row int, err error)
+	GetDataRentToken(idToken int, idRoom int) (row int, err error)
 	GetDataRentUser(id int, start string, end string) (row int, err error)
 	InsertData(insert Core) (row int, err error)
 	GetDataRent(id int) (data []Core, err error)
@@ -45,7 +45,7 @@ type Business interface {
 
 type Data interface {
 	GetData(id int) (data int, err error)
-	GetDataRentToken(idToken int) (row int, err error)
+	GetDataRentToken(idToken int, idRoom int) (row int, err error)
 	GetDataRentUser(id int, start string, end string) (row int, err error)
 	InsertData(insert Core) (row int, err error)
 	GetDataRent(id int) (data []Core, err error)
