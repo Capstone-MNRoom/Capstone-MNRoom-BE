@@ -8,8 +8,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `json:"email" validate:"required,email" form:"email"`
-	Password string `json:"password" validate:"required" form:"password"`
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
 }
 
 func ToCore(req User) login.Core {

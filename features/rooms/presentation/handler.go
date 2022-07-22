@@ -46,9 +46,33 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 	insertRoom.ImageRoom = link
 	insertRoom.ImagePengelola = linkPengelola
 	v := validator.New()
-	errValidator := v.Struct(insertRoom)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	errRoomName := v.Var(insertRoom.RoomName, "required")
+	if errRoomName != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("room name cannot be empty"))
+	}
+	errCapacity := v.Var(insertRoom.Capacity, "required,numeric")
+	if errCapacity != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("capacity must be a number"))
+	}
+	errHotelName := v.Var(insertRoom.HotelName, "required")
+	if errHotelName != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("hotel name cannot be empty"))
+	}
+	errRentalPrice := v.Var(insertRoom.RentalPrice, "required,numeric")
+	if errRentalPrice != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("rental price must be a number"))
+	}
+	errAddress := v.Var(insertRoom.Address, "required")
+	if errAddress != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("address cannot be empty"))
+	}
+	errCity := v.Var(insertRoom.City, "required")
+	if errCity != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("city cannot be empty"))
+	}
+	errCategorysID := v.Var(insertRoom.CategorysID, "required,numeric")
+	if errCategorysID != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("category cannot be empty"))
 	}
 	newRoom := request.ToCore(insertRoom)
 	newRoom.User.ID = idToken
@@ -80,7 +104,10 @@ func (r *RoomHandler) GetDataAll(c echo.Context) error {
 
 func (r *RoomHandler) GetData(c echo.Context) error {
 	id := c.Param("id")
-	idRoom, _ := strconv.Atoi(id)
+	idRoom, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	data, err := r.roomBusiness.GetData(idRoom)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
@@ -90,7 +117,10 @@ func (r *RoomHandler) GetData(c echo.Context) error {
 
 func (r *RoomHandler) UpdateData(c echo.Context) error {
 	id := c.Param("id")
-	idRoom, _ := strconv.Atoi(id)
+	idRoom, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	idToken, errToken := _middlewares.ExtractToken(c)
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
@@ -122,8 +152,14 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 		City:           c.FormValue("city"),
 		CategorysID:    uint(categorysIDInt),
 	}
+	v := validator.New()
 	if updateData.CategorysID == 0 {
 		updateData.CategorysID = uint(data.Categorys.ID)
+	} else if updateData.CategorysID != 0 {
+		errCategorysID := v.Var(updateData.CategorysID, "required,numeric")
+		if errCategorysID != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("category cannot be empty"))
+		}
 	}
 	if updateData.ImageRoom == "https://storage.googleapis.com/event2022/event-gomeet.png" {
 		updateData.ImageRoom = data.ImageRoom
@@ -133,26 +169,51 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	}
 	if updateData.RoomName == "" {
 		updateData.RoomName = data.RoomName
+	} else if updateData.RoomName != "" {
+		errRoomName := v.Var(updateData.RoomName, "required")
+		if errRoomName != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("room name cannot be empty"))
+		}
 	}
 	if updateData.Capacity == 0 {
 		updateData.Capacity = data.Capacity
+	} else if updateData.Capacity != 0 {
+		errCapacity := v.Var(updateData.Capacity, "required,numeric")
+		if errCapacity != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("capacity must be a number"))
+		}
 	}
 	if updateData.HotelName == "" {
 		updateData.HotelName = data.HotelName
+	} else if updateData.HotelName != "" {
+		errHotelName := v.Var(updateData.HotelName, "required")
+		if errHotelName != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("hotel name cannot be empty"))
+		}
 	}
 	if updateData.RentalPrice == 0 {
 		updateData.RentalPrice = data.RentalPrice
+	} else if updateData.RentalPrice != 0 {
+		errRentalPrice := v.Var(updateData.RentalPrice, "required,numeric")
+		if errRentalPrice != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("rental price must be a number"))
+		}
 	}
 	if updateData.Address == "" {
 		updateData.Address = data.Address
+	} else if updateData.Address != "" {
+		errAddress := v.Var(updateData.Address, "required")
+		if errAddress != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("address cannot be empty"))
+		}
 	}
 	if updateData.City == "" {
 		updateData.City = data.City
-	}
-	val := validator.New()
-	errValidator := val.Struct(updateData)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	} else if updateData.City != "" {
+		errCity := v.Var(updateData.City, "required")
+		if errCity != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("city cannot be empty"))
+		}
 	}
 	newRoom := request.ToCore(updateData)
 	row, errRoom := r.roomBusiness.UpdateData(idRoom, newRoom)
@@ -167,7 +228,10 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 
 func (r *RoomHandler) DeleteData(c echo.Context) error {
 	id := c.Param("id")
-	idRoom, _ := strconv.Atoi(id)
+	idRoom, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	idToken, errToken := _middlewares.ExtractToken(c)
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
@@ -199,4 +263,14 @@ func (r *RoomHandler) GetDataAllUserRoom(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreList(data)))
+}
+
+func (r *RoomHandler) GetDataByCategory(c echo.Context) error {
+	category := c.QueryParam("category")
+	categoryInt, _ := strconv.Atoi(category)
+	data, err := r.roomBusiness.GetDataByCategory(categoryInt)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Check your input"))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("Success to get data", response.FromCoreList(data)))
 }

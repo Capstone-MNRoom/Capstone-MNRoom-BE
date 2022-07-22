@@ -19,9 +19,6 @@ func (mock mockUserData) InsertData(data users.Core) (row int, err error) {
 	return 1, nil
 }
 
-// func (mock mockUserDataSuccess) AuthUser(email string, password string) (username string, token string, err error) {
-// 	return "mulya", "tokenmulyatokenmulyatokenmulyatokenmulya", nil
-// }
 func (mock mockUserData) UpdateData(id int, data users.Core) (row int, err error) {
 	return 1, nil
 }
@@ -40,6 +37,8 @@ func (mock mockUserData) DeleteData(id int) (row int, err error) {
 	return 1, nil
 }
 
+
+
 type mockUserDataFailed struct {
 }
 
@@ -53,7 +52,10 @@ func (mock mockUserDataFailed) InsertData(data users.Core) (row int, err error) 
 func (mock mockUserDataFailed) UpdateData(id int, data users.Core) (row int, err error) {
 	return 0, fmt.Errorf("failed insert data")
 }
-func (mock mockUserDataFailed) GetUser(id int) (data users.Core, err error) {
+func (mock mockUserDataFailed) GetData(id int) (data users.Core, err error) {
+	return users.Core{}, fmt.Errorf("error")
+}
+func (mock mockUserDataFailed) GetAllData(id int) (data users.Core, err error) {
 	return users.Core{}, fmt.Errorf("error")
 }
 func (mock mockUserDataFailed) DeleteData(id int) (row int, err error) {

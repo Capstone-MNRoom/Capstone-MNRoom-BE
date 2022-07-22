@@ -29,9 +29,9 @@ func (f *FacilityHandler) InsertData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
 	v := validator.New()
-	errValidator := v.Struct(insertFacility)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	errName := v.Var(insertFacility.Name, "required")
+	if errName != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("name cannot be empty"))
 	}
 	newFacility := request.ToCore(insertFacility)
 	row, err := f.facilityBusiness.InsertData(newFacility)
@@ -47,24 +47,30 @@ func (f *FacilityHandler) InsertData(c echo.Context) error {
 func (f *FacilityHandler) GetDataAll(c echo.Context) error {
 	data, err := f.facilityBusiness.GetDataAll()
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to get all data"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
 }
 
 func (f *FacilityHandler) GetData(c echo.Context) error {
 	id := c.Param("id")
-	idFacility, _ := strconv.Atoi(id)
+	idFacility, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	data, err := f.facilityBusiness.GetData(idFacility)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCore(data)))
 }
 
 func (f *FacilityHandler) UpdateData(c echo.Context) error {
 	id := c.Param("id")
-	idFacility, _ := strconv.Atoi(id)
+	idFacility, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	updateFacility := request.Facilitys{
 		Name: c.FormValue("name"),
 	}
@@ -86,7 +92,10 @@ func (f *FacilityHandler) UpdateData(c echo.Context) error {
 
 func (f *FacilityHandler) DeleteData(c echo.Context) error {
 	id := c.Param("id")
-	idFacility, _ := strconv.Atoi(id)
+	idFacility, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	row, err := f.facilityBusiness.DeleteData(idFacility)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))

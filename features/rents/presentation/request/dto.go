@@ -6,9 +6,9 @@ import (
 )
 
 type Rents struct {
-	DateStart        string `json:"date_start" validate:"required" form:"date_start"`
-	DateEnd          string `json:"date_end" validate:"required" form:"date_end"`
-	Bank             string `json:"bank" validate:"required" form:"bank"`
+	DateStart        string `json:"date_start" form:"date_start"`
+	DateEnd          string `json:"date_end" form:"date_end"`
+	Bank             string `json:"bank" form:"bank"`
 	TotalRentalPrice int    `json:"total_rental_price" form:"total_rental_price"`
 	Status           string `json:"status" form:"status"`
 	RoomID           uint   `json:"rooms_id" form:"rooms_id"`
