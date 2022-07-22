@@ -200,3 +200,13 @@ func (r *RoomHandler) GetDataAllUserRoom(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreList(data)))
 }
+
+func (r *RoomHandler) GetDataByCategory(c echo.Context) error {
+	category := c.QueryParam("category")
+	categoryInt, _ := strconv.Atoi(category)
+	data, err := r.roomBusiness.GetDataByCategory(categoryInt)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Check your input"))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("Success to get data", data))
+}

@@ -43,6 +43,7 @@ type Business interface {
 	GetToken(id int, idToken int) (data Core, err error)
 	GetDataAllUserRoom(idToken int) (data []Core, err error)
 	GetDataIDRoom(id int) (row int, err error)
+	GetDataByCategory(id int) (data []Core, err error)
 }
 
 type Data interface {
@@ -55,4 +56,5 @@ type Data interface {
 	GetToken(id int, idToken int) (data Core, err error)
 	GetDataAllUserRoom(idToken int) (data []Core, err error)
 	GetDataIDRoom(id int) (row int, err error)
+	GetDataByCategory(id int) (data []Core, err error)
 }

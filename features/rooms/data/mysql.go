@@ -99,3 +99,12 @@ func (repo *mysqlRoomRepository) GetDataAllUserRoom(idToken int) (data []rooms.C
 	}
 	return toCoreList(getDataUserRoom), nil
 }
+
+func (repo *mysqlRoomRepository) GetDataByCategory(id int) (data []rooms.Core, err error) {
+	var categoryId []Rooms
+	tx := repo.db.Where("categorys_id = ? ", id).Preload("Categorys").Find(&categoryId)
+	if tx.Error != nil {
+		return []rooms.Core{}, tx.Error
+	}
+	return toCoreList(categoryId), nil
+}
