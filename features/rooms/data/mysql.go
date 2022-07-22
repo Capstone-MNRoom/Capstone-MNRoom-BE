@@ -53,6 +53,15 @@ func (repo *mysqlRoomRepository) GetData(id int) (data rooms.Core, err error) {
 	return getData.toCore(), nil
 }
 
+func (repo *mysqlRoomRepository) GetDataIDRoom(id int) (row int, err error) {
+	var getData Rooms
+	tx := repo.db.Preload("User").Preload("Categorys").First(&getData, id)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(tx.RowsAffected), nil
+}
+
 func (repo *mysqlRoomRepository) UpdateData(id int, insert rooms.Core) (row int, err error) {
 	tx := repo.db.Model(&Rooms{}).Where("id = ?", id).Updates(Rooms{ImageRoom: insert.ImageRoom, ImagePengelola: insert.ImagePengelola, RoomName: insert.RoomName, Capacity: insert.Capacity, HotelName: insert.HotelName, RentalPrice: insert.RentalPrice, Address: insert.Address, City: insert.City, CategorysID: uint(insert.Categorys.ID)})
 	if tx.Error != nil {

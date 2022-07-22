@@ -32,6 +32,11 @@ func (rm *roomCase) GetData(id int) (data rooms.Core, err error) {
 	return data, err
 }
 
+func (rm *roomCase) GetDataIDRoom(id int) (row int, err error) {
+	row, err = rm.roomData.GetDataIDRoom(id)
+	return row, err
+}
+
 func (rm *roomCase) UpdateData(id int, insert rooms.Core) (row int, err error) {
 	row, err = rm.roomData.UpdateData(id, insert)
 	return row, err

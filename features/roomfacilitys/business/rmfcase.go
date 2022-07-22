@@ -16,3 +16,8 @@ func (rmf *roomfacilityCase) GetData(id int) (data []roomfacilitys.Core, err err
 	data, err = rmf.roomfacilityData.GetData(id)
 	return data, err
 }
+
+func (rmf *roomfacilityCase) GetDataRow(id int) (row int, err error) {
+	row, err = rmf.roomfacilityData.GetDataRow(id)
+	return row, err
+}

@@ -32,9 +32,13 @@ func (a *AuthHandler) Auth(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
 	v := validator.New()
-	errValidator := v.Struct(insertLogin)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	errEmail := v.Var(insertLogin.Email, "required,email")
+	if errEmail != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid format email"))
+	}
+	errPassword := v.Var(insertLogin.Password, "required")
+	if errPassword != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password cannot be empty"))
 	}
 	authUser := request.ToCore(insertLogin)
 	dataAuth, err := a.authBusiness.Auth(authUser)
@@ -43,7 +47,7 @@ func (a *AuthHandler) Auth(c echo.Context) error {
 	}
 	token, errToken := _middlewares.CreateToken(int(dataAuth.ID))
 	if errToken != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error toker"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error token"))
 	}
 	return c.JSON(http.StatusOK,
 		map[string]interface{}{

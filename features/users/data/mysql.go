@@ -2,7 +2,6 @@ package data
 
 import (
 	"be9/mnroom/features/users"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -23,15 +22,12 @@ func (repo *mysqlUserRepository) InsertData(insert users.Core) (row int, err err
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
-	if tx.RowsAffected != 1 {
-		return 0, fmt.Errorf("failed to insert data")
-	}
 	return int(tx.RowsAffected), nil
 }
 
-func (repo *mysqlUserRepository) GetAllData(limit int, offset int) (data []users.Core, err error) {
+func (repo *mysqlUserRepository) GetAllData() (data []users.Core, err error) {
 	var getAllData []User
-	tx := repo.db.Limit(limit).Offset(offset).Find(&getAllData)
+	tx := repo.db.Find(&getAllData)
 	if tx.Error != nil {
 		return []users.Core{}, tx.Error
 	}
@@ -53,19 +49,13 @@ func (repo *mysqlUserRepository) DeleteData(id int) (row int, err error) {
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
-	if tx.RowsAffected != 1 {
-		return 0, fmt.Errorf("failed to deleted data")
-	}
 	return int(tx.RowsAffected), nil
 }
 
 func (repo *mysqlUserRepository) UpdateData(id int, insert users.Core) (row int, err error) {
-	tx := repo.db.Model(&User{}).Where("id = ?", id).Updates(User{Image: insert.Image, Username: insert.Username, Email: insert.Email, Password: insert.Password, Phone: insert.Phone, Address: insert.Address})
+	tx := repo.db.Model(&User{}).Where("id = ?", id).Updates(User{Image: insert.Image, Username: insert.Username, Password: insert.Password, Address: insert.Address})
 	if tx.Error != nil {
 		return 0, tx.Error
-	}
-	if tx.RowsAffected != 1 {
-		return 0, fmt.Errorf("failed to updated data")
 	}
 	return int(tx.RowsAffected), nil
 }

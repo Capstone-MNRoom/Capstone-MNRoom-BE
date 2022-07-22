@@ -17,6 +17,7 @@ type Feedback struct {
 type User struct {
 	ID       int
 	Username string
+	Email    string
 }
 
 type Rents struct {
@@ -42,6 +43,7 @@ func FromCore(data feedback.Core) Feedback {
 		User: User{
 			ID:       data.User.ID,
 			Username: data.User.Username,
+			Email:    data.User.Email,
 		},
 		Rents: Rents{
 			ID:                 data.Rents.ID,

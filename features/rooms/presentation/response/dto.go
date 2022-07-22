@@ -23,6 +23,7 @@ type Rooms struct {
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 type Categorys struct {
@@ -53,6 +54,7 @@ func FromCore(data rooms.Core) Rooms {
 		User: User{
 			ID:       data.User.ID,
 			Username: data.User.Username,
+			Email:    data.User.Email,
 		},
 		Categorys: Categorys{
 			ID:           data.Categorys.ID,
