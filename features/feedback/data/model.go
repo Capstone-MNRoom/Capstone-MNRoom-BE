@@ -64,6 +64,7 @@ func (data *Feedback) toCore() feedback.Core {
 		User: feedback.User{
 			ID:       int(data.User.ID),
 			Username: data.User.Username,
+			Email:    data.User.Email,
 		},
 		Rents: feedback.Rents{
 			ID:                 int(data.Rents.ID),

@@ -8,14 +8,14 @@ import (
 type Rooms struct {
 	ImageRoom      string `json:"image_room" validate:"required" form:"image_room"`
 	ImagePengelola string `json:"image_pengelola" validate:"required" form:"image_pengelola"`
-	RoomName       string `json:"room_name" validate:"required" form:"room_name"`
-	Capacity       int    `json:"capacity" validate:"required,numeric" form:"capacity"`
-	HotelName      string `json:"hotel_name" validate:"required" form:"hotel_name"`
-	RentalPrice    int    `json:"rental_price" validate:"required,numeric" form:"rental_price"`
-	Address        string `json:"address" validate:"required" form:"address"`
+	RoomName       string `json:"room_name" form:"room_name"`
+	Capacity       int    `json:"capacity" form:"capacity"`
+	HotelName      string `json:"hotel_name" form:"hotel_name"`
+	RentalPrice    int    `json:"rental_price" form:"rental_price"`
+	Address        string `json:"address" form:"address"`
 	Facilitys      []int  `json:"facilitys" form:"facilitys"`
-	City           string `json:"city" validate:"required" form:"city"`
-	CategorysID    uint   `json:"categorys_id" validate:"required" form:"categorys_id"`
+	City           string `json:"city" form:"city"`
+	CategorysID    uint   `json:"categorys_id" form:"categorys_id"`
 }
 
 func ToCore(req Rooms) rooms.Core {

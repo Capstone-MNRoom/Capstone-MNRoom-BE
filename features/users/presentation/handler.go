@@ -8,7 +8,6 @@ import (
 	_middlewares "be9/mnroom/middlewares"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
@@ -37,7 +36,6 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	}
 	insertData.Image = link
 	v := validator.New()
-	errValidator := v.Struct(insertData)
 	errUsername := v.Var(insertData.Username, "required,alpha")
 	if errUsername != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username can only contains alphabet"))
@@ -59,26 +57,25 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	if errPhone != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone number must be in numeric"))
 	}
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	errAddress := v.Var(insertData.Address, "required")
+	if errAddress != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("address cannot be empty"))
 	}
 	newUser := request.ToCore(insertData)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
+	newUser.Password = string(hashedPassword)
 	row, err := h.userBusiness.InsertData(newUser)
+	if row != 1 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or phone number already exist"))
+	}
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
-	}
-	if row != 1 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or telephone number already exist"))
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to insert data"))
 }
 
 func (h *UserHandler) GetAllData(c echo.Context) error {
-	limit := c.QueryParam("limit")
-	offset := c.QueryParam("offset")
-	limitint, _ := strconv.Atoi(limit)
-	offsetint, _ := strconv.Atoi(offset)
-	data, err := h.userBusiness.GetAllData(limitint, offsetint)
+	data, err := h.userBusiness.GetAllData()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
@@ -124,65 +121,39 @@ func (h *UserHandler) UpdateData(c echo.Context) error {
 	data, _ := h.userBusiness.GetData(idToken)
 	updatedData := request.User{
 		Username: c.FormValue("username"),
-		Email:    c.FormValue("email"),
 		Password: c.FormValue("password"),
-		Phone:    c.FormValue("phone"),
 		Address:  c.FormValue("address"),
 		Image:    link,
 	}
+	v := validator.New()
 	if updatedData.Image == "https://storage.googleapis.com/event2022/profile_default.png" {
 		updatedData.Image = data.Image
 	}
 	if updatedData.Username == "" {
 		updatedData.Username = data.Username
-	}
-	if updatedData.Email == "" {
-		updatedData.Email = data.Email
+	} else if updatedData.Username != "" {
+		errUsername := v.Var(updatedData.Username, "required,alpha")
+		if errUsername != nil {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username can only contains alphabet"))
+		}
+		if len(updatedData.Username) < 3 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username must be at least 3 characters"))
+		}
 	}
 	if updatedData.Password == "" {
 		updatedData.Password = data.Password
 	} else if updatedData.Password != "" {
+		if len(updatedData.Password) < 6 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password must be at least 6 characters"))
+		}
 		hashedPassword, errHash := bcrypt.GenerateFromPassword([]byte(updatedData.Password), bcrypt.DefaultCost)
 		if errHash != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to generate password"))
 		}
 		updatedData.Password = string(hashedPassword)
 	}
-	if updatedData.Phone == "" {
-		updatedData.Phone = data.Phone
-	}
 	if updatedData.Address == "" {
 		updatedData.Address = data.Address
-	}
-	v := validator.New()
-	errUsername := v.Var(updatedData.Username, "required,alpha")
-	if errUsername != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username can only contains alphabet"))
-	}
-	if len(updatedData.Username) < 3 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("username must be at least 3 characters"))
-	}
-	errEmail := v.Var(updatedData.Email, "required,email")
-	if errEmail != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid format email"))
-	}
-	if len(updatedData.Password) < 6 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password must be at least 6 characters"))
-	}
-	// errPhone := v.Var(updatedData.Phone, "required,numeric")
-	errPhone := v.Var(updatedData.Phone, "required,numeric")
-	if errPhone != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone number must be in numeric"))
-	}
-	if len(updatedData.Phone) < 8 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be at least 8 numbers"))
-	}
-	if len(updatedData.Phone) > 16 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("phone nummber must be less 16 numbers"))
-	}
-	errValidator := v.Struct(updatedData)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUser := request.ToCore(updatedData)
 	row, err := h.userBusiness.UpdateData(idToken, newUser)

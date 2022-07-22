@@ -34,9 +34,17 @@ func (t *RentHandler) GetData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
 	v := validator.New()
-	errValidator := v.Struct(insertData)
-	if errValidator != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
+	errDateStart := v.Var(insertData.DateStart, "required")
+	if errDateStart != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date start cannot be empty"))
+	}
+	errDateEnd := v.Var(insertData.DateEnd, "required")
+	if errDateEnd != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date end cannot be empty"))
+	}
+	errBank := v.Var(insertData.Bank, "required")
+	if errBank != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("bank cannot be empty"))
 	}
 	newRent := request.ToCore(insertData)
 	rowToken, _ := t.rentBusiness.GetDataRentToken(idToken)
@@ -63,7 +71,10 @@ func (t *RentHandler) GetData(c echo.Context) error {
 
 func (t *RentHandler) GetDataRent(c echo.Context) error {
 	id := c.Param("id")
-	idRoom, _ := strconv.Atoi(id)
+	idRoom, errId := strconv.Atoi(id)
+	if errId != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+	}
 	data, err := t.rentBusiness.GetDataRent(idRoom)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
