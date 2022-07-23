@@ -56,7 +56,7 @@ func (f *FacilityHandler) GetData(c echo.Context) error {
 	id := c.Param("id")
 	idFacility, errId := strconv.Atoi(id)
 	if errId != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
 	data, err := f.facilityBusiness.GetData(idFacility)
 	if err != nil {

@@ -1213,9 +1213,17 @@ components:
             room-1:
               value:
                 rooms_id: 1
-                date_start: 16-07-2022
-                date_end: 18-07-2022
+                date_start: 2022-07-16
+                date_end: 2022-07-18
                 bank: BCA
+                # total_rental_price: 3000000
+                # status: success
+            room-2:
+              value:
+                rooms_id: 1
+                date_start: 2022-07-06
+                date_end: 2022-07-08
+                bank: BNI
                 # total_rental_price: 3000000
                 # status: success
         multipart/form-data:
@@ -1995,8 +2003,8 @@ components:
                   id: 1,
                   user_id: 1,
                   rooms_id: 1,
-                  date_start: "16-07-2022",
-                  date_end: "18-07-2022",
+                  date_start: "2022-07-16",
+                  date_end: "2022-07-18",
                   bank: "bca",
                   total_rental_price: 3000000,
                   status: "success"
