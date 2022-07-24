@@ -22,8 +22,10 @@ func (rm *roomCase) InsertDataRoomFacilitys(insert rooms.CoreRoomFacilitys) (row
 	return row, err
 }
 
-func (rm *roomCase) GetDataAll() (data []rooms.Core, err error) {
-	data, err = rm.roomData.GetDataAll()
+func (rm *roomCase) GetDataAll(page int) (data []rooms.Core, err error) {
+	limit := 12
+	page = limit * (page - 1)
+	data, err = rm.roomData.GetDataAll(page)
 	return data, err
 }
 

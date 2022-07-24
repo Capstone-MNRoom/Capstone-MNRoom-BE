@@ -95,7 +95,10 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 }
 
 func (r *RoomHandler) GetDataAll(c echo.Context) error {
-	data, err := r.roomBusiness.GetDataAll()
+	page := c.QueryParam("page")
+	pageint, _ := strconv.Atoi(page)
+
+	data, err := r.roomBusiness.GetDataAll(pageint)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
