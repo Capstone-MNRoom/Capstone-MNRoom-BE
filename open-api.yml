@@ -1426,6 +1426,8 @@ components:
             #   $ref: '#/components/examples/dataNotFound'
             Bad Request:
               $ref: '#/components/examples/badRequestFacility'
+            Bad Request Id:
+              $ref: '#/components/examples/badRequestFacilityid'
     
     getUserSuccess:
       description: Success Response Data
@@ -2363,6 +2365,10 @@ components:
       value:
         # code: 400
         message: invalid input
+    badRequestFacilityid:
+      value:
+        # code: 400
+        message: invalid id
     badRequestRoom:
       value:
         # code: 400
