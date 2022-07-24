@@ -38,7 +38,7 @@ func (repo *mysqlRoomRepository) InsertDataRoomFacilitys(insert rooms.CoreRoomFa
 func (repo *mysqlRoomRepository) GetDataAll(page int) (data []rooms.Core, err error) {
 	var getDataAll []Rooms
 
-	tx := repo.db.Limit(6).Offset(page).Preload("User").Preload("Categorys").Find(&getDataAll)
+	tx := repo.db.Limit(12).Offset(page).Preload("User").Preload("Categorys").Find(&getDataAll)
 	if tx.Error != nil {
 		return []rooms.Core{}, tx.Error
 	}
