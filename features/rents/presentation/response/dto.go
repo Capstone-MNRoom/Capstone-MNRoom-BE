@@ -44,7 +44,9 @@ func FromCore(data rents.Core) Rents {
 		ID:               data.ID,
 		DateStart:        data.DateStart,
 		DateEnd:          data.DateEnd,
+		Bank:             data.Bank,
 		TotalRentalPrice: data.TotalRentalPrice,
+		Status:           data.Status,
 		User: User{
 			ID:       data.User.ID,
 			Username: data.User.Username,

@@ -21,8 +21,25 @@ type Core struct {
 	Rents             rents.Core
 }
 
+type User struct {
+	ID       int
+	Username string
+	Email    string
+}
+
+type Rents struct {
+	ID               int
+	DateStart        string
+	DateEnd          string
+	Bank             string
+	TotalRentalPrice int
+	Status           string
+}
+
 type Business interface {
+	GetAllData(idToken int) (data []Core, err error)
 }
 
 type Data interface {
+	GetAllData(idToken int) (data []Core, err error)
 }

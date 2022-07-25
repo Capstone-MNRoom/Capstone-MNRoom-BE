@@ -3,9 +3,7 @@ package data
 import (
 	"be9/mnroom/features/payments"
 	"be9/mnroom/features/rents"
-	_rents "be9/mnroom/features/rents/data"
 	"be9/mnroom/features/users"
-	_users "be9/mnroom/features/users/data"
 
 	"gorm.io/gorm"
 )
@@ -20,9 +18,25 @@ type Payments struct {
 	VANumber          string `json:"va_number" form:"va_number"`
 	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
 	UserID            int    `json:"user_id" form:"user_id"`
+	RoomsID           int    `json:"rooms_id" form:"rooms_id"`
 	RentsID           int    `json:"rents_id" form:"rents_id"`
-	User              _users.User
-	Rents             _rents.Rents
+	User              User
+	Rents             Rents
+}
+
+type User struct {
+	gorm.Model
+	Username string `json:"username" form:"username"`
+	Email    string `gorm:"unique" json:"email" form:"email"`
+}
+
+type Rents struct {
+	gorm.Model
+	DateStart        string `json:"date_start" form:"date_start"`
+	DateEnd          string `json:"date_end" form:"date_end"`
+	Bank             string `json:"bank" form:"bank"`
+	TotalRentalPrice int    `json:"total_rental_price" form:"total_rental_price"`
+	Status           string `json:"status" form:"status"`
 }
 
 func toCoreList(data []Payments) []payments.Core {
@@ -54,7 +68,9 @@ func (data *Payments) toCore() payments.Core {
 			ID:               int(data.Rents.ID),
 			DateStart:        data.Rents.DateStart,
 			DateEnd:          data.Rents.DateEnd,
+			Bank:             data.Rents.Bank,
 			TotalRentalPrice: data.Rents.TotalRentalPrice,
+			Status:           data.Rents.Status,
 		},
 	}
 }
