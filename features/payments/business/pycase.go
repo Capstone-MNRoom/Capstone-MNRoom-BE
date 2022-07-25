@@ -11,3 +11,8 @@ func NewPaymentBusiness(payment payments.Data) payments.Business {
 		paymentData: payment,
 	}
 }
+
+func (py *paymentCase) GetAllData(idToken int) (data []payments.Core, err error) {
+	data, err = py.paymentData.GetAllData(idToken)
+	return data, err
+}
