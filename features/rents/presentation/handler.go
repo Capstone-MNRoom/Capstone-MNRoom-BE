@@ -43,10 +43,12 @@ func (t *RentHandler) GetData(c echo.Context) error {
 	}
 	v := validator.New()
 	errDateStart := v.Var(insertData.DateStart, "required")
+	fmt.Println(insertData.DateStart)
 	if errDateStart != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date start cannot be empty"))
 	}
 	errDateEnd := v.Var(insertData.DateEnd, "required")
+	fmt.Println(insertData.DateEnd)
 	if errDateEnd != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date end cannot be empty"))
 	}
