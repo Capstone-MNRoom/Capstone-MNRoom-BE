@@ -62,7 +62,7 @@ func New(presenter factory.Presenter) *echo.Echo {
 
 	// Feedback
 	e.POST("/feedbacks", presenter.FeedbackPresenter.InsertFeedback, _middlewares.JWTMiddleware())
-	e.GET("/feedbacks/:id", presenter.FeedbackPresenter.GetDataRoom, _middlewares.JWTMiddleware())
+	e.GET("/feedbacks/:id", presenter.FeedbackPresenter.GetDataRoom)
 
 	// Payments
 	e.GET("/payments", presenter.PaymentPresenter.GetAllData, _middlewares.JWTMiddleware())
