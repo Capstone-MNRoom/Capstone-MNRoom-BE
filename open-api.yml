@@ -115,7 +115,10 @@ paths:
         '200':
           $ref: '#/components/responses/successOperationNonData'
         '400':
-          $ref: '#/components/responses/updateUserFailed'
+          $ref: '#/components/responses/putUserFailed'
+        # '404':
+        #   $ref: '#/components/responses/putUserFailed'
+          # $ref: '#/components/responses/updateUserFailed'
     delete:
       tags:
         - Users
@@ -327,25 +330,25 @@ paths:
           $ref: '#/components/responses/RentServerFailed'
 
   # /rents/{id_user}
-    get:
-      tags:
-        - Rent
-      summary: Form rent room by user loggedin
-      # parameters:
-      #   - name: id_user
-      #     description: id user
-      #     in: path
-      security:
-        - JWTAuth: []
-      requestBody:
-        $ref: '#/components/requestBodies/requestBodyRent'
-      responses:
-        '200':
-          $ref: '#/components/responses/successOperationNonData'
-        # '405':
-        #   $ref: '#/components/responses/createRentFailed'
-        '500':
-          $ref: '#/components/responses/RentServerFailed'
+    # get:
+    #   tags:
+    #     - Rent
+    #   summary: Form rent room by user loggedin
+    #   # parameters:
+    #   #   - name: id_user
+    #   #     description: id user
+    #   #     in: path
+    #   security:
+    #     - JWTAuth: []
+    #   requestBody:
+    #     $ref: '#/components/requestBodies/requestBodyRent'
+    #   responses:
+    #     '200':
+    #       $ref: '#/components/responses/successOperationNonData'
+    #     # '405':
+    #     #   $ref: '#/components/responses/createRentFailed'
+    #     '500':
+    #       $ref: '#/components/responses/RentServerFailed'
 
 ####################################
 # FEEDBACK
@@ -440,21 +443,21 @@ components:
           type: string
           minLength: 1
           pattern: 'Username must be alphabet and minimal 3 character'
-        email:
-          type: string
-          format: email
-          minLength: 5
-          description: inputted email must be unique
+        # email:
+        #   type: string
+        #   format: email
+        #   minLength: 5
+        #   description: inputted email must be unique
         password:
           type: string
           minLength: 6
           description: Password must be at least 6 character
-        phone:
-          type: string
-          format: phone
-          minLength: 8
-          maxLength: 16
-          description: inputted phone number must be unique
+        # phone:
+        #   type: string
+        #   format: phone
+        #   minLength: 8
+        #   maxLength: 16
+        #   description: inputted phone number must be unique
         address:
           type: string
           minLength: 10
@@ -1210,9 +1213,17 @@ components:
             room-1:
               value:
                 rooms_id: 1
-                date_start: 16-07-2022
-                date_end: 18-07-2022
+                date_start: 2022-07-16
+                date_end: 2022-07-18
                 bank: BCA
+                # total_rental_price: 3000000
+                # status: success
+            room-2:
+              value:
+                rooms_id: 1
+                date_start: 2022-07-06
+                date_end: 2022-07-08
+                bank: BNI
                 # total_rental_price: 3000000
                 # status: success
         multipart/form-data:
@@ -1350,6 +1361,30 @@ components:
               $ref: '#/components/examples/invalidPhone'
             Invalid Phone Minimal:
               $ref: '#/components/examples/invalidPhoneMin'
+            Invalid Phone Maximal:
+              # $ref: '#/components/examples/invalidPhoneMin'
+              $ref: '#/components/examples/invalidPhoneMax'
+    putUserFailed:
+      description: Bad Request Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseNonData'
+          examples:
+            # Email or Telephone Number Already Exist:
+            #   $ref: '#/components/examples/emailOrTelephoneNumberAlreadyExist'
+            Invalid Usernme:
+              $ref: '#/components/examples/invalidUsername'
+            Invalid Username Minimal:
+              $ref: '#/components/examples/invalidUsernameMin'
+            # Invalid Email:
+            #   $ref: '#/components/examples/invalidEmail'
+            Invalid Password:
+              $ref: '#/components/examples/invalidPassword'
+            # Invalid Phone:
+            #   $ref: '#/components/examples/invalidPhone'
+            # Invalid Phone Minimal:
+            #   $ref: '#/components/examples/invalidPhoneMin'
     getAllUsersSuccess:
       description: Success Response Data
       content:
@@ -1391,6 +1426,8 @@ components:
             #   $ref: '#/components/examples/dataNotFound'
             Bad Request:
               $ref: '#/components/examples/badRequestFacility'
+            Bad Request Id:
+              $ref: '#/components/examples/badRequestFacilityid'
     
     getUserSuccess:
       description: Success Response Data
@@ -1968,8 +2005,8 @@ components:
                   id: 1,
                   user_id: 1,
                   rooms_id: 1,
-                  date_start: "16-07-2022",
-                  date_end: "18-07-2022",
+                  date_start: "2022-07-16",
+                  date_end: "2022-07-18",
                   bank: "bca",
                   total_rental_price: 3000000,
                   status: "success"
@@ -2328,6 +2365,10 @@ components:
       value:
         # code: 400
         message: invalid input
+    badRequestFacilityid:
+      value:
+        # code: 400
+        message: invalid id
     badRequestRoom:
       value:
         # code: 400
@@ -2398,6 +2439,9 @@ components:
     invalidPhoneMin:
       value:
         message: phone nummber must be at least 8 numbers
+    invalidPhoneMax:
+      value:
+        message: phone nummber must be less than 16 numbers
     invalidId:
       value:
         # code: 400

@@ -36,7 +36,7 @@ type CoreRoomFacilitys struct {
 type Business interface {
 	InsertData(insert Core) (data Core, err error)
 	InsertDataRoomFacilitys(insert CoreRoomFacilitys) (row int, err error)
-	GetDataAll() (data []Core, err error)
+	GetDataAll(page int) (data []Core, err error)
 	GetData(id int) (data Core, err error)
 	UpdateData(id int, insert Core) (row int, err error)
 	DeleteData(id int) (row int, err error)
@@ -49,7 +49,7 @@ type Business interface {
 type Data interface {
 	InsertData(insert Core) (data Core, err error)
 	InsertDataRoomFacilitys(insert CoreRoomFacilitys) (row int, err error)
-	GetDataAll() (data []Core, err error)
+	GetDataAll(page int) (data []Core, err error)
 	GetData(id int) (data Core, err error)
 	UpdateData(id int, insert Core) (row int, err error)
 	DeleteData(id int) (row int, err error)
