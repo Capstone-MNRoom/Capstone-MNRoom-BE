@@ -3,10 +3,9 @@ package presentation
 import (
 	"be9/mnroom/features/payments"
 	"be9/mnroom/features/payments/presentation/request"
-	"be9/mnroom/features/payments/presentation/response"
+	_response "be9/mnroom/features/payments/presentation/response"
 	"be9/mnroom/helper"
-	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"net/http"
 
 	_middlewares "be9/mnroom/middlewares"
@@ -33,16 +32,13 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
-	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreListPayments(data)))
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", _response.FromCoreListPayments(data)))
 }
 
 func (y *PaymentHandler) UpdateData(c echo.Context) error {
-	response, _ := http.Get("https://mnroom.capstone.my.id/payments/status")
-	responseData, _ := ioutil.ReadAll(response.Body)
-	defer response.Body.Close()
-	var insertData request.Payments
-	json.Unmarshal(responseData, &insertData)
-	row, err := y.paymentBusiness.UpdateData(insertData.OrderID, insertData.TransactionStatus)
+	getPayments := request.Payments{}
+	fmt.Println(c.Bind(&getPayments))
+	row, err := y.paymentBusiness.UpdateData(getPayments.OrderID, getPayments.TransactionStatus)
 	if row != 0 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update data"))
 	}
