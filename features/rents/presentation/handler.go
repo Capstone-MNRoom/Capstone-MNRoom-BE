@@ -134,3 +134,15 @@ func (t *RentHandler) GetDataRent(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
 }
+
+func (t *RentHandler) GetDataRentUserHistory(c echo.Context) error {
+	idToken, errToken := _middlewares.ExtractToken(c)
+	if errToken != nil {
+		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
+	}
+	data, err := t.rentBusiness.GetDataRentUserHistory(idToken)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
+}

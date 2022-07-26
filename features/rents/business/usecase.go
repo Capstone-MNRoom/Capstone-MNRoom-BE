@@ -46,3 +46,8 @@ func (rnt *rentUseCase) GetDataUser(idToken int) (data rents.CoreUser, err error
 	data, err = rnt.rentData.GetDataUser(idToken)
 	return data, err
 }
+
+func (rnt *rentUseCase) GetDataRentUserHistory(idToken int) (data []rents.Core, err error) {
+	data, err = rnt.rentData.GetDataRentUserHistory(idToken)
+	return data, err
+}

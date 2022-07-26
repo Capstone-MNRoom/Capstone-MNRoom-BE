@@ -54,6 +54,7 @@ type Business interface {
 	GetDataRent(id int) (data []Core, err error)
 	InsertDataPayment(insert CorePayments) (data CorePayments, err error)
 	GetDataUser(idToken int) (data CoreUser, err error)
+	GetDataRentUserHistory(idToken int) (data []Core, err error)
 }
 
 type Data interface {
@@ -64,4 +65,5 @@ type Data interface {
 	GetDataRent(id int) (data []Core, err error)
 	InsertDataPayment(insert CorePayments) (data CorePayments, err error)
 	GetDataUser(idToken int) (data CoreUser, err error)
+	GetDataRentUserHistory(idToken int) (data []Core, err error)
 }

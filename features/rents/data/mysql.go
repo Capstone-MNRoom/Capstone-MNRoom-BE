@@ -79,3 +79,12 @@ func (repo *mysqlRentRepository) GetDataUser(idToken int) (data rents.CoreUser, 
 	}
 	return rents.CoreUser(getData.toCoreUser()), nil
 }
+
+func (repo *mysqlRentRepository) GetDataRentUserHistory(idToken int) (data []rents.Core, err error) {
+	var getDataUser []Rents
+	tx := repo.db.Find(&getDataUser)
+	if tx.Error != nil {
+		return []rents.Core{}, tx.Error
+	}
+	return toCoreList(getDataUser), nil
+}

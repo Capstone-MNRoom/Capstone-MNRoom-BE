@@ -2,7 +2,6 @@ package business
 
 import (
 	"be9/mnroom/features/users"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -60,7 +59,6 @@ func (mockUserDataFailed) UpdateData(id int, insert users.Core) (row int, err er
 func (mockUserDataFailed) DeleteData(id int) (row int, err error) {
 	return 0, nil
 }
-
 
 func TestGetData(t *testing.T) {
 	t.Run("Test get data user", func(t *testing.T) {
