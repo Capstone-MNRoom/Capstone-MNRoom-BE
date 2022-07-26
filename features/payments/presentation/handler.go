@@ -36,9 +36,9 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 }
 
 func (y *PaymentHandler) UpdateData(c echo.Context) error {
-	var r *http.Request
+	var r = c.Request().Body
 	var notificationPayload map[string]interface{}
-	errDecode := json.NewDecoder(r.Body).Decode(&notificationPayload)
+	errDecode := json.NewDecoder(r).Decode(&notificationPayload)
 	if errDecode != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed decode"))
 	}
