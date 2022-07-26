@@ -38,3 +38,13 @@ type MidtransPayments struct {
 	BankTransfer      string `json:"bank_transfer" form:"bank_transfer"`
 	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
 }
+
+func ToCoreMidtransPayment(req Payments) payments.Core {
+	return payments.Core{
+		TransactionID:     req.TransactionID,
+		PaymentType:       req.PaymentType,
+		OrderID:           req.OrderID,
+		BankTransfer:      req.BankTransfer,
+		TransactionStatus: req.TransactionStatus,
+	}
+}

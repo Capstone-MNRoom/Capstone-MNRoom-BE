@@ -5,6 +5,7 @@ import (
 	"be9/mnroom/features/payments/presentation/request"
 	_response "be9/mnroom/features/payments/presentation/response"
 	"be9/mnroom/helper"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -35,10 +36,17 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", _response.FromCoreListPayments(data)))
 }
 
-func (y *PaymentHandler) UpdateData(c echo.Context) error {
-	getPayments := request.MidtransPayments{}
-	fmt.Println(c.Bind(&getPayments))
-	row, err := y.paymentBusiness.UpdateData(getPayments.OrderID, getPayments.TransactionStatus)
+func (y *PaymentHandler) UpdateData(c echo.Context, r *http.Request) error {
+	var insertPayment request.MidtransPayments
+	errDecode := json.NewDecoder(r.Body).Decode(&insertPayment)
+	if errDecode != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed decode"))
+	}
+	fmt.Println(errDecode)
+	orderId := insertPayment.OrderID
+	transactionStatus := insertPayment.TransactionStatus
+	fmt.Println(orderId, transactionStatus)
+	row, err := y.paymentBusiness.UpdateData(orderId, transactionStatus)
 	if row != 0 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update data"))
 	}
