@@ -5,7 +5,6 @@ import (
 	_response "be9/mnroom/features/payments/presentation/response"
 	"be9/mnroom/helper"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	_middlewares "be9/mnroom/middlewares"
@@ -42,10 +41,8 @@ func (y *PaymentHandler) UpdateData(c echo.Context) error {
 	if errDecode != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed decode"))
 	}
-	fmt.Println(errDecode)
 	orderId, _ := notificationPayload["order_id"].(string)
 	transactionStatus, _ := notificationPayload["transaction_status"].(string)
-	fmt.Println(orderId, transactionStatus)
 	row, err := y.paymentBusiness.UpdateData(orderId, transactionStatus)
 	if row != 0 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update data"))
