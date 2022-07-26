@@ -36,7 +36,7 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 }
 
 func (y *PaymentHandler) UpdateData(c echo.Context) error {
-	var r http.Request
+	var r *http.Request
 	var notificationPayload map[string]interface{}
 	errDecode := json.NewDecoder(r.Body).Decode(&notificationPayload)
 	if errDecode != nil {
