@@ -36,7 +36,7 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 }
 
 func (y *PaymentHandler) UpdateData(c echo.Context) error {
-	getPayments := request.Payments{}
+	getPayments := request.MidtransPayments{}
 	fmt.Println(c.Bind(&getPayments))
 	row, err := y.paymentBusiness.UpdateData(getPayments.OrderID, getPayments.TransactionStatus)
 	if row != 0 {

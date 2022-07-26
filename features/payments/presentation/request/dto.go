@@ -30,3 +30,11 @@ func ToCore(req Payments) payments.Core {
 		},
 	}
 }
+
+type MidtransPayments struct {
+	TransactionID     string `json:"transaction_id" form:"transaction_id"`
+	PaymentType       string `json:"payment_type" form:"payment_type"`
+	OrderID           string `json:"order_id" form:"order_id"`
+	BankTransfer      string `json:"bank_transfer" form:"bank_transfer"`
+	TransactionStatus string `json:"transaction_status" form:"transaction_status"`
+}
