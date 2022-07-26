@@ -32,3 +32,15 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get data", response.FromCoreListPayments(data)))
 }
+
+func (y *PaymentHandler) UpdateData(c echo.Context) error {
+	OrderId := c.Param("idOrder")
+	row, err := y.paymentBusiness.UpdateData(OrderId, "success")
+	if row != 0 {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update data"))
+	}
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to update data"))
+}

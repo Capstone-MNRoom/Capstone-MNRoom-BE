@@ -66,6 +66,7 @@ func New(presenter factory.Presenter) *echo.Echo {
 
 	// Payments
 	e.GET("/payments", presenter.PaymentPresenter.GetAllData, _middlewares.JWTMiddleware())
+	e.GET("/payments/status/:idOrder", presenter.PaymentPresenter.UpdateData)
 
 	// History Rents
 	e.GET("/historys", presenter.RentPresenter.GetDataRentUserHistory, _middlewares.JWTMiddleware())

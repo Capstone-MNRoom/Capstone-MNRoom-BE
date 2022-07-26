@@ -24,3 +24,11 @@ func (repo *mysqlPaymentRepository) GetAllData(idToken int) (data []payments.Cor
 	}
 	return toCoreList(getData), nil
 }
+
+func (repo *mysqlPaymentRepository) UpdateData(idOrder string, status string) (row int, err error) {
+	tx := repo.db.Model(&Payments{}).Where("order_id = ?", idOrder).Update("transaction_status", status)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(tx.RowsAffected), nil
+}
