@@ -34,10 +34,10 @@ func (h *FeedbackHandler) InsertFeedback(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
 
-	data, _ := h.feedbackBusiness.GetDataRentUser(idToken, int(insertFeedback.RentsID))
+	// data, _ := h.feedbackBusiness.GetDataRentUser(idToken, int(insertFeedback.RentsID))
 	newFeedback := request.ToCore(insertFeedback)
 	newFeedback.User.ID = idToken
-	newFeedback.Rents.ID = data
+	// newFeedback.Rents.ID = data
 	row, err := h.feedbackBusiness.InsertFeedback(newFeedback)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert feedback"))
@@ -54,9 +54,9 @@ func (h *FeedbackHandler) GetDataRoom(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	data, _ := h.feedbackBusiness.GetDataRoom(idRoom)
-	dataRentInt, _ := h.feedbackBusiness.GetDataRent(data)
-	dataFeedback, err := h.feedbackBusiness.GetFeedbackByRoom(dataRentInt)
+	// data, _ := h.feedbackBusiness.GetDataRoom(idRoom)
+	// dataRentInt, _ := h.feedbackBusiness.GetDataRent(data)
+	dataFeedback, err := h.feedbackBusiness.GetFeedbackByRoom(idRoom)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
