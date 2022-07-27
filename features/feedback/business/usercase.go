@@ -32,7 +32,7 @@ func (uc *feedbackUseCase) GetFeedbackByRoom(id int) (data []feedback.Core, err 
 	return data, err
 }
 
-func (uc *feedbackUseCase) GetDataRentUser(idToken int) (data int, err error) {
-	data, err = uc.feedbackData.GetDataRentUser(idToken)
+func (uc *feedbackUseCase) GetDataRentUser(idToken int, idRoom int) (data int, err error) {
+	data, err = uc.feedbackData.GetDataRentUser(idToken, idRoom)
 	return data, err
 }
