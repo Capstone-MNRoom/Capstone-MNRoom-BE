@@ -10,27 +10,18 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestAuth(t *testing.T) {
+func TestInsertData(t *testing.T) {
 	repo := new(mocks.UserData)
-<<<<<<< HEAD
 	insertData := users.Core{
 		Username: "alta",
 		Email:    "alta@mail.id",
 		Password: "qwerty",
 		Phone:    "0899123456",
 		Address:  "Jl.Rambutan"}
-=======
-	insertData := users.Core{ID: 1,
-		Username: "alta",
-		Email:    "alta@mail.id",
-		Password: "qwerty",
 
-		Address: "Jl.Rambutan"}
-	// returnData := users.Core{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "qwerty"}
->>>>>>> 2fb0074bcf5d8d24718673c96b9ea7897b7ae55b
 
 	t.Run("Success Insert", func(t *testing.T) {
-		repo.On("Auth", mock.Anything).Return(1, nil).Once()
+		repo.On("InsertData", mock.Anything).Return(1, nil).Once()
 		srv := NewUserBusiness(repo)
 
 		res, err := srv.InsertData(insertData)
