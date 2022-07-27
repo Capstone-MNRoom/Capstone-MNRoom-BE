@@ -12,11 +12,11 @@ import (
 
 func TestInsertData(t *testing.T) {
 	repo := new(mocks.UserData)
-	insertData := users.Core{ID: 1, 
-		Username: "alta", 
-		Email: "alta@mail.id", 
-		Password: "qwerty", 
-		
+	insertData := users.Core{ID: 1,
+		Username: "alta",
+		Email:    "alta@mail.id",
+		Password: "qwerty",
+
 		Address: "Jl.Rambutan"}
 	// returnData := users.Core{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "qwerty"}
 

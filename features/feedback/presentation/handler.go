@@ -6,7 +6,6 @@ import (
 	"be9/mnroom/features/feedback/presentation/response"
 	"be9/mnroom/helper"
 	_middlewares "be9/mnroom/middlewares"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -29,14 +28,13 @@ func (h *FeedbackHandler) InsertFeedback(c echo.Context) error {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
 
-	data, _ := h.feedbackBusiness.GetDataRentUser(idToken)
-
 	var insertFeedback request.Feedback
 	errBind := c.Bind(&insertFeedback)
 	if errBind != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
 
+	data, _ := h.feedbackBusiness.GetDataRentUser(idToken, int(insertFeedback.RentsID))
 	newFeedback := request.ToCore(insertFeedback)
 	newFeedback.User.ID = idToken
 	newFeedback.Rents.ID = data
@@ -57,11 +55,8 @@ func (h *FeedbackHandler) GetDataRoom(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
 	data, _ := h.feedbackBusiness.GetDataRoom(idRoom)
-	fmt.Println(data)
 	dataRentInt, _ := h.feedbackBusiness.GetDataRent(data)
-	fmt.Println(dataRentInt)
 	dataFeedback, err := h.feedbackBusiness.GetFeedbackByRoom(dataRentInt)
-	fmt.Println(response.FromCoreList(dataFeedback))
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
