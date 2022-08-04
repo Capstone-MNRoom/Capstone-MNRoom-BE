@@ -17,7 +17,7 @@ func TestAuth(t *testing.T) {
 		Password: "123456",
 	}
 
-	t.Run("Success Insert", func(t *testing.T) {
+	t.Run("Success Auth", func(t *testing.T) {
 		repo.On("Auth", mock.Anything).Return(1, nil).Once()
 		srv := NewAuthBusiness(repo)
 
