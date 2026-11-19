@@ -15,7 +15,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/midtrans/midtrans-go"
 	"github.com/midtrans/midtrans-go/coreapi"

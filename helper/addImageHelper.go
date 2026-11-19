@@ -10,7 +10,6 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/labstack/echo/v4"
 	"google.golang.org/api/option"
-	"google.golang.org/appengine"
 )
 
 func AddImageRoom(c echo.Context) (link string, message map[string]interface{}, err error) {
@@ -24,7 +23,7 @@ func AddImageRoom(c echo.Context) (link string, message map[string]interface{}, 
 		}, nil
 	} else {
 		var storageClient *storage.Client
-		ctx := appengine.NewContext(c.Request())
+		ctx := c.Request().Context()
 		storageClient, errStorage := storage.NewClient(ctx, option.WithCredentialsFile("key.json"))
 		if errStorage != nil {
 			return "", map[string]interface{}{
@@ -98,7 +97,7 @@ func AddImagePengelola(c echo.Context) (link string, message map[string]interfac
 		}, nil
 	} else {
 		var storageClient *storage.Client
-		ctx := appengine.NewContext(c.Request())
+		ctx := c.Request().Context()
 		storageClient, errStorage := storage.NewClient(ctx, option.WithCredentialsFile("key.json"))
 		if errStorage != nil {
 			return "", map[string]interface{}{
@@ -172,7 +171,7 @@ func AddImageUser(c echo.Context) (link string, message map[string]interface{}, 
 		}, nil
 	} else {
 		var storageClient *storage.Client
-		ctx := appengine.NewContext(c.Request())
+		ctx := c.Request().Context()
 		storageClient, errStorage := storage.NewClient(ctx, option.WithCredentialsFile("key.json"))
 		if errStorage != nil {
 			return "", map[string]interface{}{

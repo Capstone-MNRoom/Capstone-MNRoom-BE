@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
