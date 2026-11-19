@@ -67,3 +67,87 @@ func TestGetAllData(t *testing.T) {
 		repo.AssertExpectations(t)
 	})
 }
+
+func TestGetData(t *testing.T) {
+	repo := new(mocks.UserData)
+	userData := users.Core{
+		ID:       1,
+		Username: "Mulya",
+		Email:    "mulya@mail.com",
+		Phone:    "08995555",
+		Address:  "Jl.Rambutan",
+	}
+
+	t.Run("Success Get Data", func(t *testing.T) {
+		repo.On("GetData", mock.Anything, 1).Return(userData, nil).Once()
+		srv := NewUserBusiness(repo)
+
+		res, err := srv.GetData(context.Background(), 1)
+		assert.NoError(t, err)
+		assert.Equal(t, userData.ID, res.ID)
+		assert.Equal(t, userData.Username, res.Username)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Error Get Data", func(t *testing.T) {
+		repo.On("GetData", mock.Anything, 1).Return(users.Core{}, errors.New("record not found")).Once()
+		srv := NewUserBusiness(repo)
+
+		res, err := srv.GetData(context.Background(), 1)
+		assert.Error(t, err)
+		assert.Equal(t, users.Core{}, res)
+		repo.AssertExpectations(t)
+	})
+}
+
+func TestUpdateData(t *testing.T) {
+	repo := new(mocks.UserData)
+	updateData := users.Core{
+		Username: "Mulya Updated",
+		Phone:    "08999999",
+	}
+
+	t.Run("Success Update", func(t *testing.T) {
+		repo.On("UpdateData", mock.Anything, 1, updateData).Return(1, nil).Once()
+		srv := NewUserBusiness(repo)
+
+		res, err := srv.UpdateData(context.Background(), 1, updateData)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, res)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Error Update", func(t *testing.T) {
+		repo.On("UpdateData", mock.Anything, 1, updateData).Return(0, errors.New("update failed")).Once()
+		srv := NewUserBusiness(repo)
+
+		res, err := srv.UpdateData(context.Background(), 1, updateData)
+		assert.Error(t, err)
+		assert.Equal(t, 0, res)
+		repo.AssertExpectations(t)
+	})
+}
+
+func TestDeleteData(t *testing.T) {
+	repo := new(mocks.UserData)
+
+	t.Run("Success Delete", func(t *testing.T) {
+		repo.On("DeleteData", mock.Anything, 1).Return(1, nil).Once()
+		srv := NewUserBusiness(repo)
+
+		res, err := srv.DeleteData(context.Background(), 1)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, res)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Error Delete", func(t *testing.T) {
+		repo.On("DeleteData", mock.Anything, 1).Return(0, errors.New("delete failed")).Once()
+		srv := NewUserBusiness(repo)
+
+		res, err := srv.DeleteData(context.Background(), 1)
+		assert.Error(t, err)
+		assert.Equal(t, 0, res)
+		repo.AssertExpectations(t)
+	})
+}

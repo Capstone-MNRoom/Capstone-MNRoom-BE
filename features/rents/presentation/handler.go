@@ -44,7 +44,7 @@ func (t *RentHandler) CreateRent(c echo.Context) error {
 	if err := v.Var(insertData.DateEnd, "required"); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date end cannot be empty"))
 	}
-	if err := v.Var(insertData.RoomsID, "required,numeric"); err != nil {
+	if err := v.Var(insertData.RoomID, "required,numeric"); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("rooms cannot be empty"))
 	}
 	if err := v.Var(insertData.Bank, "required"); err != nil {
