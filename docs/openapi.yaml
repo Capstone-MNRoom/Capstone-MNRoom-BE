@@ -1,0 +1,1970 @@
+openapi: 3.0.3
+info:
+  title: MNRoom REST API
+  description: |
+    # Dokumentasi API Platform MNRoom
+    **MNRoom (Meeting & Event Room Booking Platform)** adalah backend RESTful API yang melayani platform pemesanan dan penyewaan ruangan pertemuan/acara secara online.
+
+    ### Fitur Utama:
+    - **Clean Architecture & Domain Driven Design**: Pemisahan yang ketat antara Presentation, Business (UseCase), dan Data Layer.
+    - **Autentikasi JWT**: Pengamanan endpoint menggunakan JWT (JSON Web Token) dengan standard Bearer Authorization.
+    - **Integrasi Payment Gateway Midtrans**: Pembuatan tagihan otomatis menggunakan Virtual Account Bank (BCA, BNI, BRI, Permata) dan sinkronisasi status otomatis via Webhook Callback.
+    - **Cloud Storage Integration**: Upload berkas gambar profil, ruangan, dan bukti legalitas pengelola ke Google Cloud Storage.
+    - **Graceful Shutdown & DB Connection Pooling**: Resiliensi operasional tinggi dan efisiensi koneksi database MySQL.
+  version: 2.0.0
+  contact:
+    name: MNRoom Engineering Team
+    email: support@mnroom.com
+servers:
+  - url: http://localhost:8000
+    description: Local Development Server
+  - url: https://mnroom.capstone.my.id
+    description: Production Server
+
+tags:
+  - name: Authentication
+    description: Endpoint autentikasi dan login pengguna
+  - name: Users
+    description: Registrasi dan pengelolaan profil pengguna
+  - name: Categories
+    description: Manajemen kategori ruangan
+  - name: Facilities
+    description: Manajemen fasilitas ruangan
+  - name: Rooms
+    description: Manajemen ruangan, pencarian, dan filtering kategori
+  - name: Room Facilities
+    description: Manajemen fasilitas yang terhubung ke ruangan
+  - name: Rents
+    description: Pemesanan dan penyewaan ruangan
+  - name: Payments
+    description: Riwayat pembayaran dan Webhook callback Midtrans
+  - name: Feedbacks
+    description: Ulasan dan rating penilaian ruangan
+
+paths:
+  # ==========================================
+  # AUTHENTICATION
+  # ==========================================
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login pengguna
+      description: Melakukan autentikasi menggunakan email dan password, mengembalikan token JWT untuk otorisasi endpoint terproteksi.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResponse'
+        '400':
+          description: Input tidak valid atau email/password salah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # USERS & SIGNUP
+  # ==========================================
+  /signup:
+    post:
+      tags:
+        - Users
+      summary: Pendaftaran akun pengguna baru
+      description: Mendaftarkan akun baru dengan opsi unggah foto profil (maks 1MB, format JPG/JPEG/PNG).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterJSONRequest'
+      responses:
+        '200':
+          description: Berhasil mendaftar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Validasi input gagal atau email/nomor telepon sudah terdaftar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Format atau ukuran gambar tidak didukung
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Mendapatkan semua data pengguna
+      description: Mengambil seluruh daftar pengguna terdaftar (Hanya dapat diakses dengan token JWT).
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Berhasil mengambil data semua pengguna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+        '400':
+          description: Token JWT tidak valid atau kedaluwarsa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Users
+      summary: Memperbarui profil pengguna yang login
+      description: Mengubah data username, password, alamat, dan/atau foto profil pengguna yang sedang login.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Berhasil memperbarui data profil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Input validasi tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Users
+      summary: Menghapus akun pengguna yang login
+      description: Menghapus akun pengguna saat ini dari sistem berdasarkan ID dari token JWT.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Berhasil menghapus akun
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Gagal menghapus akun atau token tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users/profile:
+    get:
+      tags:
+        - Users
+      summary: Mendapatkan data profil pengguna yang login
+      description: Mengambil data profil lengkap milik pengguna yang sedang login berdasarkan token JWT.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Berhasil mengambil data profil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailResponse'
+        '400':
+          description: Token JWT tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # CATEGORIES
+  # ==========================================
+  /categorys:
+    post:
+      tags:
+        - Categories
+      summary: Membuat kategori ruangan baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+      responses:
+        '200':
+          description: Berhasil menambahkan kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Nama kategori tidak boleh kosong atau gagal disimpan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags:
+        - Categories
+      summary: Mendapatkan seluruh daftar kategori
+      responses:
+        '200':
+          description: Berhasil mengambil semua kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+        '500':
+          description: Gagal mengambil data kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /categorys/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Mendapatkan detail kategori berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Kategori
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mendapatkan data kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDetailResponse'
+        '400':
+          description: ID tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Data tidak ditemukan atau kesalahan server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Categories
+      summary: Memperbarui data kategori berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Kategori
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+      responses:
+        '200':
+          description: Berhasil memperbarui data kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: ID atau data kategori tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Categories
+      summary: Menghapus kategori berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Kategori
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil menghapus kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: ID tidak valid atau data gagal dihapus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # FACILITIES
+  # ==========================================
+  /facilitys:
+    post:
+      tags:
+        - Facilities
+      summary: Menambahkan fasilitas ruangan baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacilityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacilityRequest'
+      responses:
+        '200':
+          description: Berhasil menambahkan fasilitas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Nama fasilitas tidak boleh kosong atau gagal disimpan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags:
+        - Facilities
+      summary: Mendapatkan seluruh daftar fasilitas
+      responses:
+        '200':
+          description: Berhasil mengambil semua fasilitas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityListResponse'
+        '400':
+          description: Gagal mengambil data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /facilitys/{id}:
+    get:
+      tags:
+        - Facilities
+      summary: Mendapatkan detail fasilitas berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Fasilitas
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mendapatkan data fasilitas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityDetailResponse'
+        '400':
+          description: ID tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Data tidak ditemukan atau kesalahan server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Facilities
+      summary: Memperbarui data fasilitas berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Fasilitas
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacilityRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacilityRequest'
+      responses:
+        '200':
+          description: Berhasil memperbarui data fasilitas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: ID atau nama fasilitas tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Facilities
+      summary: Menghapus fasilitas berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Fasilitas
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil menghapus fasilitas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: ID tidak valid atau gagal dihapus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # ROOMS
+  # ==========================================
+  /rooms:
+    post:
+      tags:
+        - Rooms
+      summary: Menambahkan data ruangan baru
+      description: Mendaftarkan ruangan baru beserta relasi fasilitas, foto ruangan, dan foto pengelola (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoomCreateRequest'
+      responses:
+        '200':
+          description: Berhasil menambahkan ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Validasi input gagal atau token tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Berkas foto melebihi 1MB atau format tidak didukung
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags:
+        - Rooms
+      summary: Mendapatkan seluruh daftar ruangan (Pagination)
+      description: Mengambil seluruh ruangan yang tersedia dengan paging (limit 12 item per halaman).
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: Nomor halaman (default 1)
+          schema:
+            type: integer
+            default: 1
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mengambil daftar ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomListResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rooms/{id}:
+    get:
+      tags:
+        - Rooms
+      summary: Mendapatkan detail data ruangan berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Ruangan
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mengambil detail ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomDetailResponse'
+        '400':
+          description: ID ruangan tidak valid atau tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Rooms
+      summary: Memperbarui data ruangan
+      description: Memperbarui informasi ruangan (Hanya pemilik ruangan yang dapat mengedit, memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Ruangan
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoomUpdateRequest'
+      responses:
+        '200':
+          description: Berhasil memperbarui data ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Input tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized (bukan pemilik ruangan)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Rooms
+      summary: Menghapus data ruangan
+      description: Menghapus ruangan (Hanya pemilik ruangan yang dapat menghapus, memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Ruangan
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil menghapus ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Input tidak valid atau ruangan tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized (bukan pemilik ruangan)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /users/rooms:
+    get:
+      tags:
+        - Rooms
+      summary: Mendapatkan seluruh ruangan milik pengguna yang login
+      description: Mengambil seluruh daftar ruangan yang didaftarkan oleh pengguna saat ini (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Berhasil mengambil data ruangan milik pengguna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomListResponse'
+        '400':
+          description: Token tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rooms/category:
+    get:
+      tags:
+        - Rooms
+      summary: Mendapatkan daftar ruangan berdasarkan kategori
+      description: Memfilter ruangan berdasarkan ID kategori.
+      parameters:
+        - name: category
+          in: query
+          required: true
+          description: ID Kategori
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mengambil data ruangan sesuai kategori
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomListResponse'
+        '400':
+          description: Parameter category tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # ROOM FACILITIES
+  # ==========================================
+  /rooms/{id}/facility:
+    get:
+      tags:
+        - Room Facilities
+      summary: Mendapatkan fasilitas yang dimiliki oleh suatu ruangan
+      description: Mengambil daftar semua fasilitas yang tersedia di dalam ruangan dengan ID tertentu (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Ruangan
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mengambil fasilitas ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomFacilityListResponse'
+        '400':
+          description: ID ruangan tidak valid atau data relasi tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # RENTS (BOOKING)
+  # ==========================================
+  /rents:
+    post:
+      tags:
+        - Rents
+      summary: Membuat pemesanan sewa ruangan (Booking & Payment Charge)
+      description: |
+        Membuat pesanan sewa ruangan berdasarkan rentang tanggal.
+        Sistem akan secara otomatis:
+        1. Memverifikasi ketersediaan kamar pada rentang tanggal tersebut.
+        2. Menghitung durasi hari sewa dan total biaya rental.
+        3. Membuat transaksi pembayaran ke **Payment Gateway Midtrans** menggunakan Bank Transfer (Virtual Account).
+        4. Mengembalikan nomor Virtual Account Midtrans dan detail tagihan.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RentCreateRequest'
+      responses:
+        '200':
+          description: Pemesanan berhasil dibuat dan tagihan Virtual Account diterbitkan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentCreateSuccessResponse'
+        '400':
+          description: Format tanggal tidak valid (date_end harus setelah date_start) atau input salah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '405':
+          description: Ruangan sudah pernah dipesan oleh pengguna atau sudah dibooking oleh pengguna lain pada tanggal tersebut
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Gagal terhubung ke Midtrans atau kesalahan database
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rents/{id}:
+    get:
+      tags:
+        - Rents
+      summary: Mendapatkan riwayat pemesanan berdasarkan ID Ruangan
+      description: Mengambil seluruh transaksi sewa yang terdaftar pada ruangan tersebut (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Ruangan
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mengambil data pemesanan ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentListResponse'
+        '400':
+          description: ID tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /historys:
+    get:
+      tags:
+        - Rents
+      summary: Mendapatkan riwayat pemesanan pengguna yang login
+      description: Mengambil seluruh riwayat transaksi sewa ruangan yang pernah dipesan oleh pengguna yang sedang login (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Berhasil mengambil riwayat pemesanan pengguna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentListResponse'
+        '400':
+          description: Token tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # PAYMENTS
+  # ==========================================
+  /payments:
+    get:
+      tags:
+        - Payments
+      summary: Mendapatkan riwayat pembayaran pengguna
+      description: Mengambil daftar seluruh riwayat pembayaran transaksi sewa ruangan milik pengguna yang sedang login (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Berhasil mengambil data riwayat pembayaran
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentHistoryListResponse'
+        '400':
+          description: Token tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /payments/status:
+    post:
+      tags:
+        - Payments
+      summary: Midtrans Payment Notification Webhook
+      description: |
+        Endpoint webhook callback yang dipanggil oleh server Midtrans secara asinkron saat status pembayaran berubah (settlement, expire, cancel, deny, dll).
+        Sistem secara otomatis memperbarui status pada tabel payments dan status pemesanan sewa (rents).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MidtransWebhookPayload'
+      responses:
+        '200':
+          description: Berhasil memperbarui status pembayaran
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Format payload JSON tidak valid atau order_id kosong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Order ID pembayaran tidak ditemukan dalam database
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Gagal memperbarui status ke database
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==========================================
+  # FEEDBACKS
+  # ==========================================
+  /feedbacks:
+    post:
+      tags:
+        - Feedbacks
+      summary: Mengirimkan feedback dan rating ruangan
+      description: Memberikan penilaian bintang (1-5) dan ulasan komentar untuk ruangan yang pernah disewa (Memerlukan token JWT).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FeedbackCreateRequest'
+      responses:
+        '200':
+          description: Berhasil mengirimkan ulasan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessNoDataResponse'
+        '400':
+          description: Input tidak valid atau token tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /feedbacks/{id}:
+    get:
+      tags:
+        - Feedbacks
+      summary: Mendapatkan seluruh ulasan ruangan berdasarkan ID Ruangan
+      description: Mengambil seluruh daftar ulasan dan rating untuk ruangan tertentu.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID Ruangan
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Berhasil mengambil ulasan ruangan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackListResponse'
+        '400':
+          description: ID ruangan tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Kesalahan internal server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+# ==========================================
+# COMPONENTS & SCHEMAS
+# ==========================================
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Masukkan access token JWT dengan format **Bearer {token}**
+
+  schemas:
+    # Standard Generic Responses
+    SuccessNoDataResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to process request
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: invalid input or bad request
+
+    # Authentication
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: mulya@mail.com
+        password:
+          type: string
+          format: password
+          example: password123
+
+    LoginSuccessResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: success
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            email:
+              type: string
+              example: mulya@mail.com
+
+    # Users
+    UserRegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - phone
+        - address
+      properties:
+        username:
+          type: string
+          description: Nama pengguna (hanya huruf alfabet, minimal 3 karakter)
+          example: Johndoe
+        email:
+          type: string
+          format: email
+          example: johndoe@mail.com
+        password:
+          type: string
+          format: password
+          description: Password akun (minimal 6 karakter)
+          example: secret123
+        phone:
+          type: string
+          description: Nomor telepon (numerik, minimal 8 digit)
+          example: "081234567890"
+        address:
+          type: string
+          description: Alamat tempat tinggal pengguna
+          example: Jl. Raya Darmo No. 100, Surabaya
+        image:
+          type: string
+          format: binary
+          description: Berkas foto profil pengguna (opsional, maks 1MB, format JPG/JPEG/PNG)
+
+    UserRegisterJSONRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - phone
+        - address
+      properties:
+        username:
+          type: string
+          example: Johndoe
+        email:
+          type: string
+          format: email
+          example: johndoe@mail.com
+        password:
+          type: string
+          format: password
+          example: secret123
+        phone:
+          type: string
+          example: "081234567890"
+        address:
+          type: string
+          example: Jl. Raya Darmo No. 100, Surabaya
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username baru (hanya huruf alfabet, minimal 3 karakter)
+          example: JohndoeUpdate
+        password:
+          type: string
+          format: password
+          description: Password baru (minimal 6 karakter)
+          example: newsecret123
+        address:
+          type: string
+          example: Jl. Basuki Rahmat No. 12, Surabaya
+        image:
+          type: string
+          format: binary
+          description: Berkas foto profil baru (opsional, maks 1MB)
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: Johndoe
+        email:
+          type: string
+          example: johndoe@mail.com
+        phone:
+          type: string
+          example: "081234567890"
+        address:
+          type: string
+          example: Jl. Raya Darmo No. 100, Surabaya
+        image:
+          type: string
+          example: https://storage.googleapis.com/bucket/profile_default.png
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+
+    UserListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+
+    UserDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get data
+        data:
+          $ref: '#/components/schemas/UserResponse'
+
+    # Categories
+    CategoryRequest:
+      type: object
+      required:
+        - category_name
+      properties:
+        category_name:
+          type: string
+          example: Meeting Room
+
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        category_name:
+          type: string
+          example: Meeting Room
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+
+    CategoryListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryResponse'
+
+    CategoryDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get data
+        data:
+          $ref: '#/components/schemas/CategoryResponse'
+
+    # Facilities
+    FacilityRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Projector 4K
+
+    FacilityResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Projector 4K
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+
+    FacilityListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacilityResponse'
+
+    FacilityDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get data
+        data:
+          $ref: '#/components/schemas/FacilityResponse'
+
+    # Rooms
+    RoomCreateRequest:
+      type: object
+      required:
+        - room_name
+        - hotel_name
+        - capacity
+        - rental_price
+        - address
+        - city
+        - categorys_id
+      properties:
+        room_name:
+          type: string
+          example: Ruang Arjuna
+        hotel_name:
+          type: string
+          example: Hotel Berlina
+        capacity:
+          type: integer
+          example: 100
+        rental_price:
+          type: integer
+          description: Harga sewa per hari (IDR)
+          example: 1500000
+        address:
+          type: string
+          example: Jl. Pemuda No. 45
+        city:
+          type: string
+          example: Surabaya
+        categorys_id:
+          type: integer
+          example: 1
+        facilitys:
+          type: array
+          description: Daftar ID fasilitas yang disediakan di ruangan
+          items:
+            type: integer
+          example: [1, 2, 3]
+        image_room:
+          type: string
+          format: binary
+          description: Foto penampakan ruangan (maks 1MB, JPG/JPEG/PNG)
+        image_pengelola:
+          type: string
+          format: binary
+          description: Foto identitas / izin pengelola (maks 1MB, JPG/JPEG/PNG)
+
+    RoomUpdateRequest:
+      type: object
+      properties:
+        room_name:
+          type: string
+          example: Ruang Arjuna Grand
+        hotel_name:
+          type: string
+          example: Hotel Berlina
+        capacity:
+          type: integer
+          example: 150
+        rental_price:
+          type: integer
+          example: 1800000
+        address:
+          type: string
+          example: Jl. Pemuda No. 45
+        city:
+          type: string
+          example: Surabaya
+        categorys_id:
+          type: integer
+          example: 1
+        image_room:
+          type: string
+          format: binary
+        image_pengelola:
+          type: string
+          format: binary
+
+    RoomResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        image_room:
+          type: string
+          example: https://storage.googleapis.com/bucket/default_room.jpg
+        image_pengelola:
+          type: string
+          example: https://storage.googleapis.com/bucket/image_pengelola.png
+        room_name:
+          type: string
+          example: Ruang Arjuna
+        capacity:
+          type: integer
+          example: 100
+        hotel_name:
+          type: string
+          example: Hotel Berlina
+        rental_price:
+          type: integer
+          example: 1500000
+        address:
+          type: string
+          example: Jl. Pemuda No. 45
+        city:
+          type: string
+          example: Surabaya
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: Johndoe
+            email:
+              type: string
+              example: johndoe@mail.com
+        Categorys:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            category_name:
+              type: string
+              example: Meeting Room
+
+    RoomListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomResponse'
+
+    RoomDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get data
+        data:
+          $ref: '#/components/schemas/RoomResponse'
+
+    # Room Facilities
+    RoomFacilityResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: Johndoe
+            email:
+              type: string
+              example: johndoe@mail.com
+        Rooms:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            room_name:
+              type: string
+              example: Ruang Arjuna
+            hotel_name:
+              type: string
+              example: Hotel Berlina
+            capacity:
+              type: integer
+              example: 100
+        Facilitys:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Projector 4K
+
+    RoomFacilityListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomFacilityResponse'
+
+    # Rents
+    RentCreateRequest:
+      type: object
+      required:
+        - date_start
+        - date_end
+        - rooms_id
+        - bank
+      properties:
+        date_start:
+          type: string
+          format: date
+          description: Tanggal mulai sewa (YYYY-MM-DD)
+          example: "2026-12-01"
+        date_end:
+          type: string
+          format: date
+          description: Tanggal selesai sewa (YYYY-MM-DD, harus setelah date_start)
+          example: "2026-12-03"
+        rooms_id:
+          type: integer
+          description: ID Ruangan yang akan dipesan
+          example: 1
+        bank:
+          type: string
+          description: Bank tujuan Virtual Account Midtrans
+          enum:
+            - bca
+            - bni
+            - bri
+            - permata
+          example: bca
+
+    RentCreateSuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to insert data
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 10
+            transaction_id:
+              type: string
+              example: 52d92fc2-75eb-4271-97b7-5a3fb1b151e5
+            order_id:
+              type: string
+              example: RENT-10-1763539200
+            payment_type:
+              type: string
+              example: bank_transfer
+            bank_transfer:
+              type: string
+              example: bca
+            gross_amount:
+              type: integer
+              description: Total harga sewa (durasi hari x harga per hari)
+              example: 3000000
+            va_number:
+              type: string
+              description: Nomor Virtual Account Midtrans untuk pembayaran
+              example: "9870123456789012"
+            transaction_status:
+              type: string
+              example: pending
+
+    RentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        date_start:
+          type: string
+          example: "2026-12-01"
+        date_end:
+          type: string
+          example: "2026-12-03"
+        bank:
+          type: string
+          example: bca
+        total_rental_price:
+          type: integer
+          example: 3000000
+        status:
+          type: string
+          example: Pending
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: Johndoe
+            email:
+              type: string
+              example: johndoe@mail.com
+        Rooms:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            room_name:
+              type: string
+              example: Ruang Arjuna
+            hotel_name:
+              type: string
+              example: Hotel Berlina
+            image_room:
+              type: string
+              example: https://storage.googleapis.com/bucket/room.jpg
+            capacity:
+              type: integer
+              example: 100
+
+    RentListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RentResponse'
+
+    # Payments
+    PaymentHistoryItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        transaction_id:
+          type: string
+          example: 52d92fc2-75eb-4271-97b7-5a3fb1b151e5
+        order_id:
+          type: string
+          example: RENT-1-1763539200
+        payment_type:
+          type: string
+          example: bank_transfer
+        bank_transfer:
+          type: string
+          example: bca
+        gross_amount:
+          type: integer
+          example: 3000000
+        va_number:
+          type: string
+          example: "9870123456789012"
+        transaction_status:
+          type: string
+          example: settlement
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: Johndoe
+            email:
+              type: string
+              example: johndoe@mail.com
+        Rents:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            date_start:
+              type: string
+              example: "2026-12-01"
+            date_end:
+              type: string
+              example: "2026-12-03"
+            bank:
+              type: string
+              example: bca
+            total_rental_price:
+              type: integer
+              example: 3000000
+            status:
+              type: string
+              example: Success
+
+    PaymentHistoryListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentHistoryItem'
+
+    MidtransWebhookPayload:
+      type: object
+      required:
+        - order_id
+        - transaction_status
+      properties:
+        order_id:
+          type: string
+          description: ID Pesanan yang dihasilkan saat booking (contoh RENT-1-1763539200)
+          example: RENT-1-1763539200
+        transaction_status:
+          type: string
+          description: Status transaksi dari Midtrans
+          enum:
+            - capture
+            - settlement
+            - pending
+            - deny
+            - cancel
+            - expire
+            - failure
+          example: settlement
+        fraud_status:
+          type: string
+          description: Status fraud detection dari Midtrans (opsional)
+          enum:
+            - accept
+            - challenge
+          example: accept
+        status_code:
+          type: string
+          example: "200"
+        gross_amount:
+          type: string
+          example: "3000000.00"
+        signature_key:
+          type: string
+          description: SHA512 signature hash dari Midtrans
+          example: 5d41402abc4b2a76b9719d911017c592...
+
+    # Feedbacks
+    FeedbackCreateRequest:
+      type: object
+      required:
+        - rents_id
+        - rating
+        - comment
+      properties:
+        rents_id:
+          type: integer
+          description: ID Penyewaan (rents) yang telah dilakukan
+          example: 1
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Nilai rating kepuasan (1 sampai 5)
+          example: 5
+        comment:
+          type: string
+          description: Ulasan tertulis tentang ruangan dan fasilitas
+          example: Ruangannya bersih, AC sangat dingin, proyektor berfungsi jernih!
+
+    FeedbackResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        rating:
+          type: integer
+          example: 5
+        comment:
+          type: string
+          example: Ruangannya bersih, AC sangat dingin, proyektor berfungsi jernih!
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-11-19T08:00:00Z
+        User:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            username:
+              type: string
+              example: Johndoe
+            email:
+              type: string
+              example: johndoe@mail.com
+        Rents:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            date_start:
+              type: string
+              example: "2026-12-01"
+            date_end:
+              type: string
+              example: "2026-12-03"
+            bank:
+              type: string
+              example: bca
+            total_rental_price:
+              type: integer
+              example: 3000000
+            status:
+              type: string
+              example: Success
+            Room:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+
+    FeedbackListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: success to get all data
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackResponse'
