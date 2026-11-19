@@ -4,7 +4,14 @@ import (
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/users"
 	"context"
+	"errors"
 	"time"
+)
+
+var (
+	ErrAlreadyBooked = errors.New("you already booked this room")
+	ErrRoomBooked    = errors.New("this room has booked")
+	ErrInvalidDate   = errors.New("invalid date range")
 )
 
 type Core struct {
@@ -48,6 +55,7 @@ type CoreUser struct {
 }
 
 type Business interface {
+	CreateRent(ctx context.Context, idToken int, insert Core) (data CorePayments, err error)
 	GetData(ctx context.Context, id int) (data int, err error)
 	GetDataRentToken(ctx context.Context, idToken int, idRoom int) (row int, err error)
 	GetDataRentUser(ctx context.Context, id int, start string, end string) (row int, err error)
