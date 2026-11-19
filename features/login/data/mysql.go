@@ -2,6 +2,7 @@ package data
 
 import (
 	"be9/mnroom/features/login"
+	"context"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -17,9 +18,9 @@ func NewAuthRepository(conn *gorm.DB) login.Data {
 	}
 }
 
-func (repo *mysqlAuthRepository) Auth(data login.Core) (dataAuth login.Core, err error) {
+func (repo *mysqlAuthRepository) Auth(ctx context.Context, data login.Core) (dataAuth login.Core, err error) {
 	var authUser User
-	tx := repo.db.First(&authUser, "email = ?", data.Email)
+	tx := repo.db.WithContext(ctx).First(&authUser, "email = ?", data.Email)
 	if tx.Error != nil {
 		return login.Core{}, tx.Error
 	}

@@ -1,5 +1,7 @@
 package login
 
+import "context"
+
 type Core struct {
 	ID       int
 	Email    string
@@ -7,9 +9,9 @@ type Core struct {
 }
 
 type Business interface {
-	Auth(data Core) (dataAuth Core, err error)
+	Auth(ctx context.Context, data Core) (dataAuth Core, err error)
 }
 
 type Data interface {
-	Auth(data Core) (dataAuth Core, err error)
+	Auth(ctx context.Context, data Core) (dataAuth Core, err error)
 }

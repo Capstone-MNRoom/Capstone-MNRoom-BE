@@ -34,7 +34,7 @@ func (g *CategoryHandler) InsertData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("category cannot be empty"))
 	}
 	newCategory := request.ToCore(insertCategory)
-	row, err := g.categoryBusiness.InsertData(newCategory)
+	row, err := g.categoryBusiness.InsertData(c.Request().Context(), newCategory)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
 	}
@@ -45,7 +45,7 @@ func (g *CategoryHandler) InsertData(c echo.Context) error {
 }
 
 func (g *CategoryHandler) GetDataAll(c echo.Context) error {
-	data, err := g.categoryBusiness.GetDataAll()
+	data, err := g.categoryBusiness.GetDataAll(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
@@ -58,7 +58,7 @@ func (g *CategoryHandler) GetData(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	data, err := g.categoryBusiness.GetData(idCategory)
+	data, err := g.categoryBusiness.GetData(c.Request().Context(), idCategory)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
 	}
@@ -80,7 +80,7 @@ func (g *CategoryHandler) UpdateData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUpdate := request.ToCore(updateCategory)
-	row, err := g.categoryBusiness.UpdateData(idCategory, newUpdate)
+	row, err := g.categoryBusiness.UpdateData(c.Request().Context(), idCategory, newUpdate)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to updated data"))
 	}
@@ -96,7 +96,7 @@ func (g *CategoryHandler) DeleteData(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	row, err := g.categoryBusiness.DeleteData(idCategory)
+	row, err := g.categoryBusiness.DeleteData(c.Request().Context(), idCategory)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
 	}

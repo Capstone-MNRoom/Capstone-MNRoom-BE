@@ -4,6 +4,7 @@ package mocks
 
 import (
 	login "be9/mnroom/features/login"
+	context "context"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -13,9 +14,9 @@ type LoginData struct {
 	mock.Mock
 }
 
-// Auth provides a mock function with given fields: data
-func (_m *LoginData) Auth(data login.Core) (login.Core, error) {
-	ret := _m.Called(data)
+// Auth provides a mock function with given fields: ctx, data
+func (_m *LoginData) Auth(ctx context.Context, data login.Core) (login.Core, error) {
+	ret := _m.Called(ctx, data)
 
 	var r0 login.Core
 	if rf, ok := ret.Get(0).(func(login.Core) login.Core); ok {

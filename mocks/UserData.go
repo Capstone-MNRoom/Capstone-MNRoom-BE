@@ -4,6 +4,7 @@ package mocks
 
 import (
 	users "be9/mnroom/features/users"
+	context "context"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -13,20 +14,20 @@ type UserData struct {
 	mock.Mock
 }
 
-// DeleteData provides a mock function with given fields: id
-func (_m *UserData) DeleteData(id int) (int, error) {
-	ret := _m.Called(id)
+// DeleteData provides a mock function with given fields: ctx, id
+func (_m *UserData) DeleteData(ctx context.Context, id int) (int, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int) int); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) int); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -34,13 +35,13 @@ func (_m *UserData) DeleteData(id int) (int, error) {
 	return r0, r1
 }
 
-// GetAllData provides a mock function with given fields:
-func (_m *UserData) GetAllData() ([]users.Core, error) {
-	ret := _m.Called()
+// GetAllData provides a mock function with given fields: ctx
+func (_m *UserData) GetAllData(ctx context.Context) ([]users.Core, error) {
+	ret := _m.Called(ctx)
 
 	var r0 []users.Core
-	if rf, ok := ret.Get(0).(func() []users.Core); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(context.Context) []users.Core); ok {
+		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]users.Core)
@@ -48,8 +49,8 @@ func (_m *UserData) GetAllData() ([]users.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -57,20 +58,20 @@ func (_m *UserData) GetAllData() ([]users.Core, error) {
 	return r0, r1
 }
 
-// GetData provides a mock function with given fields: id
-func (_m *UserData) GetData(id int) (users.Core, error) {
-	ret := _m.Called(id)
+// GetData provides a mock function with given fields: ctx, id
+func (_m *UserData) GetData(ctx context.Context, id int) (users.Core, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 users.Core
-	if rf, ok := ret.Get(0).(func(int) users.Core); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) users.Core); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(users.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -78,20 +79,20 @@ func (_m *UserData) GetData(id int) (users.Core, error) {
 	return r0, r1
 }
 
-// InsertData provides a mock function with given fields: insert
-func (_m *UserData) InsertData(insert users.Core) (int, error) {
-	ret := _m.Called(insert)
+// InsertData provides a mock function with given fields: ctx, insert
+func (_m *UserData) InsertData(ctx context.Context, insert users.Core) (int, error) {
+	ret := _m.Called(ctx, insert)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(users.Core) int); ok {
-		r0 = rf(insert)
+	if rf, ok := ret.Get(0).(func(context.Context, users.Core) int); ok {
+		r0 = rf(ctx, insert)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(users.Core) error); ok {
-		r1 = rf(insert)
+	if rf, ok := ret.Get(1).(func(context.Context, users.Core) error); ok {
+		r1 = rf(ctx, insert)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -99,20 +100,20 @@ func (_m *UserData) InsertData(insert users.Core) (int, error) {
 	return r0, r1
 }
 
-// UpdateData provides a mock function with given fields: id, insert
-func (_m *UserData) UpdateData(id int, insert users.Core) (int, error) {
-	ret := _m.Called(id, insert)
+// UpdateData provides a mock function with given fields: ctx, id, insert
+func (_m *UserData) UpdateData(ctx context.Context, id int, insert users.Core) (int, error) {
+	ret := _m.Called(ctx, id, insert)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int, users.Core) int); ok {
-		r0 = rf(id, insert)
+	if rf, ok := ret.Get(0).(func(context.Context, int, users.Core) int); ok {
+		r0 = rf(ctx, id, insert)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, users.Core) error); ok {
-		r1 = rf(id, insert)
+	if rf, ok := ret.Get(1).(func(context.Context, int, users.Core) error); ok {
+		r1 = rf(ctx, id, insert)
 	} else {
 		r1 = ret.Error(1)
 	}

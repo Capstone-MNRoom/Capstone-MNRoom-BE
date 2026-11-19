@@ -3,6 +3,7 @@ package payments
 import (
 	"be9/mnroom/features/rents"
 	"be9/mnroom/features/users"
+	"context"
 	"time"
 )
 
@@ -37,11 +38,11 @@ type Rents struct {
 }
 
 type Business interface {
-	GetAllData(idToken int) (data []Core, err error)
-	UpdateData(idOrder string, status string) (row int, err error)
+	GetAllData(ctx context.Context, idToken int) (data []Core, err error)
+	UpdateData(ctx context.Context, idOrder string, status string) (row int, err error)
 }
 
 type Data interface {
-	GetAllData(idToken int) (data []Core, err error)
-	UpdateData(idOrder string, status string) (row int, err error)
+	GetAllData(ctx context.Context, idToken int) (data []Core, err error)
+	UpdateData(ctx context.Context, idOrder string, status string) (row int, err error)
 }

@@ -41,7 +41,7 @@ func (a *AuthHandler) Auth(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("password cannot be empty"))
 	}
 	authUser := request.ToCore(insertLogin)
-	dataAuth, err := a.authBusiness.Auth(authUser)
+	dataAuth, err := a.authBusiness.Auth(c.Request().Context(), authUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or password incorrect"))
 	}

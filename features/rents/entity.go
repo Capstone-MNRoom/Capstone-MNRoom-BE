@@ -3,6 +3,7 @@ package rents
 import (
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/users"
+	"context"
 	"time"
 )
 
@@ -47,23 +48,23 @@ type CoreUser struct {
 }
 
 type Business interface {
-	GetData(id int) (data int, err error)
-	GetDataRentToken(idToken int, idRoom int) (row int, err error)
-	GetDataRentUser(id int, start string, end string) (row int, err error)
-	InsertData(insert Core) (row int, err error)
-	GetDataRent(id int) (data []Core, err error)
-	InsertDataPayment(insert CorePayments) (data CorePayments, err error)
-	GetDataUser(idToken int) (data CoreUser, err error)
-	GetDataRentUserHistory(idToken int) (data []Core, err error)
+	GetData(ctx context.Context, id int) (data int, err error)
+	GetDataRentToken(ctx context.Context, idToken int, idRoom int) (row int, err error)
+	GetDataRentUser(ctx context.Context, id int, start string, end string) (row int, err error)
+	InsertData(ctx context.Context, insert Core) (row int, err error)
+	GetDataRent(ctx context.Context, id int) (data []Core, err error)
+	InsertDataPayment(ctx context.Context, insert CorePayments) (data CorePayments, err error)
+	GetDataUser(ctx context.Context, idToken int) (data CoreUser, err error)
+	GetDataRentUserHistory(ctx context.Context, idToken int) (data []Core, err error)
 }
 
 type Data interface {
-	GetData(id int) (data int, err error)
-	GetDataRentToken(idToken int, idRoom int) (row int, err error)
-	GetDataRentUser(id int, start string, end string) (row int, err error)
-	InsertData(insert Core) (row int, err error)
-	GetDataRent(id int) (data []Core, err error)
-	InsertDataPayment(insert CorePayments) (data CorePayments, err error)
-	GetDataUser(idToken int) (data CoreUser, err error)
-	GetDataRentUserHistory(idToken int) (data []Core, err error)
+	GetData(ctx context.Context, id int) (data int, err error)
+	GetDataRentToken(ctx context.Context, idToken int, idRoom int) (row int, err error)
+	GetDataRentUser(ctx context.Context, id int, start string, end string) (row int, err error)
+	InsertData(ctx context.Context, insert Core) (row int, err error)
+	GetDataRent(ctx context.Context, id int) (data []Core, err error)
+	InsertDataPayment(ctx context.Context, insert CorePayments) (data CorePayments, err error)
+	GetDataUser(ctx context.Context, idToken int) (data CoreUser, err error)
+	GetDataRentUserHistory(ctx context.Context, idToken int) (data []Core, err error)
 }

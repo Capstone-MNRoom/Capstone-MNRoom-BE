@@ -76,14 +76,14 @@ func (r *RoomHandler) InsertData(c echo.Context) error {
 	}
 	newRoom := request.ToCore(insertRoom)
 	newRoom.User.ID = idToken
-	data, err := r.roomBusiness.InsertData(newRoom)
+	data, err := r.roomBusiness.InsertData(c.Request().Context(), newRoom)
 	var insertRoomFacilitys _requestFacilitys.RoomFacilitys
 	for _, v := range newRoom.Facilitys {
 		newRoomFacilitys := _requestFacilitys.ToCore(insertRoomFacilitys)
 		newRoomFacilitys.User.ID = idToken
 		newRoomFacilitys.Rooms.ID = data.ID
 		newRoomFacilitys.Facilitys.ID = v
-		row, _ := r.roomBusiness.InsertDataRoomFacilitys(rooms.CoreRoomFacilitys(newRoomFacilitys))
+		row, _ := r.roomBusiness.InsertDataRoomFacilitys(c.Request().Context(), rooms.CoreRoomFacilitys(newRoomFacilitys))
 		if row != 1 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
 		}
@@ -98,7 +98,7 @@ func (r *RoomHandler) GetDataAll(c echo.Context) error {
 	page := c.QueryParam("page")
 	pageint, _ := strconv.Atoi(page)
 
-	data, err := r.roomBusiness.GetDataAll(pageint)
+	data, err := r.roomBusiness.GetDataAll(c.Request().Context(), pageint)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
@@ -111,7 +111,7 @@ func (r *RoomHandler) GetData(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	data, err := r.roomBusiness.GetData(idRoom)
+	data, err := r.roomBusiness.GetData(c.Request().Context(), idRoom)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
@@ -128,7 +128,7 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	dataToken, _ := r.roomBusiness.GetToken(idRoom, idToken)
+	dataToken, _ := r.roomBusiness.GetToken(c.Request().Context(), idRoom, idToken)
 	if dataToken.User.ID != idToken {
 		return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 	}
@@ -140,7 +140,7 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 	if errPengelola != nil {
 		return c.JSON(report["code"].(int), helper.ResponseFailed(fmt.Sprintf("%s", reportPengelola["message"])))
 	}
-	data, _ := r.roomBusiness.GetData(idRoom)
+	data, _ := r.roomBusiness.GetData(c.Request().Context(), idRoom)
 	CapacityInt, _ := strconv.Atoi(c.FormValue("capacity"))
 	RentalPriceInt, _ := strconv.Atoi(c.FormValue("rental_price"))
 	categorysIDInt, _ := strconv.Atoi(c.FormValue("categorys_id"))
@@ -219,7 +219,7 @@ func (r *RoomHandler) UpdateData(c echo.Context) error {
 		}
 	}
 	newRoom := request.ToCore(updateData)
-	row, errRoom := r.roomBusiness.UpdateData(idRoom, newRoom)
+	row, errRoom := r.roomBusiness.UpdateData(c.Request().Context(), idRoom, newRoom)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to updated data"))
 	}
@@ -239,14 +239,14 @@ func (r *RoomHandler) DeleteData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	rowIDRoom, _ := r.roomBusiness.GetDataIDRoom(idRoom)
-	dataToken, _ := r.roomBusiness.GetToken(idRoom, idToken)
+	rowIDRoom, _ := r.roomBusiness.GetDataIDRoom(c.Request().Context(), idRoom)
+	dataToken, _ := r.roomBusiness.GetToken(c.Request().Context(), idRoom, idToken)
 	if rowIDRoom != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	} else if rowIDRoom == 1 && dataToken.User.ID != idToken {
 		return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 	}
-	row, err := r.roomBusiness.DeleteData(idRoom)
+	row, err := r.roomBusiness.DeleteData(c.Request().Context(), idRoom)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
 	}
@@ -261,7 +261,7 @@ func (r *RoomHandler) GetDataAllUserRoom(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	data, err := r.roomBusiness.GetDataAllUserRoom(idToken)
+	data, err := r.roomBusiness.GetDataAllUserRoom(c.Request().Context(), idToken)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
@@ -271,7 +271,7 @@ func (r *RoomHandler) GetDataAllUserRoom(c echo.Context) error {
 func (r *RoomHandler) GetDataByCategory(c echo.Context) error {
 	category := c.QueryParam("category")
 	categoryInt, _ := strconv.Atoi(category)
-	data, err := r.roomBusiness.GetDataByCategory(categoryInt)
+	data, err := r.roomBusiness.GetDataByCategory(c.Request().Context(), categoryInt)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Check your input"))
 	}

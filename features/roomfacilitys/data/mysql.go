@@ -2,6 +2,7 @@ package data
 
 import (
 	"be9/mnroom/features/roomfacilitys"
+	"context"
 
 	"gorm.io/gorm"
 )
@@ -16,18 +17,18 @@ func NewRoomFacilityRepository(conn *gorm.DB) roomfacilitys.Data {
 	}
 }
 
-func (repo *mysqlRoomFacilityRepository) GetData(id int) (data []roomfacilitys.Core, err error) {
+func (repo *mysqlRoomFacilityRepository) GetData(ctx context.Context, id int) (data []roomfacilitys.Core, err error) {
 	var getData []RoomFacilitys
-	tx := repo.db.Where("rooms_id = ?", id).Preload("User").Preload("Rooms").Preload("Facilitys").Find(&getData)
+	tx := repo.db.WithContext(ctx).Where("rooms_id = ?", id).Preload("User").Preload("Rooms").Preload("Facilitys").Find(&getData)
 	if tx.Error != nil {
 		return []roomfacilitys.Core{}, tx.Error
 	}
 	return toCoreList(getData), nil
 }
 
-func (repo *mysqlRoomFacilityRepository) GetDataRow(id int) (row int, err error) {
+func (repo *mysqlRoomFacilityRepository) GetDataRow(ctx context.Context, id int) (row int, err error) {
 	var getData RoomFacilitys
-	tx := repo.db.Where("rooms_id = ?", id).Preload("User").Preload("Rooms").Preload("Facilitys").First(&getData)
+	tx := repo.db.WithContext(ctx).Where("rooms_id = ?", id).Preload("User").Preload("Rooms").Preload("Facilitys").First(&getData)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}

@@ -1,6 +1,7 @@
 package feedback
 
 import (
+	"context"
 	"time"
 )
 
@@ -35,17 +36,17 @@ type Rooms struct {
 }
 
 type Business interface {
-	GetFeedbackByRoom(id int) (data []Core, err error)
-	InsertFeedback(insert Core) (row int, err error)
-	GetDataRoom(id int) (data int, err error)
-	GetDataRent(id int) (data int, err error)
-	GetDataRentUser(idToken int, idRoom int) (data int, err error)
+	GetFeedbackByRoom(ctx context.Context, id int) (data []Core, err error)
+	InsertFeedback(ctx context.Context, insert Core) (row int, err error)
+	GetDataRoom(ctx context.Context, id int) (data int, err error)
+	GetDataRent(ctx context.Context, id int) (data int, err error)
+	GetDataRentUser(ctx context.Context, idToken int, idRoom int) (data int, err error)
 }
 
 type Data interface {
-	GetFeedbackByRoom(id int) (data []Core, err error)
-	InsertFeedback(insert Core) (row int, err error)
-	GetDataRoom(id int) (data int, err error)
-	GetDataRent(id int) (data int, err error)
-	GetDataRentUser(idToken int, idRoom int) (data int, err error)
+	GetFeedbackByRoom(ctx context.Context, id int) (data []Core, err error)
+	InsertFeedback(ctx context.Context, insert Core) (row int, err error)
+	GetDataRoom(ctx context.Context, id int) (data int, err error)
+	GetDataRent(ctx context.Context, id int) (data int, err error)
+	GetDataRentUser(ctx context.Context, idToken int, idRoom int) (data int, err error)
 }
