@@ -12,7 +12,7 @@
   <p align="center">
     Platform reservasi dan penyewaan ruangan daring berbasis RESTful API dengan integrasi Payment Gateway & Cloud Storage.
     <br />
-    <a href="https://app.swaggerhub.com/apis-docs/davidwah/MNROOM/1.0#/"><strong>» Open API Swagger »</strong></a>
+    <a href="./open-api.yml"><strong>» OpenAPI 3.0 Specification (open-api.yml) »</strong></a> | <a href="./docs/openapi.yaml"><strong>» Docs OpenAPI »</strong></a>
   </p>
 </div>
 
