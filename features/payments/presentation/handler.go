@@ -35,20 +35,31 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 }
 
 func (y *PaymentHandler) UpdateData(c echo.Context) error {
-	var r = c.Request().Body
 	var notificationPayload map[string]interface{}
-	errDecode := json.NewDecoder(r).Decode(&notificationPayload)
+	errDecode := json.NewDecoder(c.Request().Body).Decode(&notificationPayload)
 	if errDecode != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed decode"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to decode notification payload"))
 	}
+
 	orderId, _ := notificationPayload["order_id"].(string)
 	transactionStatus, _ := notificationPayload["transaction_status"].(string)
-	row, err := y.paymentBusiness.UpdateData(c.Request().Context(), orderId, transactionStatus)
-	if row != 0 {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update data"))
+	fraudStatus, _ := notificationPayload["fraud_status"].(string)
+
+	if orderId == "" {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid order_id"))
 	}
+
+	// Normalize status using standard Midtrans rules
+	gateway := helper.NewMidtransGateway()
+	finalStatus := gateway.NormalizeStatus(transactionStatus, fraudStatus)
+
+	row, err := y.paymentBusiness.UpdateData(c.Request().Context(), orderId, finalStatus)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
-	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to update data"))
+	if row == 0 {
+		return c.JSON(http.StatusNotFound, helper.ResponseFailed("payment record not found"))
+	}
+
+	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("success to update payment status"))
 }

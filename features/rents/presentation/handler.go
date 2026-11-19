@@ -2,23 +2,18 @@ package presentation
 
 import (
 	"be9/mnroom/features/payments"
-	_payments "be9/mnroom/features/payments/presentation/request"
 	_response "be9/mnroom/features/payments/presentation/response"
 	"be9/mnroom/features/rents"
 	"be9/mnroom/features/rents/presentation/request"
 	"be9/mnroom/features/rents/presentation/response"
 	"be9/mnroom/helper"
 	_middlewares "be9/mnroom/middlewares"
-	"fmt"
+	"errors"
 	"net/http"
-	"os"
 	"strconv"
-	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	"github.com/midtrans/midtrans-go"
-	"github.com/midtrans/midtrans-go/coreapi"
 )
 
 type RentHandler struct {
@@ -31,97 +26,49 @@ func NewEventHandler(business rents.Business) *RentHandler {
 	}
 }
 
-func (t *RentHandler) GetData(c echo.Context) error {
+func (t *RentHandler) CreateRent(c echo.Context) error {
 	idToken, errToken := _middlewares.ExtractToken(c)
 	if errToken != nil {
-		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
 	var insertData request.Rents
 	errBind := c.Bind(&insertData)
 	if errBind != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to bind data, check your input"))
 	}
+
 	v := validator.New()
-	errDateStart := v.Var(insertData.DateStart, "required")
-	fmt.Println(insertData.DateStart)
-	if errDateStart != nil {
+	if err := v.Var(insertData.DateStart, "required"); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date start cannot be empty"))
 	}
-	errDateEnd := v.Var(insertData.DateEnd, "required")
-	fmt.Println(insertData.DateEnd)
-	if errDateEnd != nil {
+	if err := v.Var(insertData.DateEnd, "required"); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("date end cannot be empty"))
 	}
-	errBank := v.Var(insertData.Bank, "required")
-	if errBank != nil {
+	if err := v.Var(insertData.RoomsID, "required,numeric"); err != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("rooms cannot be empty"))
+	}
+	if err := v.Var(insertData.Bank, "required"); err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("bank cannot be empty"))
 	}
+
 	newRent := request.ToCore(insertData)
-	rowToken, _ := t.rentBusiness.GetDataRentToken(c.Request().Context(), idToken, newRent.Room.ID)
-	if rowToken != 1 {
-		rowDataRent, _ := t.rentBusiness.GetDataRentUser(c.Request().Context(), newRent.Room.ID, newRent.DateStart, newRent.DateEnd)
-		if rowDataRent != 1 {
-			data, _ := t.rentBusiness.GetData(c.Request().Context(), newRent.Room.ID)
-			date1, _ := time.Parse("2006-01-02", newRent.DateStart)
-			date2, _ := time.Parse("2006-01-02", newRent.DateEnd)
-			difference := date2.Sub(date1)
-			newRent.TotalRentalPrice = data * int(int64(difference.Hours()/24))
-			newRent.Status = "Success"
-			newRent.User.ID = idToken
-			rowIDRent, err := t.rentBusiness.InsertData(c.Request().Context(), newRent)
-			if err != nil {
-				return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
-			}
-
-			w := time.Now()
-			formatted := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
-				w.Year(), w.Month(), w.Day(),
-				w.Hour(), w.Minute(), w.Second())
-			var s = coreapi.Client{}
-			s.New(os.Getenv("SERVER_KEY"), midtrans.Sandbox)
-
-			dataUser, _ := t.rentBusiness.GetDataUser(c.Request().Context(), idToken)
-
-			chargeReq := &coreapi.ChargeReq{
-				PaymentType: coreapi.PaymentTypeBankTransfer,
-				TransactionDetails: midtrans.TransactionDetails{
-					OrderID:  formatted,
-					GrossAmt: int64(newRent.TotalRentalPrice),
-				},
-				BankTransfer: &coreapi.BankTransferDetails{
-					Bank: midtrans.Bank(newRent.Bank),
-				},
-				CustomerDetails: &midtrans.CustomerDetails{
-					FName: dataUser.Username,
-					Phone: dataUser.Phone,
-					Email: dataUser.Email,
-					BillAddr: &midtrans.CustomerAddress{
-						Address: dataUser.Address,
-					},
-				},
-			}
-
-			res, _ := s.ChargeTransaction(chargeReq)
-
-			var insertPayment _payments.Payments
-			newPayment := _payments.ToCore(insertPayment)
-			newPayment.TransactionID = res.TransactionID
-			newPayment.PaymentType = res.PaymentType
-			newPayment.OrderID = res.OrderID
-			newPayment.BankTransfer = newRent.Bank
-			newPayment.GrossAmount = newRent.TotalRentalPrice
-			for _, v := range res.VaNumbers {
-				newPayment.VANumber = v.VANumber
-			}
-			newPayment.TransactionStatus = res.TransactionStatus
-			newPayment.Rents.ID = rowIDRent
-			newPayment.User.ID = idToken
-			dataPayment, _ := t.rentBusiness.InsertDataPayment(c.Request().Context(), rents.CorePayments(newPayment))
-			return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to insert data", _response.FromCore(payments.Core(dataPayment))))
+	dataPayment, err := t.rentBusiness.CreateRent(c.Request().Context(), idToken, newRent)
+	if err != nil {
+		if errors.Is(err, rents.ErrAlreadyBooked) || errors.Is(err, rents.ErrRoomBooked) {
+			return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed(err.Error()))
 		}
-		return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("this room has booked"))
+		if errors.Is(err, rents.ErrInvalidDate) {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
-	return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("you already booked this room"))
+
+	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to insert data", _response.FromCore(payments.Core(dataPayment))))
+}
+
+// GetData is kept for backward-compatibility with existing routes
+func (t *RentHandler) GetData(c echo.Context) error {
+	return t.CreateRent(c)
 }
 
 func (t *RentHandler) GetDataRent(c echo.Context) error {

@@ -36,6 +36,7 @@ import (
 	_paymentBusiness "be9/mnroom/features/payments/business"
 	_paymentData "be9/mnroom/features/payments/data"
 	_paymentPresentation "be9/mnroom/features/payments/presentation"
+	"be9/mnroom/helper"
 
 	"gorm.io/gorm"
 )
@@ -86,8 +87,9 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	roomfacilityBusiness := _roomfacilitysBusiness.NewRoomFacilityBusiness(roomfacilityData)
 	roomfacilityPresentation := _roomfacilitysPresentation.NewRoomFacilitysHandler(roomfacilityBusiness)
 
+	paymentGateway := helper.NewMidtransGateway()
 	rentData := _rentData.NewRentRepository(dbConn)
-	rentBusiness := _rentBusiness.NewRentBusiness(rentData)
+	rentBusiness := _rentBusiness.NewRentBusiness(rentData, paymentGateway)
 	rentPresentation := _rentPresentation.NewEventHandler(rentBusiness)
 
 	feedbackData := _feedbackData.NewFeedbackRepository(dbConn)
