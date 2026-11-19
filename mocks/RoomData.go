@@ -4,6 +4,7 @@ package mocks
 
 import (
 	rooms "be9/mnroom/features/rooms"
+	context "context"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -13,20 +14,20 @@ type RoomData struct {
 	mock.Mock
 }
 
-// DeleteData provides a mock function with given fields: id
-func (_m *RoomData) DeleteData(id int) (int, error) {
-	ret := _m.Called(id)
+// DeleteData provides a mock function with given fields: ctx, id
+func (_m *RoomData) DeleteData(ctx context.Context, id int) (int, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int) int); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) int); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -34,20 +35,20 @@ func (_m *RoomData) DeleteData(id int) (int, error) {
 	return r0, r1
 }
 
-// GetData provides a mock function with given fields: id
-func (_m *RoomData) GetData(id int) (rooms.Core, error) {
-	ret := _m.Called(id)
+// GetData provides a mock function with given fields: ctx, id
+func (_m *RoomData) GetData(ctx context.Context, id int) (rooms.Core, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 rooms.Core
-	if rf, ok := ret.Get(0).(func(int) rooms.Core); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) rooms.Core); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(rooms.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -55,13 +56,13 @@ func (_m *RoomData) GetData(id int) (rooms.Core, error) {
 	return r0, r1
 }
 
-// GetDataAll provides a mock function with given fields: page
-func (_m *RoomData) GetDataAll(page int) ([]rooms.Core, error) {
-	ret := _m.Called(page)
+// GetDataAll provides a mock function with given fields: ctx, page
+func (_m *RoomData) GetDataAll(ctx context.Context, page int) ([]rooms.Core, error) {
+	ret := _m.Called(ctx, page)
 
 	var r0 []rooms.Core
-	if rf, ok := ret.Get(0).(func(int) []rooms.Core); ok {
-		r0 = rf(page)
+	if rf, ok := ret.Get(0).(func(context.Context, int) []rooms.Core); ok {
+		r0 = rf(ctx, page)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]rooms.Core)
@@ -69,8 +70,8 @@ func (_m *RoomData) GetDataAll(page int) ([]rooms.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(page)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, page)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -78,13 +79,13 @@ func (_m *RoomData) GetDataAll(page int) ([]rooms.Core, error) {
 	return r0, r1
 }
 
-// GetDataAllUserRoom provides a mock function with given fields: idToken
-func (_m *RoomData) GetDataAllUserRoom(idToken int) ([]rooms.Core, error) {
-	ret := _m.Called(idToken)
+// GetDataAllUserRoom provides a mock function with given fields: ctx, idToken
+func (_m *RoomData) GetDataAllUserRoom(ctx context.Context, idToken int) ([]rooms.Core, error) {
+	ret := _m.Called(ctx, idToken)
 
 	var r0 []rooms.Core
-	if rf, ok := ret.Get(0).(func(int) []rooms.Core); ok {
-		r0 = rf(idToken)
+	if rf, ok := ret.Get(0).(func(context.Context, int) []rooms.Core); ok {
+		r0 = rf(ctx, idToken)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]rooms.Core)
@@ -92,8 +93,8 @@ func (_m *RoomData) GetDataAllUserRoom(idToken int) ([]rooms.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(idToken)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, idToken)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -101,13 +102,13 @@ func (_m *RoomData) GetDataAllUserRoom(idToken int) ([]rooms.Core, error) {
 	return r0, r1
 }
 
-// GetDataByCategory provides a mock function with given fields: id
-func (_m *RoomData) GetDataByCategory(id int) ([]rooms.Core, error) {
-	ret := _m.Called(id)
+// GetDataByCategory provides a mock function with given fields: ctx, id
+func (_m *RoomData) GetDataByCategory(ctx context.Context, id int) ([]rooms.Core, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 []rooms.Core
-	if rf, ok := ret.Get(0).(func(int) []rooms.Core); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) []rooms.Core); ok {
+		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]rooms.Core)
@@ -115,8 +116,8 @@ func (_m *RoomData) GetDataByCategory(id int) ([]rooms.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -124,20 +125,20 @@ func (_m *RoomData) GetDataByCategory(id int) ([]rooms.Core, error) {
 	return r0, r1
 }
 
-// GetDataIDRoom provides a mock function with given fields: id
-func (_m *RoomData) GetDataIDRoom(id int) (int, error) {
-	ret := _m.Called(id)
+// GetDataIDRoom provides a mock function with given fields: ctx, id
+func (_m *RoomData) GetDataIDRoom(ctx context.Context, id int) (int, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int) int); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) int); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -145,20 +146,20 @@ func (_m *RoomData) GetDataIDRoom(id int) (int, error) {
 	return r0, r1
 }
 
-// GetToken provides a mock function with given fields: id, idToken
-func (_m *RoomData) GetToken(id int, idToken int) (rooms.Core, error) {
-	ret := _m.Called(id, idToken)
+// GetToken provides a mock function with given fields: ctx, id, idToken
+func (_m *RoomData) GetToken(ctx context.Context, id int, idToken int) (rooms.Core, error) {
+	ret := _m.Called(ctx, id, idToken)
 
 	var r0 rooms.Core
-	if rf, ok := ret.Get(0).(func(int, int) rooms.Core); ok {
-		r0 = rf(id, idToken)
+	if rf, ok := ret.Get(0).(func(context.Context, int, int) rooms.Core); ok {
+		r0 = rf(ctx, id, idToken)
 	} else {
 		r0 = ret.Get(0).(rooms.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(id, idToken)
+	if rf, ok := ret.Get(1).(func(context.Context, int, int) error); ok {
+		r1 = rf(ctx, id, idToken)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -166,20 +167,20 @@ func (_m *RoomData) GetToken(id int, idToken int) (rooms.Core, error) {
 	return r0, r1
 }
 
-// InsertData provides a mock function with given fields: insert
-func (_m *RoomData) InsertData(insert rooms.Core) (rooms.Core, error) {
-	ret := _m.Called(insert)
+// InsertData provides a mock function with given fields: ctx, insert
+func (_m *RoomData) InsertData(ctx context.Context, insert rooms.Core) (rooms.Core, error) {
+	ret := _m.Called(ctx, insert)
 
 	var r0 rooms.Core
-	if rf, ok := ret.Get(0).(func(rooms.Core) rooms.Core); ok {
-		r0 = rf(insert)
+	if rf, ok := ret.Get(0).(func(context.Context, rooms.Core) rooms.Core); ok {
+		r0 = rf(ctx, insert)
 	} else {
 		r0 = ret.Get(0).(rooms.Core)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(rooms.Core) error); ok {
-		r1 = rf(insert)
+	if rf, ok := ret.Get(1).(func(context.Context, rooms.Core) error); ok {
+		r1 = rf(ctx, insert)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -187,20 +188,20 @@ func (_m *RoomData) InsertData(insert rooms.Core) (rooms.Core, error) {
 	return r0, r1
 }
 
-// InsertDataRoomFacilitys provides a mock function with given fields: insert
-func (_m *RoomData) InsertDataRoomFacilitys(insert rooms.CoreRoomFacilitys) (int, error) {
-	ret := _m.Called(insert)
+// InsertDataRoomFacilitys provides a mock function with given fields: ctx, insert
+func (_m *RoomData) InsertDataRoomFacilitys(ctx context.Context, insert rooms.CoreRoomFacilitys) (int, error) {
+	ret := _m.Called(ctx, insert)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(rooms.CoreRoomFacilitys) int); ok {
-		r0 = rf(insert)
+	if rf, ok := ret.Get(0).(func(context.Context, rooms.CoreRoomFacilitys) int); ok {
+		r0 = rf(ctx, insert)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(rooms.CoreRoomFacilitys) error); ok {
-		r1 = rf(insert)
+	if rf, ok := ret.Get(1).(func(context.Context, rooms.CoreRoomFacilitys) error); ok {
+		r1 = rf(ctx, insert)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -208,20 +209,20 @@ func (_m *RoomData) InsertDataRoomFacilitys(insert rooms.CoreRoomFacilitys) (int
 	return r0, r1
 }
 
-// UpdateData provides a mock function with given fields: id, insert
-func (_m *RoomData) UpdateData(id int, insert rooms.Core) (int, error) {
-	ret := _m.Called(id, insert)
+// UpdateData provides a mock function with given fields: ctx, id, insert
+func (_m *RoomData) UpdateData(ctx context.Context, id int, insert rooms.Core) (int, error) {
+	ret := _m.Called(ctx, id, insert)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int, rooms.Core) int); ok {
-		r0 = rf(id, insert)
+	if rf, ok := ret.Get(0).(func(context.Context, int, rooms.Core) int); ok {
+		r0 = rf(ctx, id, insert)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, rooms.Core) error); ok {
-		r1 = rf(id, insert)
+	if rf, ok := ret.Get(1).(func(context.Context, int, rooms.Core) error); ok {
+		r1 = rf(ctx, id, insert)
 	} else {
 		r1 = ret.Error(1)
 	}

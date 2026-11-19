@@ -2,6 +2,7 @@ package business
 
 import (
 	"be9/mnroom/features/users"
+	"context"
 )
 
 type userUsecase struct {
@@ -14,27 +15,27 @@ func NewUserBusiness(usrData users.Data) users.Business {
 	}
 }
 
-func (usecase *userUsecase) InsertData(insert users.Core) (row int, err error) {
-	row, err = usecase.userData.InsertData(insert)
+func (usecase *userUsecase) InsertData(ctx context.Context, insert users.Core) (row int, err error) {
+	row, err = usecase.userData.InsertData(ctx, insert)
 	return row, err
 }
 
-func (usecase *userUsecase) GetAllData() (data []users.Core, err error) {
-	data, err = usecase.userData.GetAllData()
+func (usecase *userUsecase) GetAllData(ctx context.Context) (data []users.Core, err error) {
+	data, err = usecase.userData.GetAllData(ctx)
 	return data, err
 }
 
-func (usecase *userUsecase) GetData(id int) (data users.Core, err error) {
-	data, err = usecase.userData.GetData(id)
+func (usecase *userUsecase) GetData(ctx context.Context, id int) (data users.Core, err error) {
+	data, err = usecase.userData.GetData(ctx, id)
 	return data, err
 }
 
-func (usecase *userUsecase) DeleteData(id int) (row int, err error) {
-	row, err = usecase.userData.DeleteData(id)
+func (usecase *userUsecase) DeleteData(ctx context.Context, id int) (row int, err error) {
+	row, err = usecase.userData.DeleteData(ctx, id)
 	return row, err
 }
 
-func (usecase *userUsecase) UpdateData(id int, insert users.Core) (row int, err error) {
-	row, err = usecase.userData.UpdateData(id, insert)
+func (usecase *userUsecase) UpdateData(ctx context.Context, id int, insert users.Core) (row int, err error) {
+	row, err = usecase.userData.UpdateData(ctx, id, insert)
 	return row, err
 }

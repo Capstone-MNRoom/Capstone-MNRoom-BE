@@ -4,6 +4,7 @@ import (
 	"be9/mnroom/features/facilitys"
 	"be9/mnroom/features/rooms"
 	"be9/mnroom/features/users"
+	"context"
 	"time"
 )
 
@@ -17,11 +18,11 @@ type Core struct {
 }
 
 type Business interface {
-	GetData(id int) (data []Core, err error)
-	GetDataRow(id int) (row int, err error)
+	GetData(ctx context.Context, id int) (data []Core, err error)
+	GetDataRow(ctx context.Context, id int) (row int, err error)
 }
 
 type Data interface {
-	GetData(id int) (data []Core, err error)
-	GetDataRow(id int) (row int, err error)
+	GetData(ctx context.Context, id int) (data []Core, err error)
+	GetDataRow(ctx context.Context, id int) (row int, err error)
 }

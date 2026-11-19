@@ -4,6 +4,7 @@ package mocks
 
 import (
 	rents "be9/mnroom/features/rents"
+	context "context"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -13,20 +14,20 @@ type RentData struct {
 	mock.Mock
 }
 
-// GetData provides a mock function with given fields: id
-func (_m *RentData) GetData(id int) (int, error) {
-	ret := _m.Called(id)
+// GetData provides a mock function with given fields: ctx, id
+func (_m *RentData) GetData(ctx context.Context, id int) (int, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int) int); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) int); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -34,13 +35,13 @@ func (_m *RentData) GetData(id int) (int, error) {
 	return r0, r1
 }
 
-// GetDataRent provides a mock function with given fields: id
-func (_m *RentData) GetDataRent(id int) ([]rents.Core, error) {
-	ret := _m.Called(id)
+// GetDataRent provides a mock function with given fields: ctx, id
+func (_m *RentData) GetDataRent(ctx context.Context, id int) ([]rents.Core, error) {
+	ret := _m.Called(ctx, id)
 
 	var r0 []rents.Core
-	if rf, ok := ret.Get(0).(func(int) []rents.Core); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int) []rents.Core); ok {
+		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]rents.Core)
@@ -48,8 +49,8 @@ func (_m *RentData) GetDataRent(id int) ([]rents.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -57,20 +58,20 @@ func (_m *RentData) GetDataRent(id int) ([]rents.Core, error) {
 	return r0, r1
 }
 
-// GetDataRentToken provides a mock function with given fields: idToken, idRoom
-func (_m *RentData) GetDataRentToken(idToken int, idRoom int) (int, error) {
-	ret := _m.Called(idToken, idRoom)
+// GetDataRentToken provides a mock function with given fields: ctx, idToken, idRoom
+func (_m *RentData) GetDataRentToken(ctx context.Context, idToken int, idRoom int) (int, error) {
+	ret := _m.Called(ctx, idToken, idRoom)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int, int) int); ok {
-		r0 = rf(idToken, idRoom)
+	if rf, ok := ret.Get(0).(func(context.Context, int, int) int); ok {
+		r0 = rf(ctx, idToken, idRoom)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(idToken, idRoom)
+	if rf, ok := ret.Get(1).(func(context.Context, int, int) error); ok {
+		r1 = rf(ctx, idToken, idRoom)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -78,20 +79,20 @@ func (_m *RentData) GetDataRentToken(idToken int, idRoom int) (int, error) {
 	return r0, r1
 }
 
-// GetDataRentUser provides a mock function with given fields: id, start, end
-func (_m *RentData) GetDataRentUser(id int, start string, end string) (int, error) {
-	ret := _m.Called(id, start, end)
+// GetDataRentUser provides a mock function with given fields: ctx, id, start, end
+func (_m *RentData) GetDataRentUser(ctx context.Context, id int, start string, end string) (int, error) {
+	ret := _m.Called(ctx, id, start, end)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(int, string, string) int); ok {
-		r0 = rf(id, start, end)
+	if rf, ok := ret.Get(0).(func(context.Context, int, string, string) int); ok {
+		r0 = rf(ctx, id, start, end)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, string, string) error); ok {
-		r1 = rf(id, start, end)
+	if rf, ok := ret.Get(1).(func(context.Context, int, string, string) error); ok {
+		r1 = rf(ctx, id, start, end)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -99,13 +100,13 @@ func (_m *RentData) GetDataRentUser(id int, start string, end string) (int, erro
 	return r0, r1
 }
 
-// GetDataRentUserHistory provides a mock function with given fields: idToken
-func (_m *RentData) GetDataRentUserHistory(idToken int) ([]rents.Core, error) {
-	ret := _m.Called(idToken)
+// GetDataRentUserHistory provides a mock function with given fields: ctx, idToken
+func (_m *RentData) GetDataRentUserHistory(ctx context.Context, idToken int) ([]rents.Core, error) {
+	ret := _m.Called(ctx, idToken)
 
 	var r0 []rents.Core
-	if rf, ok := ret.Get(0).(func(int) []rents.Core); ok {
-		r0 = rf(idToken)
+	if rf, ok := ret.Get(0).(func(context.Context, int) []rents.Core); ok {
+		r0 = rf(ctx, idToken)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]rents.Core)
@@ -113,8 +114,8 @@ func (_m *RentData) GetDataRentUserHistory(idToken int) ([]rents.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(idToken)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, idToken)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -122,20 +123,20 @@ func (_m *RentData) GetDataRentUserHistory(idToken int) ([]rents.Core, error) {
 	return r0, r1
 }
 
-// GetDataUser provides a mock function with given fields: idToken
-func (_m *RentData) GetDataUser(idToken int) (rents.CoreUser, error) {
-	ret := _m.Called(idToken)
+// GetDataUser provides a mock function with given fields: ctx, idToken
+func (_m *RentData) GetDataUser(ctx context.Context, idToken int) (rents.CoreUser, error) {
+	ret := _m.Called(ctx, idToken)
 
 	var r0 rents.CoreUser
-	if rf, ok := ret.Get(0).(func(int) rents.CoreUser); ok {
-		r0 = rf(idToken)
+	if rf, ok := ret.Get(0).(func(context.Context, int) rents.CoreUser); ok {
+		r0 = rf(ctx, idToken)
 	} else {
 		r0 = ret.Get(0).(rents.CoreUser)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
-		r1 = rf(idToken)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, idToken)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -143,20 +144,20 @@ func (_m *RentData) GetDataUser(idToken int) (rents.CoreUser, error) {
 	return r0, r1
 }
 
-// InsertData provides a mock function with given fields: insert
-func (_m *RentData) InsertData(insert rents.Core) (int, error) {
-	ret := _m.Called(insert)
+// InsertData provides a mock function with given fields: ctx, insert
+func (_m *RentData) InsertData(ctx context.Context, insert rents.Core) (int, error) {
+	ret := _m.Called(ctx, insert)
 
 	var r0 int
-	if rf, ok := ret.Get(0).(func(rents.Core) int); ok {
-		r0 = rf(insert)
+	if rf, ok := ret.Get(0).(func(context.Context, rents.Core) int); ok {
+		r0 = rf(ctx, insert)
 	} else {
 		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(rents.Core) error); ok {
-		r1 = rf(insert)
+	if rf, ok := ret.Get(1).(func(context.Context, rents.Core) error); ok {
+		r1 = rf(ctx, insert)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -164,20 +165,20 @@ func (_m *RentData) InsertData(insert rents.Core) (int, error) {
 	return r0, r1
 }
 
-// InsertDataPayment provides a mock function with given fields: insert
-func (_m *RentData) InsertDataPayment(insert rents.CorePayments) (rents.CorePayments, error) {
-	ret := _m.Called(insert)
+// InsertDataPayment provides a mock function with given fields: ctx, insert
+func (_m *RentData) InsertDataPayment(ctx context.Context, insert rents.CorePayments) (rents.CorePayments, error) {
+	ret := _m.Called(ctx, insert)
 
 	var r0 rents.CorePayments
-	if rf, ok := ret.Get(0).(func(rents.CorePayments) rents.CorePayments); ok {
-		r0 = rf(insert)
+	if rf, ok := ret.Get(0).(func(context.Context, rents.CorePayments) rents.CorePayments); ok {
+		r0 = rf(ctx, insert)
 	} else {
 		r0 = ret.Get(0).(rents.CorePayments)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(rents.CorePayments) error); ok {
-		r1 = rf(insert)
+	if rf, ok := ret.Get(1).(func(context.Context, rents.CorePayments) error); ok {
+		r1 = rf(ctx, insert)
 	} else {
 		r1 = ret.Error(1)
 	}

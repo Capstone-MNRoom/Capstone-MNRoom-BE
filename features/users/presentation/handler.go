@@ -64,7 +64,7 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 	newUser := request.ToCore(insertData)
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(newUser.Password), bcrypt.DefaultCost)
 	newUser.Password = string(hashedPassword)
-	row, err := h.userBusiness.InsertData(newUser)
+	row, err := h.userBusiness.InsertData(c.Request().Context(), newUser)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("email or phone number already exist"))
 	}
@@ -75,7 +75,7 @@ func (h *UserHandler) InsertData(c echo.Context) error {
 }
 
 func (h *UserHandler) GetAllData(c echo.Context) error {
-	data, err := h.userBusiness.GetAllData()
+	data, err := h.userBusiness.GetAllData(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
@@ -87,7 +87,7 @@ func (h *UserHandler) GetData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	data, err := h.userBusiness.GetData(idToken)
+	data, err := h.userBusiness.GetData(c.Request().Context(), idToken)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get data"))
 	}
@@ -99,7 +99,7 @@ func (h *UserHandler) DeleteData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	row, err := h.userBusiness.DeleteData(idToken)
+	row, err := h.userBusiness.DeleteData(c.Request().Context(), idToken)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
 	}
@@ -118,7 +118,7 @@ func (h *UserHandler) UpdateData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	data, _ := h.userBusiness.GetData(idToken)
+	data, _ := h.userBusiness.GetData(c.Request().Context(), idToken)
 	updatedData := request.User{
 		Username: c.FormValue("username"),
 		Password: c.FormValue("password"),
@@ -156,7 +156,7 @@ func (h *UserHandler) UpdateData(c echo.Context) error {
 		updatedData.Address = data.Address
 	}
 	newUser := request.ToCore(updatedData)
-	row, err := h.userBusiness.UpdateData(idToken, newUser)
+	row, err := h.userBusiness.UpdateData(c.Request().Context(), idToken, newUser)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to updated data"))
 	}

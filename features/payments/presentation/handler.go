@@ -27,7 +27,7 @@ func (y *PaymentHandler) GetAllData(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	data, err := y.paymentBusiness.GetAllData(idToken)
+	data, err := y.paymentBusiness.GetAllData(c.Request().Context(), idToken)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
@@ -43,7 +43,7 @@ func (y *PaymentHandler) UpdateData(c echo.Context) error {
 	}
 	orderId, _ := notificationPayload["order_id"].(string)
 	transactionStatus, _ := notificationPayload["transaction_status"].(string)
-	row, err := y.paymentBusiness.UpdateData(orderId, transactionStatus)
+	row, err := y.paymentBusiness.UpdateData(c.Request().Context(), orderId, transactionStatus)
 	if row != 0 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update data"))
 	}

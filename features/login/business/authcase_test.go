@@ -3,6 +3,7 @@ package business
 import (
 	"be9/mnroom/features/login"
 	"be9/mnroom/mocks"
+	"context"
 	"errors"
 	"testing"
 
@@ -18,20 +19,20 @@ func TestAuth(t *testing.T) {
 	}
 
 	t.Run("Success Auth", func(t *testing.T) {
-		repo.On("Auth", mock.Anything).Return(1, nil).Once()
+		repo.On("Auth", mock.Anything, mock.Anything).Return(1, nil).Once()
 		srv := NewAuthBusiness(repo)
 
-		res, err := srv.Auth(insertData)
+		res, err := srv.Auth(context.Background(), insertData)
 		assert.NoError(t, err)
 		assert.Equal(t, 1, res)
 		repo.AssertExpectations(t)
 	})
 
 	t.Run("Error insert to DB", func(t *testing.T) {
-		repo.On("Auth", mock.Anything).Return(0, errors.New("there is some error")).Once()
+		repo.On("Auth", mock.Anything, mock.Anything).Return(0, errors.New("there is some error")).Once()
 		srv := NewAuthBusiness(repo)
 
-		res, err := srv.Auth(insertData)
+		res, err := srv.Auth(context.Background(), insertData)
 		assert.EqualError(t, err, "there is some error")
 		assert.Equal(t, 0, res)
 		repo.AssertExpectations(t)

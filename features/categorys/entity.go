@@ -1,6 +1,9 @@
 package categorys
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type Core struct {
 	ID           int
@@ -10,17 +13,17 @@ type Core struct {
 }
 
 type Business interface {
-	InsertData(insert Core) (row int, err error)
-	GetDataAll() (data []Core, err error)
-	GetData(id int) (data Core, err error)
-	UpdateData(id int, insert Core) (row int, err error)
-	DeleteData(id int) (row int, err error)
+	InsertData(ctx context.Context, insert Core) (row int, err error)
+	GetDataAll(ctx context.Context) (data []Core, err error)
+	GetData(ctx context.Context, id int) (data Core, err error)
+	UpdateData(ctx context.Context, id int, insert Core) (row int, err error)
+	DeleteData(ctx context.Context, id int) (row int, err error)
 }
 
 type Data interface {
-	InsertData(insert Core) (row int, err error)
-	GetDataAll() (data []Core, err error)
-	GetData(id int) (data Core, err error)
-	UpdateData(id int, insert Core) (row int, err error)
-	DeleteData(id int) (row int, err error)
+	InsertData(ctx context.Context, insert Core) (row int, err error)
+	GetDataAll(ctx context.Context) (data []Core, err error)
+	GetData(ctx context.Context, id int) (data Core, err error)
+	UpdateData(ctx context.Context, id int, insert Core) (row int, err error)
+	DeleteData(ctx context.Context, id int) (row int, err error)
 }

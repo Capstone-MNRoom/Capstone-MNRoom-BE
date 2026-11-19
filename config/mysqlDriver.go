@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -36,6 +37,17 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+
+	// Database Connection Pooling settings
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetConnMaxIdleTime(10 * time.Minute)
 
 	return db
 }

@@ -57,18 +57,18 @@ func (t *RentHandler) GetData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("bank cannot be empty"))
 	}
 	newRent := request.ToCore(insertData)
-	rowToken, _ := t.rentBusiness.GetDataRentToken(idToken, newRent.Room.ID)
+	rowToken, _ := t.rentBusiness.GetDataRentToken(c.Request().Context(), idToken, newRent.Room.ID)
 	if rowToken != 1 {
-		rowDataRent, _ := t.rentBusiness.GetDataRentUser(newRent.Room.ID, newRent.DateStart, newRent.DateEnd)
+		rowDataRent, _ := t.rentBusiness.GetDataRentUser(c.Request().Context(), newRent.Room.ID, newRent.DateStart, newRent.DateEnd)
 		if rowDataRent != 1 {
-			data, _ := t.rentBusiness.GetData(newRent.Room.ID)
+			data, _ := t.rentBusiness.GetData(c.Request().Context(), newRent.Room.ID)
 			date1, _ := time.Parse("2006-01-02", newRent.DateStart)
 			date2, _ := time.Parse("2006-01-02", newRent.DateEnd)
 			difference := date2.Sub(date1)
 			newRent.TotalRentalPrice = data * int(int64(difference.Hours()/24))
 			newRent.Status = "Success"
 			newRent.User.ID = idToken
-			rowIDRent, err := t.rentBusiness.InsertData(newRent)
+			rowIDRent, err := t.rentBusiness.InsertData(c.Request().Context(), newRent)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 			}
@@ -80,7 +80,7 @@ func (t *RentHandler) GetData(c echo.Context) error {
 			var s = coreapi.Client{}
 			s.New(os.Getenv("SERVER_KEY"), midtrans.Sandbox)
 
-			dataUser, _ := t.rentBusiness.GetDataUser(idToken)
+			dataUser, _ := t.rentBusiness.GetDataUser(c.Request().Context(), idToken)
 
 			chargeReq := &coreapi.ChargeReq{
 				PaymentType: coreapi.PaymentTypeBankTransfer,
@@ -116,7 +116,7 @@ func (t *RentHandler) GetData(c echo.Context) error {
 			newPayment.TransactionStatus = res.TransactionStatus
 			newPayment.Rents.ID = rowIDRent
 			newPayment.User.ID = idToken
-			dataPayment, _ := t.rentBusiness.InsertDataPayment(rents.CorePayments(newPayment))
+			dataPayment, _ := t.rentBusiness.InsertDataPayment(c.Request().Context(), rents.CorePayments(newPayment))
 			return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to insert data", _response.FromCore(payments.Core(dataPayment))))
 		}
 		return c.JSON(http.StatusMethodNotAllowed, helper.ResponseFailed("this room has booked"))
@@ -130,7 +130,7 @@ func (t *RentHandler) GetDataRent(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	data, err := t.rentBusiness.GetDataRent(idRoom)
+	data, err := t.rentBusiness.GetDataRent(c.Request().Context(), idRoom)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}
@@ -142,7 +142,7 @@ func (t *RentHandler) GetDataRentUserHistory(c echo.Context) error {
 	if errToken != nil {
 		c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid token"))
 	}
-	data, err := t.rentBusiness.GetDataRentUserHistory(idToken)
+	data, err := t.rentBusiness.GetDataRentUserHistory(c.Request().Context(), idToken)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
 	}

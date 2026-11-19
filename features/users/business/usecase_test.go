@@ -3,6 +3,7 @@ package business
 import (
 	"be9/mnroom/features/users"
 	"be9/mnroom/mocks"
+	"context"
 	"errors"
 	"testing"
 
@@ -19,22 +20,21 @@ func TestInsertData(t *testing.T) {
 		Phone:    "0899123456",
 		Address:  "Jl.Rambutan"}
 
-
 	t.Run("Success Insert", func(t *testing.T) {
-		repo.On("InsertData", mock.Anything).Return(1, nil).Once()
+		repo.On("InsertData", mock.Anything, mock.Anything).Return(1, nil).Once()
 		srv := NewUserBusiness(repo)
 
-		res, err := srv.InsertData(insertData)
+		res, err := srv.InsertData(context.Background(), insertData)
 		assert.NoError(t, err)
 		assert.Equal(t, 1, res)
 		repo.AssertExpectations(t)
 	})
 
 	t.Run("Error insert to DB", func(t *testing.T) {
-		repo.On("InsertData", mock.Anything).Return(0, errors.New("there is some error")).Once()
+		repo.On("InsertData", mock.Anything, mock.Anything).Return(0, errors.New("there is some error")).Once()
 		srv := NewUserBusiness(repo)
 
-		res, err := srv.InsertData(insertData)
+		res, err := srv.InsertData(context.Background(), insertData)
 		assert.EqualError(t, err, "there is some error")
 		assert.Equal(t, 0, res)
 		repo.AssertExpectations(t)
@@ -50,7 +50,7 @@ func TestGetAllData(t *testing.T) {
 
 		srv := NewUserBusiness(repo)
 
-		res, err := srv.GetAllData()
+		res, err := srv.GetAllData(context.Background())
 		assert.NoError(t, err)
 		assert.Equal(t, returnData[0].ID, res[0].ID)
 		repo.AssertExpectations(t)
@@ -61,7 +61,7 @@ func TestGetAllData(t *testing.T) {
 
 		srv := NewUserBusiness(repo)
 
-		res, err := srv.GetAllData()
+		res, err := srv.GetAllData(context.Background())
 		assert.Error(t, err)
 		assert.Nil(t, res)
 		repo.AssertExpectations(t)

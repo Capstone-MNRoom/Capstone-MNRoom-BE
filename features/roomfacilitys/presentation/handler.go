@@ -26,7 +26,7 @@ func (m *RoomFacilityHandler) GetData(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	row, err := m.roomfacilitysBusiness.GetDataRow(idRoom)
+	row, err := m.roomfacilitysBusiness.GetDataRow(c.Request().Context(), idRoom)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
@@ -34,6 +34,6 @@ func (m *RoomFacilityHandler) GetData(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get all data"))
 	}
-	data, _ := m.roomfacilitysBusiness.GetData(idRoom)
+	data, _ := m.roomfacilitysBusiness.GetData(c.Request().Context(), idRoom)
 	return c.JSON(http.StatusOK, helper.ResponseSuccessWithData("success to get all data", response.FromCoreList(data)))
 }

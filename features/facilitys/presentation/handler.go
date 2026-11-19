@@ -34,7 +34,7 @@ func (f *FacilityHandler) InsertData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("name cannot be empty"))
 	}
 	newFacility := request.ToCore(insertFacility)
-	row, err := f.facilityBusiness.InsertData(newFacility)
+	row, err := f.facilityBusiness.InsertData(c.Request().Context(), newFacility)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to insert data"))
 	}
@@ -45,7 +45,7 @@ func (f *FacilityHandler) InsertData(c echo.Context) error {
 }
 
 func (f *FacilityHandler) GetDataAll(c echo.Context) error {
-	data, err := f.facilityBusiness.GetDataAll()
+	data, err := f.facilityBusiness.GetDataAll(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to get all data"))
 	}
@@ -58,7 +58,7 @@ func (f *FacilityHandler) GetData(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	data, err := f.facilityBusiness.GetData(idFacility)
+	data, err := f.facilityBusiness.GetData(c.Request().Context(), idFacility)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid input"))
 	}
@@ -80,7 +80,7 @@ func (f *FacilityHandler) UpdateData(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed(errValidator.Error()))
 	}
 	newUpdate := request.ToCore(updateFacility)
-	row, err := f.facilityBusiness.UpdateData(idFacility, newUpdate)
+	row, err := f.facilityBusiness.UpdateData(c.Request().Context(), idFacility, newUpdate)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to updated data"))
 	}
@@ -96,7 +96,7 @@ func (f *FacilityHandler) DeleteData(c echo.Context) error {
 	if errId != nil {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("invalid id"))
 	}
-	row, err := f.facilityBusiness.DeleteData(idFacility)
+	row, err := f.facilityBusiness.DeleteData(c.Request().Context(), idFacility)
 	if row != 1 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to deleted data"))
 	}

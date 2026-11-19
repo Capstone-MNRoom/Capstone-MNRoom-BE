@@ -2,6 +2,7 @@ package data
 
 import (
 	"be9/mnroom/features/rooms"
+	"context"
 
 	"gorm.io/gorm"
 )
@@ -16,17 +17,17 @@ func NewRoomRepository(conn *gorm.DB) rooms.Data {
 	}
 }
 
-func (repo *mysqlRoomRepository) InsertData(insert rooms.Core) (data rooms.Core, err error) {
+func (repo *mysqlRoomRepository) InsertData(ctx context.Context, insert rooms.Core) (data rooms.Core, err error) {
 	insertRoom := fromCore(insert)
-	tx := repo.db.Create(&insertRoom)
+	tx := repo.db.WithContext(ctx).Create(&insertRoom)
 	if tx.Error != nil {
 		return rooms.Core{}, tx.Error
 	}
 	return insertRoom.toCore(), nil
 }
 
-func (repo *mysqlRoomRepository) InsertDataRoomFacilitys(insert rooms.CoreRoomFacilitys) (row int, err error) {
-	tx := repo.db.Model(&RoomFacilitys{}).Create([]map[string]interface{}{
+func (repo *mysqlRoomRepository) InsertDataRoomFacilitys(ctx context.Context, insert rooms.CoreRoomFacilitys) (row int, err error) {
+	tx := repo.db.WithContext(ctx).Model(&RoomFacilitys{}).Create([]map[string]interface{}{
 		{"user_id": insert.User.ID, "rooms_id": insert.Rooms.ID, "facilitys_id": insert.Facilitys.ID},
 	})
 	if tx.Error != nil {
@@ -35,54 +36,54 @@ func (repo *mysqlRoomRepository) InsertDataRoomFacilitys(insert rooms.CoreRoomFa
 	return int(tx.RowsAffected), nil
 }
 
-func (repo *mysqlRoomRepository) GetDataAll(page int) (data []rooms.Core, err error) {
+func (repo *mysqlRoomRepository) GetDataAll(ctx context.Context, page int) (data []rooms.Core, err error) {
 	var getDataAll []Rooms
 
-	tx := repo.db.Limit(12).Offset(page).Preload("User").Preload("Categorys").Find(&getDataAll)
+	tx := repo.db.WithContext(ctx).Limit(12).Offset(page).Preload("User").Preload("Categorys").Find(&getDataAll)
 	if tx.Error != nil {
 		return []rooms.Core{}, tx.Error
 	}
 	return toCoreList(getDataAll), nil
 }
 
-func (repo *mysqlRoomRepository) GetData(id int) (data rooms.Core, err error) {
+func (repo *mysqlRoomRepository) GetData(ctx context.Context, id int) (data rooms.Core, err error) {
 	var getData Rooms
-	tx := repo.db.Preload("User").Preload("Categorys").First(&getData, id)
+	tx := repo.db.WithContext(ctx).Preload("User").Preload("Categorys").First(&getData, id)
 	if tx.Error != nil {
 		return rooms.Core{}, tx.Error
 	}
 	return getData.toCore(), nil
 }
 
-func (repo *mysqlRoomRepository) GetDataIDRoom(id int) (row int, err error) {
+func (repo *mysqlRoomRepository) GetDataIDRoom(ctx context.Context, id int) (row int, err error) {
 	var getData Rooms
-	tx := repo.db.Preload("User").Preload("Categorys").First(&getData, id)
+	tx := repo.db.WithContext(ctx).Preload("User").Preload("Categorys").First(&getData, id)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
 	return int(tx.RowsAffected), nil
 }
 
-func (repo *mysqlRoomRepository) UpdateData(id int, insert rooms.Core) (row int, err error) {
-	tx := repo.db.Model(&Rooms{}).Where("id = ?", id).Updates(Rooms{ImageRoom: insert.ImageRoom, ImagePengelola: insert.ImagePengelola, RoomName: insert.RoomName, Capacity: insert.Capacity, HotelName: insert.HotelName, RentalPrice: insert.RentalPrice, Address: insert.Address, City: insert.City, CategorysID: uint(insert.Categorys.ID)})
+func (repo *mysqlRoomRepository) UpdateData(ctx context.Context, id int, insert rooms.Core) (row int, err error) {
+	tx := repo.db.WithContext(ctx).Model(&Rooms{}).Where("id = ?", id).Updates(Rooms{ImageRoom: insert.ImageRoom, ImagePengelola: insert.ImagePengelola, RoomName: insert.RoomName, Capacity: insert.Capacity, HotelName: insert.HotelName, RentalPrice: insert.RentalPrice, Address: insert.Address, City: insert.City, CategorysID: uint(insert.Categorys.ID)})
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
 	return int(tx.RowsAffected), nil
 }
 
-func (repo *mysqlRoomRepository) DeleteData(id int) (row int, err error) {
+func (repo *mysqlRoomRepository) DeleteData(ctx context.Context, id int) (row int, err error) {
 	var deleteData Rooms
-	tx := repo.db.Unscoped().Delete(&deleteData, id)
+	tx := repo.db.WithContext(ctx).Unscoped().Delete(&deleteData, id)
 	if tx.Error != nil {
 		return 0, tx.Error
 	}
 	return int(tx.RowsAffected), nil
 }
 
-func (repo *mysqlRoomRepository) GetToken(id int, idToken int) (data rooms.Core, err error) {
+func (repo *mysqlRoomRepository) GetToken(ctx context.Context, id int, idToken int) (data rooms.Core, err error) {
 	var getData Rooms
-	tx := repo.db.Preload("User").Preload("Categorys").First(&getData, id)
+	tx := repo.db.WithContext(ctx).Preload("User").Preload("Categorys").First(&getData, id)
 	if tx.Error != nil {
 		return rooms.Core{}, tx.Error
 	}
@@ -92,18 +93,18 @@ func (repo *mysqlRoomRepository) GetToken(id int, idToken int) (data rooms.Core,
 	return getData.toCore(), nil
 }
 
-func (repo *mysqlRoomRepository) GetDataAllUserRoom(idToken int) (data []rooms.Core, err error) {
+func (repo *mysqlRoomRepository) GetDataAllUserRoom(ctx context.Context, idToken int) (data []rooms.Core, err error) {
 	var getDataUserRoom []Rooms
-	tx := repo.db.Where("user_id = ?", idToken).Preload("User").Preload("Categorys").Find(&getDataUserRoom)
+	tx := repo.db.WithContext(ctx).Where("user_id = ?", idToken).Preload("User").Preload("Categorys").Find(&getDataUserRoom)
 	if tx.Error != nil {
 		return []rooms.Core{}, tx.Error
 	}
 	return toCoreList(getDataUserRoom), nil
 }
 
-func (repo *mysqlRoomRepository) GetDataByCategory(id int) (data []rooms.Core, err error) {
+func (repo *mysqlRoomRepository) GetDataByCategory(ctx context.Context, id int) (data []rooms.Core, err error) {
 	var categoryId []Rooms
-	tx := repo.db.Where("categorys_id = ? ", id).Preload("User").Preload("Categorys").Find(&categoryId)
+	tx := repo.db.WithContext(ctx).Where("categorys_id = ? ", id).Preload("User").Preload("Categorys").Find(&categoryId)
 	if tx.Error != nil {
 		return []rooms.Core{}, tx.Error
 	}
